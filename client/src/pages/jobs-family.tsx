@@ -24,6 +24,7 @@ export default function JobsFamily() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJobFamily, setSelectedJobFamily] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
 
   // Sample data based on the image
   const jobEntries: JobEntry[] = [
@@ -122,8 +123,9 @@ export default function JobsFamily() {
     }
   };
 
-  // Get unique job families for dropdown
+  // Get unique job families and statuses for dropdowns
   const uniqueJobFamilies = Array.from(new Set(jobEntries.map(entry => entry.jobFamily))).sort();
+  const uniqueStatuses = Array.from(new Set(jobEntries.map(entry => entry.status))).sort();
 
   const filteredEntries = jobEntries.filter(entry => {
     const matchesSearch = entry.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -131,17 +133,19 @@ export default function JobsFamily() {
       entry.jobCode.includes(searchTerm);
     
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
+    const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
     
-    return matchesSearch && matchesJobFamily;
+    return matchesSearch && matchesJobFamily && matchesStatus;
   });
 
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedJobFamily("");
+    setSelectedStatus("");
     setCurrentPage(1);
   };
 
-  const hasFilters = searchTerm !== "" || selectedJobFamily !== "";
+  const hasFilters = searchTerm !== "" || selectedJobFamily !== "" || selectedStatus !== "";
 
   const totalPages = Math.ceil(filteredEntries.length / 10);
   const startIndex = (currentPage - 1) * 10;
@@ -212,9 +216,27 @@ export default function JobsFamily() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" size="sm">
-                  Select Status
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      {selectedStatus || "Select Status"}
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setSelectedStatus("")}>
+                      All Statuses
+                    </DropdownMenuItem>
+                    {uniqueStatuses.map((status) => (
+                      <DropdownMenuItem
+                        key={status}
+                        onClick={() => setSelectedStatus(status)}
+                      >
+                        {status}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button variant="outline" size="sm">
                   Last Updated
                 </Button>
