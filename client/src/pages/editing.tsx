@@ -269,9 +269,6 @@ export default function Editing() {
 
           {/* Action Buttons */}
           <div className="flex justify-center space-x-4 mt-8">
-            <Button variant="outline" className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
-              Reject AI Version
-            </Button>
             <Button variant="outline" className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200">
               Save Draft
               <span className="text-xs ml-2">Autosave Every 5 Min</span>
