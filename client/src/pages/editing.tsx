@@ -271,7 +271,7 @@ export default function Editing() {
           <div className="flex justify-center space-x-4 mt-8">
             <Button variant="outline" className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 flex flex-col items-center py-3">
               <span>Save Draft</span>
-              <span className="text-xs text-gray-500 mt-1">Autosave Every 5 Min</span>
+              <span className="text-xs text-gray-500 mt-0.5">Autosave Every 5 Min</span>
             </Button>
             <Button className="bg-blue-900 text-white hover:bg-blue-800">
               Submit For HR Review
