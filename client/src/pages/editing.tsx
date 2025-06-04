@@ -87,7 +87,7 @@ export default function Editing() {
           </div>
 
           {/* Job Information Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="flex items-center space-x-2 mb-2">
                 <FileText className="w-4 h-4 text-blue-600" />
@@ -102,14 +102,6 @@ export default function Editing() {
                 <span className="text-sm font-medium text-gray-600">Job Family</span>
               </div>
               <p className="text-blue-600 font-semibold">Clinical Support</p>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex items-center space-x-2 mb-2">
-                <BarChart className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">Job Level</span>
-              </div>
-              <p className="text-blue-600 font-semibold">1</p>
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
