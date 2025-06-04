@@ -44,8 +44,8 @@ export default function Dashboard() {
     try {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["/api/dashboard/summary"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/transactions"] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/products/top"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/transactions", transactionsPage] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/products/top", productsPage] }),
       ]);
       toast({
         title: "Dashboard refreshed",
@@ -90,18 +90,30 @@ export default function Dashboard() {
           <DataGrid
             title="Top Products"
             subtitle="Best performing products this month"
-            data={products}
+            data={productsData?.products}
             isLoading={productsLoading}
             type="products"
+            pagination={productsData ? {
+              currentPage: productsData.currentPage,
+              totalPages: productsData.totalPages,
+              total: productsData.total,
+              onPageChange: setProductsPage
+            } : undefined}
           />
 
           {/* Right Grid - Recent Transactions */}
           <DataGrid
             title="Recent Transactions"
             subtitle="Latest customer transactions"
-            data={transactions}
+            data={transactionsData?.transactions}
             isLoading={transactionsLoading}
             type="transactions"
+            pagination={transactionsData ? {
+              currentPage: transactionsData.currentPage,
+              totalPages: transactionsData.totalPages,
+              total: transactionsData.total,
+              onPageChange: setTransactionsPage
+            } : undefined}
           />
         </div>
 
