@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { Search, Filter, Bell, FilterX, ChevronDown, Calendar } from "lucide-react";
@@ -36,10 +36,37 @@ export default function JobsFamily() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJobFamily, setSelectedJobFamily] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: undefined,
     to: undefined,
   });
+
+  // Sample notifications
+  const notifications = [
+    "Review deadline approaching",
+    "New job submitted",
+    "Status update required",
+    "Feedback pending approval"
+  ];
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showNotifications]);
 
   // Sample data based on the image
   const jobEntries: JobEntry[] = [
@@ -167,11 +194,41 @@ export default function JobsFamily() {
               <span className="text-gray-500">Job Family</span>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Bell className="w-5 h-5 text-gray-500" />
-                <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold leading-none scale-75">1</span>
-                </div>
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative hover:bg-gray-100 p-2 rounded-lg transition-colors"
+                >
+                  <Bell className="w-5 h-5 text-gray-500" />
+                  <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold leading-none scale-75">1</span>
+                  </div>
+                </button>
+                
+                {/* Notification Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="p-3 border-b border-gray-100">
+                      <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.map((notification, index) => (
+                        <div
+                          key={index}
+                          className="p-3 hover:bg-gray-50 border-b border-gray-50 last:border-b-0 cursor-pointer transition-colors"
+                        >
+                          <p className="text-sm text-gray-700">{notification}</p>
+                          <p className="text-xs text-gray-400 mt-1">Just now</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-3 border-t border-gray-100">
+                      <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                        View all notifications
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
