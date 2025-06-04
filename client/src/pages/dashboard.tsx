@@ -81,22 +81,22 @@ export default function Dashboard() {
 
         {/* Data Grids Section */}
         <div className="grid grid-cols-2 gap-8">
-          {/* Left Grid - Recent Transactions */}
-          <DataGrid
-            title="Recent Transactions"
-            subtitle="Latest customer transactions"
-            data={transactions}
-            isLoading={transactionsLoading}
-            type="transactions"
-          />
-
-          {/* Right Grid - Top Products */}
+          {/* Left Grid - Top Products */}
           <DataGrid
             title="Top Products"
             subtitle="Best performing products this month"
             data={products}
             isLoading={productsLoading}
             type="products"
+          />
+
+          {/* Right Grid - Recent Transactions */}
+          <DataGrid
+            title="Recent Transactions"
+            subtitle="Latest customer transactions"
+            data={transactions}
+            isLoading={transactionsLoading}
+            type="transactions"
           />
         </div>
 
