@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 import { 
   ArrowLeft, 
   Search, 
@@ -20,6 +21,7 @@ import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 
 export default function Editing() {
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("V3");
   const [essentialFunctions, setEssentialFunctions] = useState([
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
@@ -80,7 +82,12 @@ export default function Editing() {
 
           {/* Back Button */}
           <div className="mb-6">
-            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-gray-600 hover:text-gray-900"
+              onClick={() => setLocation("/jobs-family")}
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
