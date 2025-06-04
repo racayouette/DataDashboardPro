@@ -1,39 +1,48 @@
 import { 
   dashboardSummary, 
   transactions, 
-  products,
+  jobFamilies,
+  reviewers,
   type DashboardSummary,
   type Transaction,
-  type Product,
+  type JobFamily,
+  type Reviewer,
   type InsertDashboardSummary,
   type InsertTransaction,
-  type InsertProduct
+  type InsertJobFamily,
+  type InsertReviewer
 } from "@shared/schema";
 
 export interface IStorage {
   getDashboardSummary(): Promise<DashboardSummary | undefined>;
   getRecentTransactions(page?: number, limit?: number): Promise<{ transactions: Transaction[], total: number, totalPages: number, currentPage: number }>;
-  getTopProducts(page?: number, limit?: number): Promise<{ products: Product[], total: number, totalPages: number, currentPage: number }>;
+  getJobFamilies(page?: number, limit?: number): Promise<{ jobFamilies: JobFamily[], total: number, totalPages: number, currentPage: number }>;
+  getReviewers(page?: number, limit?: number): Promise<{ reviewers: Reviewer[], total: number, totalPages: number, currentPage: number }>;
   createDashboardSummary(summary: InsertDashboardSummary): Promise<DashboardSummary>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
-  createProduct(product: InsertProduct): Promise<Product>;
+  createJobFamily(jobFamily: InsertJobFamily): Promise<JobFamily>;
+  createReviewer(reviewer: InsertReviewer): Promise<Reviewer>;
 }
 
 export class MemStorage implements IStorage {
   private dashboardSummaries: Map<number, DashboardSummary>;
   private transactionsList: Map<number, Transaction>;
-  private productsList: Map<number, Product>;
+  private jobFamiliesList: Map<number, JobFamily>;
+  private reviewersList: Map<number, Reviewer>;
   private currentSummaryId: number;
   private currentTransactionId: number;
-  private currentProductId: number;
+  private currentJobFamilyId: number;
+  private currentReviewerId: number;
 
   constructor() {
     this.dashboardSummaries = new Map();
     this.transactionsList = new Map();
-    this.productsList = new Map();
+    this.jobFamiliesList = new Map();
+    this.reviewersList = new Map();
     this.currentSummaryId = 1;
     this.currentTransactionId = 1;
-    this.currentProductId = 1;
+    this.currentJobFamilyId = 1;
+    this.currentReviewerId = 1;
 
     // Initialize with sample data
     this.initializeData();

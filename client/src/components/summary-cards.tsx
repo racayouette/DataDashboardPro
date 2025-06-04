@@ -65,7 +65,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       changeColor: "text-green-600",
     },
     {
-      title: "Orders",
+      title: "In Progress",
       value: data.orders.toLocaleString(),
       icon: ShoppingCart,
       iconBg: "bg-purple-100",

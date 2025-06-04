@@ -20,13 +20,18 @@ export const transactions = pgTable("transactions", {
   date: timestamp("date").defaultNow().notNull(),
 });
 
-export const products = pgTable("products", {
+export const jobFamilies = pgTable("job_families", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  category: text("category").notNull(),
-  sales: integer("sales").notNull(),
-  revenue: decimal("revenue", { precision: 10, scale: 2 }).notNull(),
-  trend: text("trend").notNull(), // e.g., '+15%', '-5%'
+  jobFamily: text("job_family").notNull(),
+  totalJobs: integer("total_jobs").notNull(),
+  jobsReviewed: integer("jobs_reviewed").notNull(),
+});
+
+export const reviewers = pgTable("reviewers", {
+  id: serial("id").primaryKey(),
+  jobFamily: text("job_family").notNull(),
+  completed: integer("completed").notNull(),
+  inProgress: integer("in_progress").notNull(),
 });
 
 export const insertDashboardSummarySchema = createInsertSchema(dashboardSummary).omit({
@@ -39,7 +44,11 @@ export const insertTransactionSchema = createInsertSchema(transactions).omit({
   date: true,
 });
 
-export const insertProductSchema = createInsertSchema(products).omit({
+export const insertJobFamilySchema = createInsertSchema(jobFamilies).omit({
+  id: true,
+});
+
+export const insertReviewerSchema = createInsertSchema(reviewers).omit({
   id: true,
 });
 
@@ -49,5 +58,8 @@ export type DashboardSummary = typeof dashboardSummary.$inferSelect;
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
 export type Transaction = typeof transactions.$inferSelect;
 
-export type InsertProduct = z.infer<typeof insertProductSchema>;
-export type Product = typeof products.$inferSelect;
+export type InsertJobFamily = z.infer<typeof insertJobFamilySchema>;
+export type JobFamily = typeof jobFamilies.$inferSelect;
+
+export type InsertReviewer = z.infer<typeof insertReviewerSchema>;
+export type Reviewer = typeof reviewers.$inferSelect;

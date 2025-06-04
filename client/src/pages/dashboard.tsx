@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
-import { Header } from "@/components/header";
+import { RefreshCw, Search, Bell } from "lucide-react";
+import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
 import { useToast } from "@/hooks/use-toast";
@@ -71,14 +71,32 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="min-h-screen bg-gray-50 flex">
+      <Sidebar />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Dashboard Header */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
-          <p className="mt-2 text-gray-600">Monitor your key metrics and data insights</p>
+      <main className="flex-1 p-6">
+        {/* Top Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 bg-blue-600 rounded"></div>
+              <span className="text-xl font-semibold text-gray-900">Dashboard</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="relative">
+              <Bell className="w-6 h-6 text-gray-600" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            </div>
+          </div>
         </div>
 
         {/* Summary Cards */}
@@ -86,10 +104,10 @@ export default function Dashboard() {
 
         {/* Data Grids Section */}
         <div className="grid grid-cols-2 gap-8">
-          {/* Left Grid - Top Products */}
+          {/* Left Grid - Job Family */}
           <DataGrid
-            title="Top Products"
-            subtitle="Best performing products this month"
+            title="Job Family"
+            subtitle=""
             data={productsData?.products}
             isLoading={productsLoading}
             type="products"
@@ -101,10 +119,10 @@ export default function Dashboard() {
             } : undefined}
           />
 
-          {/* Right Grid - Recent Transactions */}
+          {/* Right Grid - Reviewer */}
           <DataGrid
-            title="Recent Transactions"
-            subtitle="Latest customer transactions"
+            title="Reviewer"
+            subtitle=""
             data={transactionsData?.transactions}
             isLoading={transactionsLoading}
             type="transactions"
@@ -117,15 +135,99 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Refresh Button */}
-        <div className="mt-8 flex justify-center">
-          <Button
-            onClick={refreshDashboard}
-            className="inline-flex items-center px-6 py-3 text-base font-medium"
-          >
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh Dashboard
-          </Button>
+        {/* TO-DO Items Section */}
+        <div className="mt-8">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">TO-DO ITEMS</h3>
+              <div className="relative">
+                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr. No.</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Code</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Family</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">01.</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">10001</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Patient Care Technician</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Clinical Support</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">In Progress</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">May 29, 2025</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">👁 🗑</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">02.</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">10002</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Radiology Tech</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Clinical Support</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Not Started</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">May 29, 2025</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">👁 🗑</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">03.</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">10003</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Billing Specialist</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Revenue Cycle</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Completed</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">May 29, 2025</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">👁 🗑</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">04.</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">10004</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Financial Analyst</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Finance</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">In Progress</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">May 29, 2025</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">👁 🗑</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+              <div className="text-sm text-gray-600">
+                Showing 1 to 10 of 18 entries
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm" disabled>
+                  &lt;
+                </Button>
+                <Button variant="default" size="sm">01</Button>
+                <Button variant="outline" size="sm">02</Button>
+                <Button variant="outline" size="sm">
+                  &gt;
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
