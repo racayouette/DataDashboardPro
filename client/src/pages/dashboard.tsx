@@ -80,7 +80,7 @@ export default function Dashboard() {
         <SummaryCards data={summaryData} isLoading={summaryLoading} />
 
         {/* Data Grids Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-8">
           {/* Left Grid - Recent Transactions */}
           <DataGrid
             title="Recent Transactions"
