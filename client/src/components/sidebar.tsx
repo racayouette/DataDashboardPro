@@ -24,38 +24,37 @@ export function Sidebar() {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="space-y-2">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = location === item.path;
-          
-          return (
-            <Link key={item.path} href={item.path}>
-              <div className={`flex items-center space-x-3 p-3 rounded-lg transition-colors cursor-pointer ${
-                isActive 
-                  ? "bg-blue-700 text-white" 
-                  : "text-blue-200 hover:bg-blue-800 hover:text-white"
-              }`}>
-                <Icon className="w-5 h-5" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </div>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* User Profile */}
-      <div className="absolute bottom-4 left-4 right-4">
-        <div className="flex items-center space-x-3 p-3 bg-blue-800 rounded-lg">
-          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-medium">JM</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-white text-sm font-medium">John marks</p>
-
+      <nav className="space-y-2 flex flex-col h-full">
+        <div className="space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location === item.path;
+            
+            return (
+              <Link key={item.path} href={item.path}>
+                <div className={`flex items-center space-x-3 p-3 rounded-lg transition-colors cursor-pointer ${
+                  isActive 
+                    ? "bg-blue-700 text-white" 
+                    : "text-blue-200 hover:bg-blue-800 hover:text-white"
+                }`}>
+                  <Icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+        
+        {/* User Profile - moved to bottom of navigation */}
+        <div className="mt-auto mb-4">
+          <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors">
+            <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs font-medium">JM</span>
+            </div>
+            <span className="text-sm font-medium">John marks</span>
           </div>
         </div>
-      </div>
+      </nav>
     </div>
   );
 }
