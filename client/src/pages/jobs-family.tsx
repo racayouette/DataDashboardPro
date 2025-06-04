@@ -120,6 +120,286 @@ export default function JobsFamily() {
       jobFamily: "Behavioral Health",
       status: "Not Started",
       lastUpdated: "June 28, 2025"
+    },
+    {
+      id: 11,
+      jobCode: "10011",
+      jobTitle: "Medical Assistant",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "May 22, 2025"
+    },
+    {
+      id: 12,
+      jobCode: "10012",
+      jobTitle: "Revenue Cycle Analyst",
+      jobFamily: "Revenue Cycle",
+      status: "Completed",
+      lastUpdated: "April 12, 2025"
+    },
+    {
+      id: 13,
+      jobCode: "10013",
+      jobTitle: "Physical Therapist",
+      jobFamily: "Clinical Support",
+      status: "Not Started",
+      lastUpdated: "March 8, 2025"
+    },
+    {
+      id: 14,
+      jobCode: "10014",
+      jobTitle: "Clinical Coordinator",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "June 5, 2025"
+    },
+    {
+      id: 15,
+      jobCode: "10015",
+      jobTitle: "Security Officer",
+      jobFamily: "Security",
+      status: "Completed",
+      lastUpdated: "February 28, 2025"
+    },
+    {
+      id: 16,
+      jobCode: "10016",
+      jobTitle: "Quality Assurance Specialist",
+      jobFamily: "Quality",
+      status: "In Progress",
+      lastUpdated: "May 15, 2025"
+    },
+    {
+      id: 17,
+      jobCode: "10017",
+      jobTitle: "Respiratory Therapist",
+      jobFamily: "Clinical Support",
+      status: "Not Started",
+      lastUpdated: "January 20, 2025"
+    },
+    {
+      id: 18,
+      jobCode: "10018",
+      jobTitle: "Dietician",
+      jobFamily: "Nutrition",
+      status: "In Progress",
+      lastUpdated: "April 25, 2025"
+    },
+    {
+      id: 19,
+      jobCode: "10019",
+      jobTitle: "Case Manager",
+      jobFamily: "Behavioral Health",
+      status: "Completed",
+      lastUpdated: "March 18, 2025"
+    },
+    {
+      id: 20,
+      jobCode: "10020",
+      jobTitle: "Maintenance Technician",
+      jobFamily: "Facilities",
+      status: "In Progress",
+      lastUpdated: "June 10, 2025"
+    },
+    {
+      id: 21,
+      jobCode: "10021",
+      jobTitle: "Environmental Services",
+      jobFamily: "Facilities",
+      status: "Not Started",
+      lastUpdated: "February 5, 2025"
+    },
+    {
+      id: 22,
+      jobCode: "10022",
+      jobTitle: "Occupational Therapist",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "May 8, 2025"
+    },
+    {
+      id: 23,
+      jobCode: "10023",
+      jobTitle: "Registration Clerk",
+      jobFamily: "Patient Access",
+      status: "Completed",
+      lastUpdated: "April 2, 2025"
+    },
+    {
+      id: 24,
+      jobCode: "10024",
+      jobTitle: "Surgical Technician",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "June 12, 2025"
+    },
+    {
+      id: 25,
+      jobCode: "10025",
+      jobTitle: "Emergency Room Clerk",
+      jobFamily: "Patient Access",
+      status: "Not Started",
+      lastUpdated: "March 15, 2025"
+    },
+    {
+      id: 26,
+      jobCode: "10026",
+      jobTitle: "Infection Control Specialist",
+      jobFamily: "Quality",
+      status: "In Progress",
+      lastUpdated: "May 20, 2025"
+    },
+    {
+      id: 27,
+      jobCode: "10027",
+      jobTitle: "Medical Records Clerk",
+      jobFamily: "Health Information",
+      status: "Completed",
+      lastUpdated: "February 18, 2025"
+    },
+    {
+      id: 28,
+      jobCode: "10028",
+      jobTitle: "Chaplain",
+      jobFamily: "Spiritual Care",
+      status: "In Progress",
+      lastUpdated: "April 30, 2025"
+    },
+    {
+      id: 29,
+      jobCode: "10029",
+      jobTitle: "Transport Aide",
+      jobFamily: "Patient Support",
+      status: "Not Started",
+      lastUpdated: "January 25, 2025"
+    },
+    {
+      id: 30,
+      jobCode: "10030",
+      jobTitle: "Ultrasound Technician",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "June 8, 2025"
+    },
+    {
+      id: 31,
+      jobCode: "10031",
+      jobTitle: "Chief Medical Officer",
+      jobFamily: "Leadership",
+      status: "Completed",
+      lastUpdated: "March 25, 2025"
+    },
+    {
+      id: 32,
+      jobCode: "10032",
+      jobTitle: "Compliance Officer",
+      jobFamily: "Legal",
+      status: "In Progress",
+      lastUpdated: "May 18, 2025"
+    },
+    {
+      id: 33,
+      jobCode: "10033",
+      jobTitle: "Wound Care Specialist",
+      jobFamily: "Clinical Support",
+      status: "Not Started",
+      lastUpdated: "February 8, 2025"
+    },
+    {
+      id: 34,
+      jobCode: "10034",
+      jobTitle: "Pediatric Nurse",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "April 22, 2025"
+    },
+    {
+      id: 35,
+      jobCode: "10035",
+      jobTitle: "Anesthesia Technician",
+      jobFamily: "Clinical Support",
+      status: "Completed",
+      lastUpdated: "March 10, 2025"
+    },
+    {
+      id: 36,
+      jobCode: "10036",
+      jobTitle: "Clinical Pharmacist",
+      jobFamily: "Pharmacy",
+      status: "In Progress",
+      lastUpdated: "June 1, 2025"
+    },
+    {
+      id: 37,
+      jobCode: "10037",
+      jobTitle: "Patient Financial Counselor",
+      jobFamily: "Revenue Cycle",
+      status: "Not Started",
+      lastUpdated: "January 15, 2025"
+    },
+    {
+      id: 38,
+      jobCode: "10038",
+      jobTitle: "ICU Nurse",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "May 12, 2025"
+    },
+    {
+      id: 39,
+      jobCode: "10039",
+      jobTitle: "Biomedical Technician",
+      jobFamily: "IT Services",
+      status: "Completed",
+      lastUpdated: "April 5, 2025"
+    },
+    {
+      id: 40,
+      jobCode: "10040",
+      jobTitle: "Health Information Manager",
+      jobFamily: "Health Information",
+      status: "In Progress",
+      lastUpdated: "June 18, 2025"
+    },
+    {
+      id: 41,
+      jobCode: "10041",
+      jobTitle: "Cardiac Technician",
+      jobFamily: "Clinical Support",
+      status: "Not Started",
+      lastUpdated: "February 22, 2025"
+    },
+    {
+      id: 42,
+      jobCode: "10042",
+      jobTitle: "Emergency Department Manager",
+      jobFamily: "Leadership",
+      status: "In Progress",
+      lastUpdated: "May 28, 2025"
+    },
+    {
+      id: 43,
+      jobCode: "10043",
+      jobTitle: "Hospice Coordinator",
+      jobFamily: "Behavioral Health",
+      status: "Completed",
+      lastUpdated: "March 12, 2025"
+    },
+    {
+      id: 44,
+      jobCode: "10044",
+      jobTitle: "Sterile Processing Technician",
+      jobFamily: "Clinical Support",
+      status: "In Progress",
+      lastUpdated: "June 20, 2025"
+    },
+    {
+      id: 45,
+      jobCode: "10045",
+      jobTitle: "Sleep Technologist",
+      jobFamily: "Clinical Support",
+      status: "Not Started",
+      lastUpdated: "January 10, 2025"
     }
   ];
 
