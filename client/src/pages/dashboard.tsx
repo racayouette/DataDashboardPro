@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { Header } from "@/components/header";
@@ -10,6 +11,8 @@ import type { DashboardSummary, Transaction, Product } from "@shared/schema";
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [transactionsPage, setTransactionsPage] = useState(1);
+  const [productsPage, setProductsPage] = useState(1);
 
   const {
     data: summaryData,
@@ -20,19 +23,21 @@ export default function Dashboard() {
   });
 
   const {
-    data: transactions,
+    data: transactionsData,
     isLoading: transactionsLoading,
     error: transactionsError,
-  } = useQuery<Transaction[]>({
-    queryKey: ["/api/transactions"],
+  } = useQuery<{ transactions: Transaction[], total: number, totalPages: number, currentPage: number }>({
+    queryKey: ["/api/transactions", transactionsPage],
+    queryFn: () => fetch(`/api/transactions?page=${transactionsPage}&limit=4`).then(res => res.json()),
   });
 
   const {
-    data: products,
+    data: productsData,
     isLoading: productsLoading,
     error: productsError,
-  } = useQuery<Product[]>({
-    queryKey: ["/api/products/top"],
+  } = useQuery<{ products: Product[], total: number, totalPages: number, currentPage: number }>({
+    queryKey: ["/api/products/top", productsPage],
+    queryFn: () => fetch(`/api/products/top?page=${productsPage}&limit=4`).then(res => res.json()),
   });
 
   const refreshDashboard = async () => {

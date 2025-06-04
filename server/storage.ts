@@ -12,8 +12,8 @@ import {
 
 export interface IStorage {
   getDashboardSummary(): Promise<DashboardSummary | undefined>;
-  getRecentTransactions(limit?: number): Promise<Transaction[]>;
-  getTopProducts(limit?: number): Promise<Product[]>;
+  getRecentTransactions(page?: number, limit?: number): Promise<{ transactions: Transaction[], total: number, totalPages: number, currentPage: number }>;
+  getTopProducts(page?: number, limit?: number): Promise<{ products: Product[], total: number, totalPages: number, currentPage: number }>;
   createDashboardSummary(summary: InsertDashboardSummary): Promise<DashboardSummary>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
   createProduct(product: InsertProduct): Promise<Product>;
@@ -81,6 +81,62 @@ export class MemStorage implements IStorage {
         status: "Failed",
         date: new Date("2024-03-12"),
       },
+      {
+        customerName: "Emma Johnson",
+        customerEmail: "emma@example.com",
+        amount: "1875.25",
+        status: "Completed",
+        date: new Date("2024-03-11"),
+      },
+      {
+        customerName: "David Lee",
+        customerEmail: "david@example.com",
+        amount: "950.75",
+        status: "Pending",
+        date: new Date("2024-03-10"),
+      },
+      {
+        customerName: "Jessica Chen",
+        customerEmail: "jessica@example.com",
+        amount: "3450.00",
+        status: "Completed",
+        date: new Date("2024-03-09"),
+      },
+      {
+        customerName: "Robert Taylor",
+        customerEmail: "robert@example.com",
+        amount: "2100.50",
+        status: "Failed",
+        date: new Date("2024-03-08"),
+      },
+      {
+        customerName: "Lisa Wang",
+        customerEmail: "lisa@example.com",
+        amount: "1650.00",
+        status: "Completed",
+        date: new Date("2024-03-07"),
+      },
+      {
+        customerName: "Michael Brown",
+        customerEmail: "michael@example.com",
+        amount: "775.25",
+        status: "Pending",
+        date: new Date("2024-03-06"),
+      },
+      {
+        customerName: "Anna Martinez",
+        customerEmail: "anna@example.com",
+        amount: "2850.75",
+        status: "Completed",
+        date: new Date("2024-03-05"),
+      },
+      {
+        customerName: "James Garcia",
+        customerEmail: "james@example.com",
+        amount: "1425.50",
+        status: "Failed",
+        date: new Date("2024-03-04"),
+      },
     ];
 
     sampleTransactions.forEach(transaction => {
@@ -94,13 +150,6 @@ export class MemStorage implements IStorage {
     // Create products
     const sampleProducts: Omit<Product, 'id'>[] = [
       {
-        name: "MacBook Pro",
-        category: "Electronics",
-        sales: 847,
-        revenue: "42350.00",
-        trend: "+15%",
-      },
-      {
         name: "iPhone 15",
         category: "Mobile",
         sales: 1245,
@@ -108,18 +157,81 @@ export class MemStorage implements IStorage {
         trend: "+22%",
       },
       {
-        name: "AirPods Pro",
-        category: "Audio",
-        sales: 623,
-        revenue: "15575.00",
-        trend: "-5%",
+        name: "MacBook Pro",
+        category: "Electronics",
+        sales: 847,
+        revenue: "42350.00",
+        trend: "+15%",
       },
       {
         name: "iPad Air",
         category: "Tablets",
-        sales: 412,
+        sales: 623,
         revenue: "28840.00",
         trend: "+8%",
+      },
+      {
+        name: "AirPods Pro",
+        category: "Audio",
+        sales: 412,
+        revenue: "15575.00",
+        trend: "-5%",
+      },
+      {
+        name: "Apple Watch",
+        category: "Wearables",
+        sales: 756,
+        revenue: "32890.00",
+        trend: "+18%",
+      },
+      {
+        name: "iMac",
+        category: "Electronics",
+        sales: 298,
+        revenue: "47680.00",
+        trend: "+12%",
+      },
+      {
+        name: "MacBook Air",
+        category: "Electronics",
+        sales: 534,
+        revenue: "58740.00",
+        trend: "+25%",
+      },
+      {
+        name: "iPhone 14",
+        category: "Mobile",
+        sales: 892,
+        revenue: "71360.00",
+        trend: "-8%",
+      },
+      {
+        name: "AirPods Max",
+        category: "Audio",
+        sales: 187,
+        revenue: "10230.00",
+        trend: "+5%",
+      },
+      {
+        name: "Mac Studio",
+        category: "Electronics",
+        sales: 156,
+        revenue: "31200.00",
+        trend: "+32%",
+      },
+      {
+        name: "iPad Pro",
+        category: "Tablets",
+        sales: 445,
+        revenue: "48950.00",
+        trend: "+14%",
+      },
+      {
+        name: "Apple TV",
+        category: "Entertainment",
+        sales: 234,
+        revenue: "34560.00",
+        trend: "-3%",
       },
     ];
 
@@ -136,18 +248,42 @@ export class MemStorage implements IStorage {
     return Array.from(this.dashboardSummaries.values())[0];
   }
 
-  async getRecentTransactions(limit: number = 4): Promise<Transaction[]> {
+  async getRecentTransactions(page: number = 1, limit: number = 4): Promise<{ transactions: Transaction[], total: number, totalPages: number, currentPage: number }> {
     const allTransactions = Array.from(this.transactionsList.values());
-    return allTransactions
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, limit);
+    const sortedTransactions = allTransactions
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    const total = sortedTransactions.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const transactions = sortedTransactions.slice(startIndex, endIndex);
+
+    return {
+      transactions,
+      total,
+      totalPages,
+      currentPage: page
+    };
   }
 
-  async getTopProducts(limit: number = 4): Promise<Product[]> {
+  async getTopProducts(page: number = 1, limit: number = 4): Promise<{ products: Product[], total: number, totalPages: number, currentPage: number }> {
     const allProducts = Array.from(this.productsList.values());
-    return allProducts
-      .sort((a, b) => b.sales - a.sales)
-      .slice(0, limit);
+    const sortedProducts = allProducts
+      .sort((a, b) => b.sales - a.sales);
+    
+    const total = sortedProducts.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const products = sortedProducts.slice(startIndex, endIndex);
+
+    return {
+      products,
+      total,
+      totalPages,
+      currentPage: page
+    };
   }
 
   async createDashboardSummary(insertSummary: InsertDashboardSummary): Promise<DashboardSummary> {

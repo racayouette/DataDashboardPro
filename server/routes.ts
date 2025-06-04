@@ -20,9 +20,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Recent transactions endpoint
   app.get("/api/transactions", async (req, res) => {
     try {
+      const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
-      const transactions = await storage.getRecentTransactions(limit);
-      res.json(transactions);
+      const result = await storage.getRecentTransactions(page, limit);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch transactions" });
     }
@@ -31,9 +32,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Top products endpoint
   app.get("/api/products/top", async (req, res) => {
     try {
+      const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
-      const products = await storage.getTopProducts(limit);
-      res.json(products);
+      const result = await storage.getTopProducts(page, limit);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch top products" });
     }

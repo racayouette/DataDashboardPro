@@ -1,13 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   Laptop, 
   Smartphone, 
   Headphones, 
   Tablet,
   TrendingUp,
-  TrendingDown
+  TrendingDown,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import type { Transaction, Product } from "@shared/schema";
 
@@ -17,9 +20,15 @@ interface DataGridProps {
   data?: Transaction[] | Product[];
   isLoading: boolean;
   type: "transactions" | "products";
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    total: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
-export function DataGrid({ title, subtitle, data, isLoading, type }: DataGridProps) {
+export function DataGrid({ title, subtitle, data, isLoading, type, pagination }: DataGridProps) {
   if (isLoading) {
     return (
       <Card>
@@ -217,6 +226,50 @@ export function DataGrid({ title, subtitle, data, isLoading, type }: DataGridPro
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="text-sm text-gray-600">
+              Showing {((pagination.currentPage - 1) * 4) + 1} to {Math.min(pagination.currentPage * 4, pagination.total)} of {pagination.total} items
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                  <Button
+                    key={page}
+                    variant={page === pagination.currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => pagination.onPageChange(page)}
+                    className="w-8 h-8"
+                  >
+                    {page}
+                  </Button>
+                ))}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
+                disabled={pagination.currentPage === pagination.totalPages}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
