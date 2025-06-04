@@ -52,6 +52,9 @@ export const insertReviewerSchema = createInsertSchema(reviewers).omit({
   id: true,
 });
 
+// Legacy export for backward compatibility - will be removed
+export const insertProductSchema = insertJobFamilySchema;
+
 export type InsertDashboardSummary = z.infer<typeof insertDashboardSummarySchema>;
 export type DashboardSummary = typeof dashboardSummary.$inferSelect;
 

@@ -133,19 +133,34 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                       Date
                     </th>
                   </>
+                ) : type === "jobFamilies" ? (
+                  <>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Sr. No.
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Job Family
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Total Jobs
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Jobs Reviewed
+                    </th>
+                  </>
                 ) : (
                   <>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product
+                      Sr. No.
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Sales
+                      Job Family
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Revenue
+                      Completed
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Trend
+                      In Progress
                     </th>
                   </>
                 )}
@@ -185,44 +200,39 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                       </td>
                     </tr>
                   ))
-                : (data as Product[]).map((product) => {
-                    const Icon = getProductIcon(product.category);
-                    const isPositiveTrend = product.trend.startsWith("+");
-                    return (
-                      <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className={`w-10 h-10 ${getProductIconBg(product.category)} rounded-lg flex items-center justify-center`}>
-                              <Icon className={getProductIconColor(product.category)} />
-                            </div>
-                            <div className="ml-3">
-                              <div className="text-sm font-medium text-gray-900">
-                                {product.name}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {product.sales.toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          ${parseFloat(product.revenue).toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            {isPositiveTrend ? (
-                              <TrendingUp className="text-green-500 text-sm mr-1" />
-                            ) : (
-                              <TrendingDown className="text-red-500 text-sm mr-1" />
-                            )}
-                            <span className={`text-sm font-medium ${isPositiveTrend ? "text-green-600" : "text-red-600"}`}>
-                              {product.trend}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                : type === "jobFamilies"
+                ? (data as JobFamily[]).map((jobFamily, index) => (
+                    <tr key={jobFamily.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {String(index + 1).padStart(2, '0')}.
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {jobFamily.jobFamily}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {jobFamily.totalJobs}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {jobFamily.jobsReviewed}
+                      </td>
+                    </tr>
+                  ))
+                : (data as Reviewer[]).map((reviewer, index) => (
+                    <tr key={reviewer.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {String(index + 1).padStart(2, '0')}.
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {reviewer.jobFamily}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {reviewer.completed}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {reviewer.inProgress}
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
