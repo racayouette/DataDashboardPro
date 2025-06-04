@@ -56,8 +56,8 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       changeColor: "text-green-600",
     },
     {
-      title: "Revenue",
-      value: `$${parseFloat(data.revenue).toLocaleString()}`,
+      title: "Jobs Reviewed",
+      value: parseFloat(data.revenue).toLocaleString(),
       icon: DollarSign,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
