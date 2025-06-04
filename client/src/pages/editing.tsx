@@ -225,19 +225,19 @@ export default function Editing() {
                     {essentialFunctions.map((func, index) => (
                       <div 
                         key={func.id}
-                        className="flex items-start space-x-3 p-3 bg-gray-50 rounded cursor-move hover:bg-gray-100 transition-colors"
+                        className="flex items-start space-x-3 p-2 bg-gray-50 rounded cursor-move hover:bg-gray-100 transition-colors"
                         draggable
                         onDragStart={(e) => handleDragStart(e, index)}
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDrop(e, index)}
                       >
                         <GripVertical className="w-4 h-4 text-gray-400 mt-0.5" />
-                        <div className="flex-1">
-                          <p className={`text-sm ${func.hasEdit ? 'font-medium' : ''}`}>{func.text}</p>
+                        <div className="flex-1 flex items-start justify-between">
+                          <p className={`text-sm ${func.hasEdit ? 'font-medium' : ''} flex-1 pr-2`}>{func.text}</p>
                           {func.hasEdit && (
-                            <div className="flex space-x-2 mt-2">
-                              <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
-                            </div>
+                            <Button size="sm" variant="ghost" className="p-1 h-auto min-w-0">
+                              <Pencil className="w-3 h-3" />
+                            </Button>
                           )}
                         </div>
                       </div>
