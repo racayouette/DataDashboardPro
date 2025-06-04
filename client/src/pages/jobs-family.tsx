@@ -1,9 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, Eye, Trash2, Bell } from "lucide-react";
+import { Search, Filter, Eye, Trash2, Bell, FilterX, ChevronDown } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface JobEntry {
   id: number;
@@ -17,6 +23,7 @@ interface JobEntry {
 export default function JobsFamily() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedJobFamily, setSelectedJobFamily] = useState<string>("");
 
   // Sample data based on the image
   const jobEntries: JobEntry[] = [
@@ -115,11 +122,26 @@ export default function JobsFamily() {
     }
   };
 
-  const filteredEntries = jobEntries.filter(entry =>
-    entry.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    entry.jobFamily.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    entry.jobCode.includes(searchTerm)
-  );
+  // Get unique job families for dropdown
+  const uniqueJobFamilies = Array.from(new Set(jobEntries.map(entry => entry.jobFamily))).sort();
+
+  const filteredEntries = jobEntries.filter(entry => {
+    const matchesSearch = entry.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.jobFamily.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.jobCode.includes(searchTerm);
+    
+    const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
+    
+    return matchesSearch && matchesJobFamily;
+  });
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedJobFamily("");
+    setCurrentPage(1);
+  };
+
+  const hasFilters = searchTerm !== "" || selectedJobFamily !== "";
 
   const totalPages = Math.ceil(filteredEntries.length / 10);
   const startIndex = (currentPage - 1) * 10;
@@ -160,13 +182,36 @@ export default function JobsFamily() {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filters
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={clearFilters}
+                  disabled={!hasFilters}
+                >
+                  {hasFilters ? <FilterX className="w-4 h-4 mr-2" /> : <Filter className="w-4 h-4 mr-2" />}
+                  {hasFilters ? "Clear Filters" : "Filters"}
                 </Button>
-                <Button variant="outline" size="sm">
-                  Select Job Family
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      {selectedJobFamily || "Select Job Family"}
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setSelectedJobFamily("")}>
+                      All Job Families
+                    </DropdownMenuItem>
+                    {uniqueJobFamilies.map((jobFamily) => (
+                      <DropdownMenuItem
+                        key={jobFamily}
+                        onClick={() => setSelectedJobFamily(jobFamily)}
+                      >
+                        {jobFamily}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button variant="outline" size="sm">
                   Select Status
                 </Button>
