@@ -115,7 +115,7 @@ export default function Editing() {
           </div>
 
           {/* Main Content Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Original Job Description */}
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-6 border-b">
