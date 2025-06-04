@@ -52,7 +52,7 @@ export function Sidebar() {
           </div>
           <div className="flex-1">
             <p className="text-white text-sm font-medium">John marks</p>
-            <p className="text-blue-200 text-xs">john@email.com</p>
+
           </div>
         </div>
       </div>
