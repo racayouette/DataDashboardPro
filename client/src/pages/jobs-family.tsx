@@ -280,40 +280,42 @@ export default function JobsFamily() {
                       <ChevronDown className="w-4 h-4 ml-2" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <div className="p-4 space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">From Date:</label>
-                        <CalendarComponent
-                          mode="single"
-                          selected={dateRange.from}
-                          onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
-                          disabled={(date) =>
-                            date > new Date() || (dateRange.to && date > dateRange.to)
-                          }
-                          initialFocus
-                        />
+                  <PopoverContent className="w-auto p-2" align="start">
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-gray-600">From</label>
+                          <CalendarComponent
+                            mode="single"
+                            selected={dateRange.from}
+                            onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
+                            disabled={(date: Date) => 
+                              date > new Date() || Boolean(dateRange.to && date > dateRange.to)
+                            }
+                            className="scale-75 origin-top-left"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-gray-600">To</label>
+                          <CalendarComponent
+                            mode="single"
+                            selected={dateRange.to}
+                            onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
+                            disabled={(date: Date) => 
+                              date > new Date() || Boolean(dateRange.from && date < dateRange.from)
+                            }
+                            className="scale-75 origin-top-left"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">To Date:</label>
-                        <CalendarComponent
-                          mode="single"
-                          selected={dateRange.to}
-                          onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
-                          disabled={(date) =>
-                            date > new Date() || (dateRange.from && date < dateRange.from)
-                          }
-                        />
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setDateRange({ from: undefined, to: undefined })}
-                        >
-                          Clear
-                        </Button>
-                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setDateRange({ from: undefined, to: undefined })}
+                        className="w-full text-xs"
+                      >
+                        Clear Dates
+                      </Button>
                     </div>
                   </PopoverContent>
                 </Popover>
