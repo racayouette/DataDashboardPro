@@ -136,9 +136,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                 ) : type === "jobFamilies" ? (
                   <>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Sr. No.
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Job Family
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -150,9 +147,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                   </>
                 ) : (
                   <>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Sr. No.
-                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Job Family
                     </th>
@@ -201,11 +195,8 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                     </tr>
                   ))
                 : type === "jobFamilies"
-                ? (data as JobFamily[]).map((jobFamily, index) => (
+                ? (data as JobFamily[]).map((jobFamily) => (
                     <tr key={jobFamily.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {String(index + 1).padStart(2, '0')}.
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {jobFamily.jobFamily}
                       </td>
@@ -217,11 +208,8 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                       </td>
                     </tr>
                   ))
-                : (data as Reviewer[]).map((reviewer, index) => (
+                : (data as Reviewer[]).map((reviewer) => (
                     <tr key={reviewer.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {String(index + 1).padStart(2, '0')}.
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {reviewer.jobFamily}
                       </td>
