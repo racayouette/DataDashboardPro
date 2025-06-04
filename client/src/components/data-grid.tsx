@@ -215,8 +215,13 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                   ))
                 : (data as Reviewer[]).map((reviewer) => (
                     <tr key={reviewer.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {reviewer.jobFamily}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a 
+                          href={`/reviewer/${reviewer.id}`}
+                          className="text-blue-600 hover:text-blue-800 underline transition-colors"
+                        >
+                          {reviewer.jobFamily}
+                        </a>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {reviewer.completed}
