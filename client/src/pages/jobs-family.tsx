@@ -118,6 +118,8 @@ export default function JobsFamily() {
       entry.jobCode.toLowerCase().includes(searchLower) ||
       entry.jobTitle.toLowerCase().includes(searchLower) ||
       entry.jobFamily.toLowerCase().includes(searchLower) ||
+      entry.reviewer.toLowerCase().includes(searchLower) ||
+      entry.responsible.toLowerCase().includes(searchLower) ||
       entry.status.toLowerCase().includes(searchLower) ||
       entry.lastUpdated.toLowerCase().includes(searchLower);
     
@@ -182,10 +184,10 @@ export default function JobsFamily() {
                   <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="Search job code, title, family, status, or date..."
+                    placeholder="Search job code, title, family, reviewer, responsible, status, or date..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-80"
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-96"
                   />
                 </div>
               </div>
@@ -305,6 +307,8 @@ export default function JobsFamily() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Code</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Title</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Family</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Reviewer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Responsible</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Last Updated</th>
                   </tr>
@@ -322,6 +326,8 @@ export default function JobsFamily() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobTitle}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.jobFamily}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.reviewer}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.responsible}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
                           {entry.status}
