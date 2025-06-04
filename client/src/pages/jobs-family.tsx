@@ -7,11 +7,9 @@ import { Badge } from "@/components/ui/badge";
 
 interface JobEntry {
   id: number;
-  srNo: string;
   jobCode: string;
   jobTitle: string;
   jobFamily: string;
-  level: number;
   status: "In Progress" | "Not Started" | "Completed";
   lastUpdated: string;
 }
@@ -24,101 +22,81 @@ export default function JobsFamily() {
   const jobEntries: JobEntry[] = [
     {
       id: 1,
-      srNo: "01.",
       jobCode: "10001",
       jobTitle: "Patient Care Technician",
       jobFamily: "Clinical Support",
-      level: 1,
       status: "In Progress",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 2,
-      srNo: "02.",
       jobCode: "10002",
       jobTitle: "Radiology Tech",
       jobFamily: "Clinical Support",
-      level: 2,
       status: "Not Started",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 3,
-      srNo: "03.",
       jobCode: "10003",
       jobTitle: "Billing Specialist",
       jobFamily: "Revenue Cycle",
-      level: 2,
       status: "Completed",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 4,
-      srNo: "04.",
       jobCode: "10004",
       jobTitle: "Financial Analyst",
       jobFamily: "Finance",
-      level: 1,
       status: "In Progress",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 5,
-      srNo: "05.",
       jobCode: "10005",
       jobTitle: "Nurse Practitioner",
       jobFamily: "Clinical Support",
-      level: 3,
       status: "In Progress",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 6,
-      srNo: "06.",
       jobCode: "10006",
       jobTitle: "HR Generalist",
       jobFamily: "Human Resources",
-      level: 2,
       status: "Not Started",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 7,
-      srNo: "07.",
       jobCode: "10007",
       jobTitle: "IT Support Technician",
       jobFamily: "IT Services",
-      level: 1,
       status: "Completed",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 8,
-      srNo: "08.",
       jobCode: "10008",
       jobTitle: "Pharmacy Tech",
       jobFamily: "Pharmacy",
-      level: 2,
       status: "In Progress",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 9,
-      srNo: "09.",
       jobCode: "10009",
       jobTitle: "Lab Assistant",
       jobFamily: "Lab Services",
-      level: 3,
       status: "In Progress",
       lastUpdated: "May 29, 2025"
     },
     {
       id: 10,
-      srNo: "10.",
       jobCode: "10010",
       jobTitle: "Social Worker",
       jobFamily: "Behavioral Health",
-      level: 1,
       status: "Not Started",
       lastUpdated: "May 29, 2025"
     }
@@ -203,11 +181,9 @@ export default function JobsFamily() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Sr. No.</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Code</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Title</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Family</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Level</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Last Updated</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Action</th>
@@ -216,11 +192,9 @@ export default function JobsFamily() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {paginatedEntries.map((entry) => (
                     <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.srNo}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobCode}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobTitle}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.jobFamily}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.level}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
                           {entry.status}
