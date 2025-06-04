@@ -1,4 +1,4 @@
-import { BarChart3, Users, TrendingUp, History, Settings, LayoutDashboard } from "lucide-react";
+import { BarChart3, Users, TrendingUp, History, Settings, LayoutDashboard, Edit3 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export function Sidebar() {
@@ -7,6 +7,7 @@ export function Sidebar() {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/", active: true },
     { icon: Users, label: "Jobs Family", path: "/jobs-family", active: false },
+    { icon: Edit3, label: "Editing", path: "/editing", active: false },
     { icon: TrendingUp, label: "Essential Ranking", path: "/ranking", active: false },
     { icon: History, label: "History", path: "/history", active: false },
     { icon: BarChart3, label: "Progress Tracker", path: "/progress", active: false },
