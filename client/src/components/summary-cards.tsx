@@ -11,7 +11,7 @@ interface SummaryCardsProps {
 export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-4 gap-6 mb-8">
         {[...Array(4)].map((_, i) => (
           <Card key={i} className="p-6">
             <CardContent className="p-0">
@@ -85,7 +85,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-4 gap-6 mb-8">
       {cards.map((card, index) => {
         const Icon = card.icon;
         return (
