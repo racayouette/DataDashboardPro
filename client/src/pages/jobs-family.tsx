@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "wouter";
-import { Search, Filter, Bell, FilterX, ChevronDown, Calendar } from "lucide-react";
+import { useLocation, Link } from "wouter";
+import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -44,12 +44,12 @@ export default function JobsFamily() {
   });
 
   // Sample notifications
-  const notifications = [
+  const [notifications, setNotifications] = useState([
     "Review deadline approaching",
     "New job submitted",
     "Status update required",
     "Feedback pending approval"
-  ];
+  ]);
 
   // Close notifications when clicking outside
   useEffect(() => {
@@ -215,17 +215,34 @@ export default function JobsFamily() {
                       {notifications.map((notification, index) => (
                         <div
                           key={index}
-                          className="p-3 hover:bg-gray-50 border-b border-gray-50 last:border-b-0 cursor-pointer transition-colors"
+                          className="p-3 hover:bg-gray-50 border-b border-gray-50 last:border-b-0 transition-colors"
                         >
-                          <p className="text-sm text-gray-700">{notification}</p>
-                          <p className="text-xs text-gray-400 mt-1">Just now</p>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 cursor-pointer">
+                              <p className="text-sm text-gray-700">{notification}</p>
+                              <p className="text-xs text-gray-400 mt-1">Just now</p>
+                            </div>
+                            <button
+                              className="ml-2 p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-red-500 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setNotifications(prev => prev.filter((_, i) => i !== index));
+                              }}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
                     <div className="p-3 border-t border-gray-100">
-                      <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                      <Link 
+                        href="/notifications"
+                        className="text-xs text-blue-600 hover:text-blue-700 font-medium underline"
+                        onClick={() => setShowNotifications(false)}
+                      >
                         View all notifications
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 )}
