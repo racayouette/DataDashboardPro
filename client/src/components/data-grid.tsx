@@ -200,7 +200,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <a 
                           href={`/job-family/${jobFamily.id}`}
-                          className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                          className="text-blue-600 hover:text-blue-800 underline transition-colors"
                         >
                           {jobFamily.jobFamily}
                         </a>
