@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 import { Search, Filter, Bell, FilterX, ChevronDown, Calendar } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ interface JobEntry {
 }
 
 export default function JobsFamily() {
+  const [, setLocation] = useLocation();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJobFamily, setSelectedJobFamily] = useState<string>("");
@@ -339,7 +341,14 @@ export default function JobsFamily() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {paginatedEntries.map((entry) => (
                     <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobCode}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <button
+                          onClick={() => setLocation("/editing")}
+                          className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+                        >
+                          {entry.jobCode}
+                        </button>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobTitle}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.jobFamily}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
