@@ -34,7 +34,7 @@ export default function JobsFamily() {
       jobTitle: "Patient Care Technician",
       jobFamily: "Clinical Support",
       status: "In Progress",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "June 15, 2025"
     },
     {
       id: 2,
@@ -42,7 +42,7 @@ export default function JobsFamily() {
       jobTitle: "Radiology Tech",
       jobFamily: "Clinical Support",
       status: "Not Started",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "January 8, 2025"
     },
     {
       id: 3,
@@ -50,7 +50,7 @@ export default function JobsFamily() {
       jobTitle: "Billing Specialist",
       jobFamily: "Revenue Cycle",
       status: "Completed",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "March 22, 2025"
     },
     {
       id: 4,
@@ -58,7 +58,7 @@ export default function JobsFamily() {
       jobTitle: "Financial Analyst",
       jobFamily: "Finance",
       status: "In Progress",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "May 10, 2025"
     },
     {
       id: 5,
@@ -66,7 +66,7 @@ export default function JobsFamily() {
       jobTitle: "Nurse Practitioner",
       jobFamily: "Clinical Support",
       status: "In Progress",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "April 18, 2025"
     },
     {
       id: 6,
@@ -74,7 +74,7 @@ export default function JobsFamily() {
       jobTitle: "HR Generalist",
       jobFamily: "Human Resources",
       status: "Not Started",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "February 14, 2025"
     },
     {
       id: 7,
@@ -82,7 +82,7 @@ export default function JobsFamily() {
       jobTitle: "IT Support Technician",
       jobFamily: "IT Services",
       status: "Completed",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "June 3, 2025"
     },
     {
       id: 8,
@@ -90,7 +90,7 @@ export default function JobsFamily() {
       jobTitle: "Pharmacy Tech",
       jobFamily: "Pharmacy",
       status: "In Progress",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "March 5, 2025"
     },
     {
       id: 9,
@@ -98,7 +98,7 @@ export default function JobsFamily() {
       jobTitle: "Lab Assistant",
       jobFamily: "Lab Services",
       status: "In Progress",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "January 30, 2025"
     },
     {
       id: 10,
@@ -106,7 +106,7 @@ export default function JobsFamily() {
       jobTitle: "Social Worker",
       jobFamily: "Behavioral Health",
       status: "Not Started",
-      lastUpdated: "May 29, 2025"
+      lastUpdated: "June 28, 2025"
     }
   ];
 
