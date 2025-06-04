@@ -160,9 +160,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type }: DataGridPro
                             <div className="text-sm font-medium text-gray-900">
                               {transaction.customerName}
                             </div>
-                            <div className="text-sm text-gray-500">
-                              {transaction.customerEmail}
-                            </div>
                           </div>
                         </div>
                       </td>
