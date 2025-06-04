@@ -1,69 +1,26 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, Bell, Save, Edit3, FileText, Plus } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Search, 
+  Bell, 
+  FileText, 
+  Users, 
+  BarChart, 
+  Clock,
+  Undo,
+  RotateCcw,
+  Plus,
+  Copy,
+  Trash,
+  Eye,
+  Edit
+} from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default function Editing() {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Sample job editing data
-  const jobsInEdit = [
-    {
-      id: 1,
-      jobCode: "10001",
-      jobTitle: "Patient Care Technician",
-      jobFamily: "Clinical Support",
-      status: "Draft",
-      lastModified: "June 15, 2025",
-      assignedTo: "Sarah Johnson"
-    },
-    {
-      id: 2,
-      jobCode: "10004",
-      jobTitle: "Financial Analyst",
-      jobFamily: "Finance",
-      status: "Under Review",
-      lastModified: "May 10, 2025",
-      assignedTo: "Michael Chen"
-    },
-    {
-      id: 3,
-      jobCode: "10007",
-      jobTitle: "IT Support Technician",
-      jobFamily: "IT Services",
-      status: "Approved",
-      lastModified: "June 3, 2025",
-      assignedTo: "David Rodriguez"
-    }
-  ];
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "Draft":
-        return "bg-yellow-100 text-yellow-800";
-      case "Under Review":
-        return "bg-blue-100 text-blue-800";
-      case "Approved":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const filteredJobs = jobsInEdit.filter(job =>
-    job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.jobFamily.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.jobCode.includes(searchTerm) ||
-    job.assignedTo.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [activeTab, setActiveTab] = useState("V3");
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -74,9 +31,10 @@ export default function Editing() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
-              <span className="text-gray-500">Editing</span>
+              <span className="text-gray-500">Job Description Review</span>
             </div>
             <div className="flex items-center space-x-4">
+              <Search className="w-5 h-5 text-gray-500" />
               <div className="relative">
                 <Bell className="w-5 h-5 text-gray-500" />
                 <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
@@ -86,125 +44,244 @@ export default function Editing() {
             </div>
           </div>
 
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Jobs in Edit</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">3</div>
-                <p className="text-xs text-muted-foreground">Currently being edited</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Draft Status</CardTitle>
-                <Edit3 className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">1</div>
-                <p className="text-xs text-muted-foreground">Pending completion</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Under Review</CardTitle>
-                <Search className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">1</div>
-                <p className="text-xs text-muted-foreground">Awaiting approval</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Approved</CardTitle>
-                <Save className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">1</div>
-                <p className="text-xs text-muted-foreground">Ready for publishing</p>
-              </CardContent>
-            </Card>
+          {/* Back Button */}
+          <div className="mb-6">
+            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
           </div>
 
-          {/* Controls */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Search job descriptions..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-                  />
+          {/* Job Information Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Job Title</span>
+              </div>
+              <p className="text-blue-600 font-semibold">Patient Care Technician</p>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <Users className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Job Family</span>
+              </div>
+              <p className="text-blue-600 font-semibold">Clinical Support</p>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <BarChart className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Job Level</span>
+              </div>
+              <p className="text-blue-600 font-semibold">1</p>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span className="text-sm font-medium text-gray-600">Status</span>
+              </div>
+              <Badge className="bg-blue-100 text-blue-800">In Progress</Badge>
+            </div>
+          </div>
+
+          {/* Additional Info Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <Edit className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Last Edited By</span>
+              </div>
+              <p className="text-blue-600 font-semibold">Sarah M.</p>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <Clock className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Last Updated</span>
+              </div>
+              <p className="text-blue-600 font-semibold">May 30, 2025</p>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Current Version</span>
+              </div>
+              <p className="text-blue-600 font-semibold">V3</p>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Original Job Description */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-6 border-b">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-5 h-5 text-gray-600" />
+                  <h3 className="text-lg font-semibold">Original Job Description</h3>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <Button variant="default" size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Job Description
-                </Button>
+              <div className="p-6">
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-3">Job Summary</h4>
+                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                    <p className="text-sm">• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports</p>
+                    <p className="text-sm">• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.</p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-3">Essential Functions:</h4>
+                  <div className="space-y-2 text-sm">
+                    <p>1. Monitor Patient Vitals And Report Abnormalities.</p>
+                    <p>2. Assist With Bathing, Feeding, And Toileting.</p>
+                    <p>3. Document Daily Care Activities.</p>
+                    <p>4. Transport Patients Using Wheelchairs And Stretchers.</p>
+                  </div>
+                </div>
+
+                <div className="text-sm text-gray-600 leading-relaxed">
+                  <p>The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.</p>
+                </div>
               </div>
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Code</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Family</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Assigned To</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Last Modified</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredJobs.map((job) => (
-                    <tr key={job.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{job.jobCode}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{job.jobTitle}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.jobFamily}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(job.status)}`}>
-                          {job.status}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.assignedTo}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.lastModified}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            <Edit3 className="w-4 h-4 mr-1" />
-                            Edit
-                          </Button>
+            {/* AI-Generated Job Description */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-6 border-b">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">AI</span>
+                    </div>
+                    <h3 className="text-lg font-semibold">AI-Generated Job Description</h3>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium">Version 3</span>
+                    <span className="text-xs text-gray-500">Last Updated May 30, 2025</span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-3">Job Summary</h4>
+                  <p className="text-sm mb-4">Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.</p>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold">Essential Functions</h4>
+                    <div className="flex space-x-2">
+                      <Button size="sm" variant="ghost">
+                        <Undo className="w-4 h-4" />
+                      </Button>
+                      <Button size="sm" variant="ghost">
+                        <RotateCcw className="w-4 h-4" />
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        Clear Formatting
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
+                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">1. Record Vital Signs And Immediately Escalate Critical Values</p>
+                        <div className="flex space-x-2 mt-2">
+                          <Button size="sm" variant="ghost"><Copy className="w-3 h-3" /></Button>
+                          <Button size="sm" variant="ghost"><Trash className="w-3 h-3" /></Button>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </div>
 
-            {/* Empty State */}
-            {filteredJobs.length === 0 && (
-              <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No job descriptions found</h3>
-                <p className="text-gray-500">Try adjusting your search terms or create a new job description.</p>
+                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
+                      <span className="text-sm font-medium mt-0.5">2.</span>
+                      <p className="text-sm">Aid With Patient Hygiene And Nutritional Needs</p>
+                    </div>
+
+                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
+                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">3. Maintain Patient Care Logs And Coordinate With Nursing Staff</p>
+                        <div className="flex space-x-2 mt-2">
+                          <Button size="sm" variant="ghost"><Copy className="w-3 h-3" /></Button>
+                          <Button size="sm" variant="ghost"><Trash className="w-3 h-3" /></Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
+                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">4. Support Safe Patient Transport Within The Facility</p>
+                        <div className="flex space-x-2 mt-2">
+                          <Button size="sm" variant="ghost"><Copy className="w-3 h-3" /></Button>
+                          <Button size="sm" variant="ghost"><Trash className="w-3 h-3" /></Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button variant="outline" size="sm" className="mt-3">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add New Function
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Compare Versions */}
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-3">Compare Versions</h4>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant={activeTab === "V1" ? "default" : "outline"} 
+                      size="sm"
+                      onClick={() => setActiveTab("V1")}
+                    >
+                      V1
+                    </Button>
+                    <Button 
+                      variant={activeTab === "V2" ? "default" : "outline"} 
+                      size="sm"
+                      onClick={() => setActiveTab("V2")}
+                    >
+                      V2
+                    </Button>
+                    <Button 
+                      variant={activeTab === "V3" ? "default" : "outline"} 
+                      size="sm"
+                      onClick={() => setActiveTab("V3")}
+                    >
+                      V3
+                    </Button>
+                    <Button variant="default" size="sm">
+                      View Differences
+                    </Button>
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-center space-x-4 mt-8">
+            <Button variant="outline" className="bg-red-100 text-red-700 border-red-300 hover:bg-red-200">
+              Reject AI Version
+            </Button>
+            <Button variant="outline" className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200">
+              Save Draft
+              <span className="text-xs ml-2">Autosave Every 5 Min</span>
+            </Button>
+            <Button className="bg-blue-900 text-white hover:bg-blue-800">
+              Submit For HR Review
+            </Button>
+            <Button className="bg-blue-600 text-white hover:bg-blue-700">
+              Accept Changes
+            </Button>
           </div>
         </div>
       </main>
