@@ -14,7 +14,7 @@ export function Sidebar() {
   ];
 
   return (
-    <div className="bg-blue-900 text-white w-64 min-h-screen p-4">
+    <div className="bg-blue-900 text-white w-64 min-h-screen p-4 flex flex-col">
       {/* Logo Section */}
       <div className="mb-8">
         <div className="bg-blue-800 rounded-lg p-4 mb-6">
@@ -24,37 +24,35 @@ export function Sidebar() {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="space-y-2 flex flex-col h-full">
-        <div className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location === item.path;
-            
-            return (
-              <Link key={item.path} href={item.path}>
-                <div className={`flex items-center space-x-3 p-3 rounded-lg transition-colors cursor-pointer ${
-                  isActive 
-                    ? "bg-blue-700 text-white" 
-                    : "text-blue-200 hover:bg-blue-800 hover:text-white"
-                }`}>
-                  <Icon className="w-5 h-5" />
-                  <span className="text-sm font-medium">{item.label}</span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-        
-        {/* User Profile - moved to bottom of navigation */}
-        <div className="mt-auto mb-4">
-          <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors">
-            <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-medium">JM</span>
-            </div>
-            <span className="text-sm font-medium">John marks</span>
-          </div>
-        </div>
+      <nav className="space-y-2 flex-1">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location === item.path;
+          
+          return (
+            <Link key={item.path} href={item.path}>
+              <div className={`flex items-center space-x-3 p-3 rounded-lg transition-colors cursor-pointer ${
+                isActive 
+                  ? "bg-blue-700 text-white" 
+                  : "text-blue-200 hover:bg-blue-800 hover:text-white"
+              }`}>
+                <Icon className="w-5 h-5" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </div>
+            </Link>
+          );
+        })}
       </nav>
+      
+      {/* User Profile - at bottom of sidebar */}
+      <div className="mt-auto">
+        <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors">
+          <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-xs font-medium">JM</span>
+          </div>
+          <span className="text-sm font-medium">John marks</span>
+        </div>
+      </div>
     </div>
   );
 }
