@@ -13,13 +13,48 @@ import {
   Plus,
   Pencil,
   Eye,
-  Edit
+  Edit,
+  GripVertical
 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 
 export default function Editing() {
   const [activeTab, setActiveTab] = useState("V3");
+  const [essentialFunctions, setEssentialFunctions] = useState([
+    { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
+    { id: 2, text: "Aid With Patient Hygiene And Nutritional Needs", hasEdit: false },
+    { id: 3, text: "Maintain Patient Care Logs And Coordinate With Nursing Staff", hasEdit: true },
+    { id: 4, text: "Support Safe Patient Transport Within The Facility", hasEdit: true }
+  ]);
+  const [draggedItem, setDraggedItem] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedItem(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedItem === null) return;
+    
+    const draggedFunction = essentialFunctions[draggedItem];
+    const newFunctions = [...essentialFunctions];
+    
+    // Remove dragged item
+    newFunctions.splice(draggedItem, 1);
+    
+    // Insert at new position
+    newFunctions.splice(dropIndex, 0, draggedFunction);
+    
+    setEssentialFunctions(newFunctions);
+    setDraggedItem(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -187,41 +222,26 @@ export default function Editing() {
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
-                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">Record Vital Signs And Immediately Escalate Critical Values</p>
-                        <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
+                    {essentialFunctions.map((func, index) => (
+                      <div 
+                        key={func.id}
+                        className="flex items-start space-x-3 p-3 bg-gray-50 rounded cursor-move hover:bg-gray-100 transition-colors"
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, index)}
+                      >
+                        <GripVertical className="w-4 h-4 text-gray-400 mt-0.5" />
+                        <div className="flex-1">
+                          <p className={`text-sm ${func.hasEdit ? 'font-medium' : ''}`}>{func.text}</p>
+                          {func.hasEdit && (
+                            <div className="flex space-x-2 mt-2">
+                              <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
-                      <div className="flex-1">
-                        <p className="text-sm">Aid With Patient Hygiene And Nutritional Needs</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
-                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">Maintain Patient Care Logs And Coordinate With Nursing Staff</p>
-                        <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
-                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">Support Safe Patient Transport Within The Facility</p>
-                        <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
-                        </div>
-                      </div>
-                    </div>
+                    ))}
 
                     <Button variant="outline" size="sm" className="mt-3">
                       <Plus className="w-4 h-4 mr-2" />
