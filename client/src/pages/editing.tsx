@@ -11,8 +11,7 @@ import {
   Undo,
   RotateCcw,
   Plus,
-  Copy,
-  Trash,
+  Pencil,
   Eye,
   Edit
 } from "lucide-react";
@@ -191,37 +190,35 @@ export default function Editing() {
                     <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
                       <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium">1. Record Vital Signs And Immediately Escalate Critical Values</p>
+                        <p className="text-sm font-medium">Record Vital Signs And Immediately Escalate Critical Values</p>
                         <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="ghost"><Copy className="w-3 h-3" /></Button>
-                          <Button size="sm" variant="ghost"><Trash className="w-3 h-3" /></Button>
+                          <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
-                      <span className="text-sm font-medium mt-0.5">2.</span>
-                      <p className="text-sm">Aid With Patient Hygiene And Nutritional Needs</p>
-                    </div>
-
-                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
-                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium">3. Maintain Patient Care Logs And Coordinate With Nursing Staff</p>
-                        <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="ghost"><Copy className="w-3 h-3" /></Button>
-                          <Button size="sm" variant="ghost"><Trash className="w-3 h-3" /></Button>
-                        </div>
+                        <p className="text-sm">Aid With Patient Hygiene And Nutritional Needs</p>
                       </div>
                     </div>
 
                     <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
                       <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium">4. Support Safe Patient Transport Within The Facility</p>
+                        <p className="text-sm font-medium">Maintain Patient Care Logs And Coordinate With Nursing Staff</p>
                         <div className="flex space-x-2 mt-2">
-                          <Button size="sm" variant="ghost"><Copy className="w-3 h-3" /></Button>
-                          <Button size="sm" variant="ghost"><Trash className="w-3 h-3" /></Button>
+                          <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded">
+                      <Plus className="w-4 h-4 text-blue-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Support Safe Patient Transport Within The Facility</p>
+                        <div className="flex space-x-2 mt-2">
+                          <Button size="sm" variant="ghost"><Pencil className="w-3 h-3" /></Button>
                         </div>
                       </div>
                     </div>
