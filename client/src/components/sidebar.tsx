@@ -1,4 +1,4 @@
-import { BarChart3, Users, TrendingUp, History, Settings, LayoutDashboard, Edit3 } from "lucide-react";
+import { BarChart3, Users, TrendingUp, History, Settings, LayoutDashboard, Edit3, UserCheck } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export function Sidebar() {
@@ -8,10 +8,11 @@ export function Sidebar() {
     { icon: LayoutDashboard, label: "Dashboard", path: "/", active: true },
     { icon: Users, label: "Jobs Family", path: "/jobs-family", active: false },
     { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
-    { icon: TrendingUp, label: "Essential Ranking", path: "/ranking", active: false },
-    { icon: History, label: "History", path: "/history", active: false },
-    { icon: BarChart3, label: "Progress Tracker", path: "/progress", active: false },
-    { icon: Settings, label: "Settings", path: "/settings", active: false },
+    { icon: UserCheck, label: "Users", path: "/users", active: false },
+    { icon: TrendingUp, label: "Essential Ranking", path: "/ranking", active: false, disabled: true },
+    { icon: History, label: "History", path: "/history", active: false, disabled: true },
+    { icon: BarChart3, label: "Progress Tracker", path: "/progress", active: false, disabled: true },
+    { icon: Settings, label: "Settings", path: "/settings", active: false, disabled: true },
   ];
 
   return (
@@ -29,6 +30,16 @@ export function Sidebar() {
         {menuItems.filter(item => !item.hidden).map((item) => {
           const Icon = item.icon;
           const isActive = location === item.path;
+          const isDisabled = item.disabled;
+          
+          if (isDisabled) {
+            return (
+              <div key={item.path} className="flex items-center space-x-3 p-3 rounded-lg text-blue-300 opacity-50 cursor-not-allowed">
+                <Icon className="w-5 h-5" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </div>
+            );
+          }
           
           return (
             <Link key={item.path} href={item.path}>
