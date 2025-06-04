@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, Bell, FilterX, ChevronDown } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown, Calendar } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,6 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
 
 interface JobEntry {
   id: number;
@@ -25,6 +32,10 @@ export default function JobsFamily() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedJobFamily, setSelectedJobFamily] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: undefined,
+    to: undefined,
+  });
 
   // Sample data based on the image
   const jobEntries: JobEntry[] = [
@@ -123,6 +134,11 @@ export default function JobsFamily() {
     }
   };
 
+  // Helper function to parse date strings
+  const parseDate = (dateString: string): Date => {
+    return new Date(dateString);
+  };
+
   // Get unique job families and statuses for dropdowns
   const uniqueJobFamilies = Array.from(new Set(jobEntries.map(entry => entry.jobFamily))).sort();
   const uniqueStatuses = Array.from(new Set(jobEntries.map(entry => entry.status))).sort();
@@ -135,17 +151,30 @@ export default function JobsFamily() {
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
     const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
     
-    return matchesSearch && matchesJobFamily && matchesStatus;
+    // Date range filtering
+    let matchesDateRange = true;
+    if (dateRange.from || dateRange.to) {
+      const entryDate = parseDate(entry.lastUpdated);
+      if (dateRange.from && entryDate < dateRange.from) {
+        matchesDateRange = false;
+      }
+      if (dateRange.to && entryDate > dateRange.to) {
+        matchesDateRange = false;
+      }
+    }
+    
+    return matchesSearch && matchesJobFamily && matchesStatus && matchesDateRange;
   });
 
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedJobFamily("");
     setSelectedStatus("");
+    setDateRange({ from: undefined, to: undefined });
     setCurrentPage(1);
   };
 
-  const hasFilters = searchTerm !== "" || selectedJobFamily !== "" || selectedStatus !== "";
+  const hasFilters = searchTerm !== "" || selectedJobFamily !== "" || selectedStatus !== "" || dateRange.from || dateRange.to;
 
   const totalPages = Math.ceil(filteredEntries.length / 10);
   const startIndex = (currentPage - 1) * 10;
@@ -237,9 +266,57 @@ export default function JobsFamily() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" size="sm">
-                  Last Updated
-                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      {dateRange.from || dateRange.to ? (
+                        <>
+                          {dateRange.from ? format(dateRange.from, "MMM dd") : "Start"} - {dateRange.to ? format(dateRange.to, "MMM dd") : "End"}
+                        </>
+                      ) : (
+                        "Last Updated"
+                      )}
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <div className="p-4 space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">From Date:</label>
+                        <CalendarComponent
+                          mode="single"
+                          selected={dateRange.from}
+                          onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
+                          disabled={(date) =>
+                            date > new Date() || (dateRange.to && date > dateRange.to)
+                          }
+                          initialFocus
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">To Date:</label>
+                        <CalendarComponent
+                          mode="single"
+                          selected={dateRange.to}
+                          onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
+                          disabled={(date) =>
+                            date > new Date() || (dateRange.from && date < dateRange.from)
+                          }
+                        />
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setDateRange({ from: undefined, to: undefined })}
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 
