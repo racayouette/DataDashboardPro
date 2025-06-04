@@ -227,10 +227,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
         
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4 pt-4 border-t">
-            <div className="text-sm text-gray-600">
-              Showing {((pagination.currentPage - 1) * 4) + 1} to {Math.min(pagination.currentPage * 4, pagination.total)} of {pagination.total} items
-            </div>
+          <div className="flex items-center justify-end mt-4 pt-4 border-t">
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
