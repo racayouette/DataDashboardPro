@@ -156,100 +156,68 @@ export class MemStorage implements IStorage {
       this.transactionsList.set(fullTransaction.id, fullTransaction);
     });
 
-    // Create products
-    const sampleProducts: Omit<Product, 'id'>[] = [
+    // Create job families
+    const sampleJobFamilies: Omit<JobFamily, 'id'>[] = [
       {
-        name: "iPhone 15",
-        category: "Mobile",
-        sales: 1245,
-        revenue: "98760.00",
-        trend: "+22%",
+        jobFamily: "Clinical Support",
+        totalJobs: 185,
+        jobsReviewed: 145,
       },
       {
-        name: "MacBook Pro",
-        category: "Electronics",
-        sales: 847,
-        revenue: "42350.00",
-        trend: "+15%",
+        jobFamily: "Finance",
+        totalJobs: 95,
+        jobsReviewed: 60,
       },
       {
-        name: "iPad Air",
-        category: "Tablets",
-        sales: 623,
-        revenue: "28840.00",
-        trend: "+8%",
+        jobFamily: "IT Services",
+        totalJobs: 60,
+        jobsReviewed: 45,
       },
       {
-        name: "AirPods Pro",
-        category: "Audio",
-        sales: 412,
-        revenue: "15575.00",
-        trend: "-5%",
-      },
-      {
-        name: "Apple Watch",
-        category: "Wearables",
-        sales: 756,
-        revenue: "32890.00",
-        trend: "+18%",
-      },
-      {
-        name: "iMac",
-        category: "Electronics",
-        sales: 298,
-        revenue: "47680.00",
-        trend: "+12%",
-      },
-      {
-        name: "MacBook Air",
-        category: "Electronics",
-        sales: 534,
-        revenue: "58740.00",
-        trend: "+25%",
-      },
-      {
-        name: "iPhone 14",
-        category: "Mobile",
-        sales: 892,
-        revenue: "71360.00",
-        trend: "-8%",
-      },
-      {
-        name: "AirPods Max",
-        category: "Audio",
-        sales: 187,
-        revenue: "10230.00",
-        trend: "+5%",
-      },
-      {
-        name: "Mac Studio",
-        category: "Electronics",
-        sales: 156,
-        revenue: "31200.00",
-        trend: "+32%",
-      },
-      {
-        name: "iPad Pro",
-        category: "Tablets",
-        sales: 445,
-        revenue: "48950.00",
-        trend: "+14%",
-      },
-      {
-        name: "Apple TV",
-        category: "Entertainment",
-        sales: 234,
-        revenue: "34560.00",
-        trend: "-3%",
+        jobFamily: "Lab Services",
+        totalJobs: 40,
+        jobsReviewed: 10,
       },
     ];
 
-    sampleProducts.forEach(product => {
-      const fullProduct: Product = {
-        ...product,
-        id: this.currentProductId++,
+    sampleJobFamilies.forEach(jobFamily => {
+      const fullJobFamily: JobFamily = {
+        ...jobFamily,
+        id: this.currentJobFamilyId++,
       };
-      this.productsList.set(fullProduct.id, fullProduct);
+      this.jobFamiliesList.set(fullJobFamily.id, fullJobFamily);
+    });
+
+    // Create reviewers
+    const sampleReviewers: Omit<Reviewer, 'id'>[] = [
+      {
+        jobFamily: "Sarah M.",
+        completed: 82,
+        inProgress: 5,
+      },
+      {
+        jobFamily: "Kelly J.",
+        completed: 67,
+        inProgress: 12,
+      },
+      {
+        jobFamily: "Robert K.",
+        completed: 12,
+        inProgress: 18,
+      },
+      {
+        jobFamily: "Adam L.",
+        completed: 33,
+        inProgress: 4,
+      },
+    ];
+
+    sampleReviewers.forEach(reviewer => {
+      const fullReviewer: Reviewer = {
+        ...reviewer,
+        id: this.currentReviewerId++,
+      };
+      this.reviewersList.set(fullReviewer.id, fullReviewer);
     });
   }
 
@@ -276,19 +244,38 @@ export class MemStorage implements IStorage {
     };
   }
 
-  async getTopProducts(page: number = 1, limit: number = 4): Promise<{ products: Product[], total: number, totalPages: number, currentPage: number }> {
-    const allProducts = Array.from(this.productsList.values());
-    const sortedProducts = allProducts
-      .sort((a, b) => b.sales - a.sales);
+  async getJobFamilies(page: number = 1, limit: number = 4): Promise<{ jobFamilies: JobFamily[], total: number, totalPages: number, currentPage: number }> {
+    const allJobFamilies = Array.from(this.jobFamiliesList.values());
+    const sortedJobFamilies = allJobFamilies
+      .sort((a, b) => b.totalJobs - a.totalJobs);
     
-    const total = sortedProducts.length;
+    const total = sortedJobFamilies.length;
     const totalPages = Math.ceil(total / limit);
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const products = sortedProducts.slice(startIndex, endIndex);
+    const jobFamilies = sortedJobFamilies.slice(startIndex, endIndex);
 
     return {
-      products,
+      jobFamilies,
+      total,
+      totalPages,
+      currentPage: page
+    };
+  }
+
+  async getReviewers(page: number = 1, limit: number = 4): Promise<{ reviewers: Reviewer[], total: number, totalPages: number, currentPage: number }> {
+    const allReviewers = Array.from(this.reviewersList.values());
+    const sortedReviewers = allReviewers
+      .sort((a, b) => b.completed - a.completed);
+    
+    const total = sortedReviewers.length;
+    const totalPages = Math.ceil(total / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const reviewers = sortedReviewers.slice(startIndex, endIndex);
+
+    return {
+      reviewers,
       total,
       totalPages,
       currentPage: page
@@ -317,11 +304,18 @@ export class MemStorage implements IStorage {
     return transaction;
   }
 
-  async createProduct(insertProduct: InsertProduct): Promise<Product> {
-    const id = this.currentProductId++;
-    const product: Product = { ...insertProduct, id };
-    this.productsList.set(id, product);
-    return product;
+  async createJobFamily(insertJobFamily: InsertJobFamily): Promise<JobFamily> {
+    const id = this.currentJobFamilyId++;
+    const jobFamily: JobFamily = { ...insertJobFamily, id };
+    this.jobFamiliesList.set(id, jobFamily);
+    return jobFamily;
+  }
+
+  async createReviewer(insertReviewer: InsertReviewer): Promise<Reviewer> {
+    const id = this.currentReviewerId++;
+    const reviewer: Reviewer = { ...insertReviewer, id };
+    this.reviewersList.set(id, reviewer);
+    return reviewer;
   }
 }
 

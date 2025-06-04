@@ -6,13 +6,14 @@ import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
 import { useToast } from "@/hooks/use-toast";
-import type { DashboardSummary, Transaction, Product } from "@shared/schema";
+import type { DashboardSummary, Transaction, JobFamily, Reviewer } from "@shared/schema";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [transactionsPage, setTransactionsPage] = useState(1);
-  const [productsPage, setProductsPage] = useState(1);
+  const [jobFamiliesPage, setJobFamiliesPage] = useState(1);
+  const [reviewersPage, setReviewersPage] = useState(1);
 
   const {
     data: summaryData,
@@ -32,12 +33,21 @@ export default function Dashboard() {
   });
 
   const {
-    data: productsData,
-    isLoading: productsLoading,
-    error: productsError,
-  } = useQuery<{ products: Product[], total: number, totalPages: number, currentPage: number }>({
-    queryKey: ["/api/products/top", productsPage],
-    queryFn: () => fetch(`/api/products/top?page=${productsPage}&limit=4`).then(res => res.json()),
+    data: jobFamiliesData,
+    isLoading: jobFamiliesLoading,
+    error: jobFamiliesError,
+  } = useQuery<{ jobFamilies: JobFamily[], total: number, totalPages: number, currentPage: number }>({
+    queryKey: ["/api/job-families", jobFamiliesPage],
+    queryFn: () => fetch(`/api/job-families?page=${jobFamiliesPage}&limit=4`).then(res => res.json()),
+  });
+
+  const {
+    data: reviewersData,
+    isLoading: reviewersLoading,
+    error: reviewersError,
+  } = useQuery<{ reviewers: Reviewer[], total: number, totalPages: number, currentPage: number }>({
+    queryKey: ["/api/reviewers", reviewersPage],
+    queryFn: () => fetch(`/api/reviewers?page=${reviewersPage}&limit=4`).then(res => res.json()),
   });
 
   const refreshDashboard = async () => {
@@ -45,7 +55,8 @@ export default function Dashboard() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["/api/dashboard/summary"] }),
         queryClient.invalidateQueries({ queryKey: ["/api/transactions", transactionsPage] }),
-        queryClient.invalidateQueries({ queryKey: ["/api/products/top", productsPage] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/job-families", jobFamiliesPage] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/reviewers", reviewersPage] }),
       ]);
       toast({
         title: "Dashboard refreshed",
@@ -61,8 +72,8 @@ export default function Dashboard() {
   };
 
   // Show error messages
-  if (summaryError || transactionsError || productsError) {
-    const errorMessage = summaryError?.message || transactionsError?.message || productsError?.message;
+  if (summaryError || transactionsError || jobFamiliesError || reviewersError) {
+    const errorMessage = summaryError?.message || transactionsError?.message || jobFamiliesError?.message || reviewersError?.message;
     toast({
       title: "Error loading data",
       description: errorMessage || "Failed to load dashboard data.",
@@ -108,14 +119,14 @@ export default function Dashboard() {
           <DataGrid
             title="Job Family"
             subtitle=""
-            data={productsData?.products}
-            isLoading={productsLoading}
-            type="products"
-            pagination={productsData ? {
-              currentPage: productsData.currentPage,
-              totalPages: productsData.totalPages,
-              total: productsData.total,
-              onPageChange: setProductsPage
+            data={jobFamiliesData?.jobFamilies}
+            isLoading={jobFamiliesLoading}
+            type="jobFamilies"
+            pagination={jobFamiliesData ? {
+              currentPage: jobFamiliesData.currentPage,
+              totalPages: jobFamiliesData.totalPages,
+              total: jobFamiliesData.total,
+              onPageChange: setJobFamiliesPage
             } : undefined}
           />
 
@@ -123,14 +134,14 @@ export default function Dashboard() {
           <DataGrid
             title="Reviewer"
             subtitle=""
-            data={transactionsData?.transactions}
-            isLoading={transactionsLoading}
-            type="transactions"
-            pagination={transactionsData ? {
-              currentPage: transactionsData.currentPage,
-              totalPages: transactionsData.totalPages,
-              total: transactionsData.total,
-              onPageChange: setTransactionsPage
+            data={reviewersData?.reviewers}
+            isLoading={reviewersLoading}
+            type="reviewers"
+            pagination={reviewersData ? {
+              currentPage: reviewersData.currentPage,
+              totalPages: reviewersData.totalPages,
+              total: reviewersData.total,
+              onPageChange: setReviewersPage
             } : undefined}
           />
         </div>

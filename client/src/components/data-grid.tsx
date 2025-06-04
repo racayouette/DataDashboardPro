@@ -12,14 +12,14 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import type { Transaction, Product } from "@shared/schema";
+import type { Transaction, JobFamily, Reviewer } from "@shared/schema";
 
 interface DataGridProps {
   title: string;
   subtitle: string;
-  data?: Transaction[] | Product[];
+  data?: Transaction[] | JobFamily[] | Reviewer[];
   isLoading: boolean;
-  type: "transactions" | "products";
+  type: "transactions" | "jobFamilies" | "reviewers";
   pagination?: {
     currentPage: number;
     totalPages: number;

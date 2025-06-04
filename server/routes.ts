@@ -29,15 +29,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Top products endpoint
-  app.get("/api/products/top", async (req, res) => {
+  // Job families endpoint
+  app.get("/api/job-families", async (req, res) => {
     try {
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
-      const result = await storage.getTopProducts(page, limit);
+      const result = await storage.getJobFamilies(page, limit);
       res.json(result);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch top products" });
+      res.status(500).json({ message: "Failed to fetch job families" });
+    }
+  });
+
+  // Reviewers endpoint
+  app.get("/api/reviewers", async (req, res) => {
+    try {
+      const page = req.query.page ? parseInt(req.query.page as string) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
+      const result = await storage.getReviewers(page, limit);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reviewers" });
     }
   });
 
@@ -52,14 +64,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create product endpoint (for future use)
-  app.post("/api/products", async (req, res) => {
+  // Create job family endpoint (for future use)
+  app.post("/api/job-families", async (req, res) => {
     try {
-      const validatedData = insertProductSchema.parse(req.body);
-      const product = await storage.createProduct(validatedData);
-      res.status(201).json(product);
+      const validatedData = insertJobFamilySchema.parse(req.body);
+      const jobFamily = await storage.createJobFamily(validatedData);
+      res.status(201).json(jobFamily);
     } catch (error) {
-      res.status(400).json({ message: "Invalid product data" });
+      res.status(400).json({ message: "Invalid job family data" });
+    }
+  });
+
+  // Create reviewer endpoint (for future use)
+  app.post("/api/reviewers", async (req, res) => {
+    try {
+      const validatedData = insertReviewerSchema.parse(req.body);
+      const reviewer = await storage.createReviewer(validatedData);
+      res.status(201).json(reviewer);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid reviewer data" });
     }
   });
 
