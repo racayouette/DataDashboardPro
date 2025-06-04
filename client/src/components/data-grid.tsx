@@ -148,7 +148,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                 ) : (
                   <>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Job Family
+                      Reviewer
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Completed
