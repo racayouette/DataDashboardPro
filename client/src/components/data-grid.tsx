@@ -197,8 +197,13 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                 : type === "jobFamilies"
                 ? (data as JobFamily[]).map((jobFamily) => (
                     <tr key={jobFamily.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {jobFamily.jobFamily}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a 
+                          href={`/job-family/${jobFamily.id}`}
+                          className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                        >
+                          {jobFamily.jobFamily}
+                        </a>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {jobFamily.totalJobs}
