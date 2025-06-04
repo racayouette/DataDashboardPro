@@ -7,7 +7,7 @@ export function Sidebar() {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/", active: true },
     { icon: Users, label: "Jobs Family", path: "/jobs-family", active: false },
-    { icon: Edit3, label: "Editing", path: "/editing", active: false },
+    { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
     { icon: TrendingUp, label: "Essential Ranking", path: "/ranking", active: false },
     { icon: History, label: "History", path: "/history", active: false },
     { icon: BarChart3, label: "Progress Tracker", path: "/progress", active: false },
@@ -26,7 +26,7 @@ export function Sidebar() {
 
       {/* Navigation Menu */}
       <nav className="space-y-2 flex-1">
-        {menuItems.map((item) => {
+        {menuItems.filter(item => !item.hidden).map((item) => {
           const Icon = item.icon;
           const isActive = location === item.path;
           
