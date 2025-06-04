@@ -47,7 +47,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
 
   const cards = [
     {
-      title: "Total Users",
+      title: "Total Job Descriptions",
       value: data.totalUsers.toLocaleString(),
       icon: Users,
       iconBg: "bg-blue-100",
