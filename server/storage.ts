@@ -178,6 +178,36 @@ export class MemStorage implements IStorage {
         totalJobs: 40,
         jobsReviewed: 10,
       },
+      {
+        jobFamily: "Human Resources",
+        totalJobs: 75,
+        jobsReviewed: 55,
+      },
+      {
+        jobFamily: "Operations",
+        totalJobs: 120,
+        jobsReviewed: 85,
+      },
+      {
+        jobFamily: "Marketing",
+        totalJobs: 45,
+        jobsReviewed: 30,
+      },
+      {
+        jobFamily: "Research & Development",
+        totalJobs: 80,
+        jobsReviewed: 65,
+      },
+      {
+        jobFamily: "Quality Assurance",
+        totalJobs: 35,
+        jobsReviewed: 25,
+      },
+      {
+        jobFamily: "Customer Service",
+        totalJobs: 90,
+        jobsReviewed: 70,
+      },
     ];
 
     sampleJobFamilies.forEach(jobFamily => {
@@ -209,6 +239,36 @@ export class MemStorage implements IStorage {
         jobFamily: "Adam L.",
         completed: 33,
         inProgress: 4,
+      },
+      {
+        jobFamily: "Jennifer W.",
+        completed: 45,
+        inProgress: 8,
+      },
+      {
+        jobFamily: "Michael R.",
+        completed: 38,
+        inProgress: 15,
+      },
+      {
+        jobFamily: "Linda T.",
+        completed: 56,
+        inProgress: 6,
+      },
+      {
+        jobFamily: "David P.",
+        completed: 29,
+        inProgress: 11,
+      },
+      {
+        jobFamily: "Emma S.",
+        completed: 41,
+        inProgress: 9,
+      },
+      {
+        jobFamily: "Chris H.",
+        completed: 52,
+        inProgress: 7,
       },
     ];
 
