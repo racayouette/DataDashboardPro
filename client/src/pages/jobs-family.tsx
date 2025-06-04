@@ -657,22 +657,36 @@ export default function JobsFamily() {
                 >
                   &lt;
                 </Button>
-                <Button
-                  variant={currentPage === 1 ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setCurrentPage(1)}
-                >
-                  01
-                </Button>
-                {totalPages > 1 && (
-                  <Button
-                    variant={currentPage === 2 ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(2)}
-                  >
-                    02
-                  </Button>
-                )}
+                
+                {/* Dynamic cycling page buttons */}
+                {(() => {
+                  const getVisiblePages = () => {
+                    if (totalPages <= 2) {
+                      return Array.from({ length: totalPages }, (_, i) => i + 1);
+                    }
+                    
+                    // Always show 2 buttons, positioned based on current page
+                    if (currentPage === 1) {
+                      return [1, 2];
+                    } else if (currentPage === totalPages) {
+                      return [totalPages - 1, totalPages];
+                    } else {
+                      return [currentPage, currentPage + 1];
+                    }
+                  };
+                  
+                  return getVisiblePages().map((pageNum) => (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum.toString().padStart(2, '0')}
+                    </Button>
+                  ));
+                })()}
+                
                 <Button
                   variant="outline"
                   size="sm"
