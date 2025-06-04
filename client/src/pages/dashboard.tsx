@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Search, Bell } from "lucide-react";
+import { RefreshCw, Search, Bell, X } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [transactionsPage, setTransactionsPage] = useState(1);
   const [jobFamiliesPage, setJobFamiliesPage] = useState(1);
   const [reviewersPage, setReviewersPage] = useState(1);
+  const [selectedJobFamily, setSelectedJobFamily] = useState<JobFamily | null>(null);
 
   const {
     data: summaryData,
@@ -49,6 +50,29 @@ export default function Dashboard() {
     queryKey: ["/api/reviewers", reviewersPage],
     queryFn: () => fetch(`/api/reviewers?page=${reviewersPage}&limit=4`).then(res => res.json()),
   });
+
+  const handleJobFamilyClick = (jobFamily: JobFamily) => {
+    setSelectedJobFamily(jobFamily);
+  };
+
+  const clearFilter = () => {
+    setSelectedJobFamily(null);
+  };
+
+  const getFilteredSummary = (): DashboardSummary | undefined => {
+    if (!summaryData || !selectedJobFamily) return summaryData;
+    
+    // Calculate filtered totals based on selected job family
+    const filteredSummary: DashboardSummary = {
+      ...summaryData,
+      totalUsers: selectedJobFamily.totalJobs,
+      revenue: (selectedJobFamily.jobsReviewed * 4500).toString(), // Approximate value per job
+      orders: selectedJobFamily.totalJobs - selectedJobFamily.jobsReviewed, // In progress jobs
+      growthRate: ((selectedJobFamily.jobsReviewed / selectedJobFamily.totalJobs) * 100).toFixed(1) + "%"
+    };
+    
+    return filteredSummary;
+  };
 
   const refreshDashboard = async () => {
     try {
@@ -110,8 +134,28 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Filter indicator and clear button */}
+        {selectedJobFamily && (
+          <div className="mb-6 flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-blue-900">
+                Filtered by: {selectedJobFamily.jobFamily}
+              </span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={clearFilter}
+              className="text-blue-700 border-blue-300 hover:bg-blue-100"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Clear Filter
+            </Button>
+          </div>
+        )}
+
         {/* Summary Cards */}
-        <SummaryCards data={summaryData} isLoading={summaryLoading} />
+        <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
 
         {/* Data Grids Section */}
         <div className="grid grid-cols-2 gap-8">
@@ -122,6 +166,7 @@ export default function Dashboard() {
             data={jobFamiliesData?.jobFamilies}
             isLoading={jobFamiliesLoading}
             type="jobFamilies"
+            onJobFamilyClick={handleJobFamilyClick}
             pagination={jobFamiliesData ? {
               currentPage: jobFamiliesData.currentPage,
               totalPages: jobFamiliesData.totalPages,

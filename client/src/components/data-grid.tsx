@@ -26,9 +26,10 @@ interface DataGridProps {
     total: number;
     onPageChange: (page: number) => void;
   };
+  onJobFamilyClick?: (jobFamily: JobFamily) => void;
 }
 
-export function DataGrid({ title, subtitle, data, isLoading, type, pagination }: DataGridProps) {
+export function DataGrid({ title, subtitle, data, isLoading, type, pagination, onJobFamilyClick }: DataGridProps) {
   if (isLoading) {
     return (
       <Card>
@@ -196,14 +197,15 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination }:
                   ))
                 : type === "jobFamilies"
                 ? (data as JobFamily[]).map((jobFamily) => (
-                    <tr key={jobFamily.id} className="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      key={jobFamily.id} 
+                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={() => onJobFamilyClick?.(jobFamily)}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a 
-                          href={`/job-family/${jobFamily.id}`}
-                          className="text-blue-600 hover:text-blue-800 underline transition-colors"
-                        >
+                        <span className="text-blue-600 hover:text-blue-800 underline transition-colors">
                           {jobFamily.jobFamily}
-                        </a>
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {jobFamily.totalJobs}
