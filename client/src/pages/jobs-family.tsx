@@ -192,9 +192,11 @@ export default function JobsFamily() {
               <span className="text-gray-500">Job Family</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Bell className="w-5 h-5 text-gray-500" />
-              <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">1</span>
+              <div className="relative">
+                <Bell className="w-5 h-5 text-gray-500" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold leading-none">1</span>
+                </div>
               </div>
             </div>
           </div>
