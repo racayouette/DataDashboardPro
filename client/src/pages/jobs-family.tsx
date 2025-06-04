@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, Eye, Trash2, Bell, FilterX, ChevronDown } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -231,7 +231,6 @@ export default function JobsFamily() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Family</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Last Updated</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Action</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -246,12 +245,6 @@ export default function JobsFamily() {
                         </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.lastUpdated}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        <div className="flex space-x-2">
-                          <Eye className="w-4 h-4 cursor-pointer hover:text-gray-600" />
-                          <Trash2 className="w-4 h-4 cursor-pointer hover:text-red-600" />
-                        </div>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
