@@ -426,9 +426,13 @@ export default function JobsFamily() {
   const uniqueStatuses = Array.from(new Set(jobEntries.map(entry => entry.status))).sort();
 
   const filteredEntries = jobEntries.filter(entry => {
-    const matchesSearch = entry.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.jobFamily.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.jobCode.includes(searchTerm);
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = searchTerm === "" || 
+      entry.jobCode.toLowerCase().includes(searchLower) ||
+      entry.jobTitle.toLowerCase().includes(searchLower) ||
+      entry.jobFamily.toLowerCase().includes(searchLower) ||
+      entry.status.toLowerCase().includes(searchLower) ||
+      entry.lastUpdated.toLowerCase().includes(searchLower);
     
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
     const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
@@ -491,10 +495,10 @@ export default function JobsFamily() {
                   <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search job code, title, family, status, or date..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-80"
                   />
                 </div>
               </div>
