@@ -82,7 +82,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       iconColor: "text-green-600",
       change: `${inProgressPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Reviewed",
+      statusText: "Pending",
     },
     {
       title: "Not Started",
