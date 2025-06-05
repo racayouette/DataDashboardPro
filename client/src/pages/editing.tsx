@@ -492,7 +492,7 @@ export default function Editing() {
                     <h3 className="text-lg font-semibold">AI-Generated Job Description</h3>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">Version 3</span>
+                    <span className="text-sm font-medium">Version {activeTab.replace('V', '')}</span>
                     <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
                   </div>
                 </div>
