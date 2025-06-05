@@ -52,7 +52,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       icon: Briefcase,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
-      change: "+12.5%",
+      change: "12.5%",
       changeColor: "text-green-600",
     },
     {
@@ -61,7 +61,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       icon: Eye,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
-      change: "+8.2%",
+      change: "8.2%",
       changeColor: "text-green-600",
     },
     {
@@ -69,9 +69,9 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       value: data.orders.toLocaleString(),
       icon: TrendingUp,
       iconBg: "bg-purple-100",
-      iconColor: "text-purple-600",
-      change: "-2.1%",
-      changeColor: "text-red-600",
+      iconColor: "text-green-600",
+      change: "2.1%",
+      changeColor: "text-green-600",
     },
     {
       title: "Not Started",
@@ -79,7 +79,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       icon: XCircle,
       iconBg: "bg-orange-100",
       iconColor: "text-orange-600",
-      change: "+5.4%",
+      change: "5.4%",
       changeColor: "text-green-600",
     },
   ];
