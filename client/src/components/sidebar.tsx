@@ -13,7 +13,7 @@ export function Sidebar() {
     { icon: TrendingUp, label: "Essential Ranking", path: "/ranking", active: false, disabled: true },
     { icon: History, label: "History", path: "/history", active: false, disabled: true },
     { icon: BarChart3, label: "Progress Tracker", path: "/progress", active: false, disabled: true },
-    { icon: Settings, label: "Settings", path: "/settings", active: false, disabled: true },
+    { icon: Settings, label: "Settings", path: "/settings", active: false },
   ];
 
   return (
