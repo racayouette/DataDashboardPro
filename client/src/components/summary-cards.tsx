@@ -91,12 +91,12 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
         return (
           <Card key={index} className="p-6 hover:shadow-md transition-shadow">
             <CardContent className="p-0">
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{card.value}</p>
                 </div>
-                <div className="w-12 h-12 flex items-center justify-center">
+                <div className="w-12 h-12 flex items-center justify-center mt-1">
                   <Icon className={`${card.iconColor} text-xl`} />
                 </div>
               </div>
