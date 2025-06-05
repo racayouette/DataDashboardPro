@@ -102,7 +102,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
               </div>
               <div className="mt-4 flex items-center">
                 <span className={`${card.changeColor} text-sm font-medium`}>{card.change}</span>
-                <span className="text-gray-500 text-sm ml-2">complete</span>
+                <span className="text-gray-500 text-sm ml-2">Complete</span>
               </div>
             </CardContent>
           </Card>
