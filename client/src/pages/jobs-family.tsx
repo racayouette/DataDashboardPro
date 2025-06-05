@@ -114,9 +114,9 @@ export default function JobsFamily() {
     { id: 40, jobCode: "10040", jobTitle: "Health Information Manager", jobFamily: "Health Information", reviewer: "Chris Harrison", responsible: "Sean Alexander", status: "In Progress", lastUpdated: "June 18, 2025" },
     { id: 41, jobCode: "10041", jobTitle: "Cardiac Technician", jobFamily: "Clinical Support", reviewer: "Sarah Mitchell", responsible: "Crystal Watson", status: "Not Started", lastUpdated: "February 22, 2025" },
     { id: 42, jobCode: "10042", jobTitle: "Emergency Department Manager", jobFamily: "Leadership", reviewer: "Kelly Johnson", responsible: "Jonathan Kelly", status: "In Progress", lastUpdated: "May 28, 2025" },
-    { id: 43, jobCode: "10043", jobTitle: "Hospice Coordinator", jobFamily: "Behavioral Health", reviewer: "Gloria Barnes", responsible: "Tyler Sanders", status: "Completed", lastUpdated: "March 12, 2025" },
-    { id: 44, jobCode: "10044", jobTitle: "Sterile Processing Technician", jobFamily: "Clinical Support", reviewer: "Eugene Ross", responsible: "Lauren Wood", status: "In Progress", lastUpdated: "June 20, 2025" },
-    { id: 45, jobCode: "10045", jobTitle: "Sleep Technologist", jobFamily: "Clinical Support", reviewer: "Virginia Long", responsible: "Adam Bennett", status: "Not Started", lastUpdated: "January 10, 2025" }
+    { id: 43, jobCode: "10043", jobTitle: "Hospice Coordinator", jobFamily: "Behavioral Health", reviewer: "Robert Kennedy", responsible: "Tyler Sanders", status: "Completed", lastUpdated: "March 12, 2025" },
+    { id: 44, jobCode: "10044", jobTitle: "Sterile Processing Technician", jobFamily: "Clinical Support", reviewer: "Adam Lambert", responsible: "Lauren Wood", status: "In Progress", lastUpdated: "June 20, 2025" },
+    { id: 45, jobCode: "10045", jobTitle: "Sleep Technologist", jobFamily: "Clinical Support", reviewer: "Jennifer Williams", responsible: "Adam Bennett", status: "Not Started", lastUpdated: "January 10, 2025" }
   ];
 
   const getStatusBadge = (status: string) => {
