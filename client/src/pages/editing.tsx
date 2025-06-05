@@ -20,7 +20,8 @@ import {
   Pencil,
   Eye,
   Edit,
-  GripVertical
+  GripVertical,
+  Trash2
 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -52,15 +53,13 @@ export default function Editing() {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  // Fetch notifications
-  const { data: notificationsData } = useQuery({
-    queryKey: ['/api/notifications'],
-    queryFn: async () => {
-      const response = await fetch('/api/notifications?limit=5');
-      if (!response.ok) throw new Error('Failed to fetch notifications');
-      return response.json();
-    },
-  });
+  // Sample notifications matching dashboard
+  const [notifications, setNotifications] = useState([
+    "Review deadline approaching",
+    "New job submitted", 
+    "Status update required",
+    "Feedback pending approval"
+  ]);
 
   // Close notifications dropdown when clicking outside
   useEffect(() => {
@@ -321,52 +320,47 @@ export default function Editing() {
                   onClick={() => setShowNotifications(!showNotifications)}
                 >
                   <Bell className="w-6 h-6 text-gray-600" />
-                  {notificationsData?.notifications?.length > 0 && (
+                  {notifications.length > 0 && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">
-                        {notificationsData.notifications.length}
-                      </span>
+                      <span className="text-white text-xs font-bold">{notifications.length}</span>
                     </span>
                   )}
                 </button>
 
-                {/* Notifications Dropdown */}
+                {/* Notification Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-50">
-                    <div className="p-4 border-b">
-                      <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="p-3 border-b border-gray-100">
+                      <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
                     </div>
-                    <div className="max-h-80 overflow-y-auto">
-                      {notificationsData?.notifications?.length > 0 ? (
-                        notificationsData.notifications.map((notification: any) => (
-                          <div key={notification.id} className="p-4 border-b hover:bg-gray-50">
-                            <div className="flex items-start space-x-3">
-                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                              <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-900">
-                                  {notification.title}
-                                </p>
-                                <p className="text-sm text-gray-600 mt-1">
-                                  {notification.message}
-                                </p>
-                                <p className="text-xs text-gray-500 mt-2">
-                                  {new Date(notification.createdAt).toLocaleDateString()}
-                                </p>
-                              </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.map((notification, index) => (
+                        <div
+                          key={index}
+                          className="p-3 hover:bg-gray-50 border-b border-gray-50 last:border-b-0 transition-colors"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 cursor-pointer">
+                              <p className="text-sm text-gray-700">{notification}</p>
+                              <p className="text-xs text-gray-400 mt-1">Just now</p>
                             </div>
+                            <button
+                              className="ml-2 p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-red-500 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setNotifications(prev => prev.filter((_, i) => i !== index));
+                              }}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
-                        ))
-                      ) : (
-                        <div className="p-8 text-center text-gray-500">
-                          <Bell className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                          <p>No notifications</p>
                         </div>
-                      )}
+                      ))}
                     </div>
-                    <div className="p-4 border-t bg-gray-50 rounded-b-lg">
+                    <div className="p-3 border-t border-gray-100">
                       <Link 
-                        href="/notifications" 
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        href="/notifications"
+                        className="text-xs text-blue-600 hover:text-blue-700 font-medium underline"
                         onClick={() => setShowNotifications(false)}
                       >
                         View all notifications
