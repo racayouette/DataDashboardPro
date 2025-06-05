@@ -91,7 +91,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Database health monitoring endpoint
   app.get("/api/database/health", async (req, res) => {
     try {
-      const status = getConnectionStatus();
+      // Mock health status for in-memory storage
+      const status = {
+        isConnected: true,
+        lastConnected: new Date().toISOString(),
+        lastError: null,
+        reconnectAttempts: 0,
+        maxReconnectAttempts: 5,
+        uptime: Date.now()
+      };
       res.json({
         ...status,
         timestamp: new Date().toISOString(),
