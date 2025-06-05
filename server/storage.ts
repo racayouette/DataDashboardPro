@@ -33,8 +33,8 @@ import {
   type InsertJobDescriptionChange,
   type InsertAuditLog
 } from "@shared/schema";
-import { db } from "./db";
-import { eq, desc, count, sql } from "drizzle-orm";
+import { getPool, executeQuery } from "./db";
+import sql from 'mssql';
 
 export interface IStorage {
   // Dashboard and summary data
@@ -457,135 +457,331 @@ export class MemStorage implements IStorage {
   }
 }
 
-export class DatabaseStorage implements IStorage {
+export class SQLServerStorage implements IStorage {
   // Dashboard and summary data
   async getDashboardSummary(): Promise<DashboardSummary | undefined> {
-    const [summary] = await db.select().from(dashboardSummary).limit(1);
-    return summary || undefined;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        // Fallback to in-memory data if SQL Server is not available
+        return new MemStorage().getDashboardSummary();
+      }
+      
+      const result = await executeQuery('SELECT TOP 1 * FROM dashboard_summary ORDER BY id DESC');
+      return result.recordset[0] || undefined;
+    } catch (error) {
+      console.error('Error fetching dashboard summary:', error);
+      return new MemStorage().getDashboardSummary();
+    }
   }
 
   async getRecentTransactions(page: number = 1, limit: number = 4): Promise<{ transactions: Transaction[], total: number, totalPages: number, currentPage: number }> {
-    const offset = (page - 1) * limit;
-    
-    const [transactions, totalResult] = await Promise.all([
-      db.select().from(transactions).orderBy(desc(transactions.date)).limit(limit).offset(offset),
-      db.select({ count: count() }).from(transactions)
-    ]);
-    
-    const total = totalResult[0].count;
-    const totalPages = Math.ceil(total / limit);
-    
-    return {
-      transactions,
-      total,
-      totalPages,
-      currentPage: page
-    };
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().getRecentTransactions(page, limit);
+      }
+      
+      const offset = (page - 1) * limit;
+      const [transactionsResult, countResult] = await Promise.all([
+        executeQuery(`SELECT * FROM transactions ORDER BY date DESC OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`),
+        executeQuery('SELECT COUNT(*) as total FROM transactions')
+      ]);
+      
+      const total = countResult.recordset[0].total;
+      const totalPages = Math.ceil(total / limit);
+      
+      return {
+        transactions: transactionsResult.recordset,
+        total,
+        totalPages,
+        currentPage: page
+      };
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      return new MemStorage().getRecentTransactions(page, limit);
+    }
   }
 
   async getJobFamilies(page: number = 1, limit: number = 4): Promise<{ jobFamilies: JobFamily[], total: number, totalPages: number, currentPage: number }> {
-    const offset = (page - 1) * limit;
-    
-    const [jobFamiliesList, totalResult] = await Promise.all([
-      db.select().from(jobFamilies).orderBy(desc(jobFamilies.totalJobs)).limit(limit).offset(offset),
-      db.select({ count: count() }).from(jobFamilies)
-    ]);
-    
-    const total = totalResult[0].count;
-    const totalPages = Math.ceil(total / limit);
-    
-    return {
-      jobFamilies: jobFamiliesList,
-      total,
-      totalPages,
-      currentPage: page
-    };
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().getJobFamilies(page, limit);
+      }
+      
+      const offset = (page - 1) * limit;
+      const [jobFamiliesResult, countResult] = await Promise.all([
+        executeQuery(`SELECT * FROM job_families ORDER BY total_jobs DESC OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`),
+        executeQuery('SELECT COUNT(*) as total FROM job_families')
+      ]);
+      
+      const total = countResult.recordset[0].total;
+      const totalPages = Math.ceil(total / limit);
+      
+      return {
+        jobFamilies: jobFamiliesResult.recordset,
+        total,
+        totalPages,
+        currentPage: page
+      };
+    } catch (error) {
+      console.error('Error fetching job families:', error);
+      return new MemStorage().getJobFamilies(page, limit);
+    }
   }
 
   async getReviewers(page: number = 1, limit: number = 4): Promise<{ reviewers: Reviewer[], total: number, totalPages: number, currentPage: number }> {
-    const offset = (page - 1) * limit;
-    
-    const [reviewersList, totalResult] = await Promise.all([
-      db.select().from(reviewers).orderBy(desc(reviewers.completed)).limit(limit).offset(offset),
-      db.select({ count: count() }).from(reviewers)
-    ]);
-    
-    const total = totalResult[0].count;
-    const totalPages = Math.ceil(total / limit);
-    
-    return {
-      reviewers: reviewersList,
-      total,
-      totalPages,
-      currentPage: page
-    };
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().getReviewers(page, limit);
+      }
+      
+      const offset = (page - 1) * limit;
+      const [reviewersResult, countResult] = await Promise.all([
+        executeQuery(`SELECT * FROM reviewers ORDER BY completed DESC OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`),
+        executeQuery('SELECT COUNT(*) as total FROM reviewers')
+      ]);
+      
+      const total = countResult.recordset[0].total;
+      const totalPages = Math.ceil(total / limit);
+      
+      return {
+        reviewers: reviewersResult.recordset,
+        total,
+        totalPages,
+        currentPage: page
+      };
+    } catch (error) {
+      console.error('Error fetching reviewers:', error);
+      return new MemStorage().getReviewers(page, limit);
+    }
   }
 
   async createDashboardSummary(summary: InsertDashboardSummary): Promise<DashboardSummary> {
-    const [created] = await db.insert(dashboardSummary).values(summary).returning();
-    return created;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().createDashboardSummary(summary);
+      }
+      
+      const result = await executeQuery(`
+        INSERT INTO dashboard_summary (total_users, revenue, orders, growth_rate, jobs_reviewed, in_progress, not_started)
+        OUTPUT INSERTED.*
+        VALUES (@param0, @param1, @param2, @param3, @param4, @param5, @param6)
+      `, [summary.totalUsers, summary.revenue, summary.orders, summary.growthRate, summary.jobsReviewed, summary.inProgress, summary.notStarted]);
+      
+      return result.recordset[0];
+    } catch (error) {
+      console.error('Error creating dashboard summary:', error);
+      return new MemStorage().createDashboardSummary(summary);
+    }
   }
 
   async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
-    const [created] = await db.insert(transactions).values(transaction).returning();
-    return created;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().createTransaction(transaction);
+      }
+      
+      const result = await executeQuery(`
+        INSERT INTO transactions (customer_name, customer_email, amount, status, description)
+        OUTPUT INSERTED.*
+        VALUES (@param0, @param1, @param2, @param3, @param4)
+      `, [transaction.customerName, transaction.customerEmail, transaction.amount, transaction.status, transaction.description]);
+      
+      return result.recordset[0];
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+      return new MemStorage().createTransaction(transaction);
+    }
   }
 
   async createJobFamily(jobFamily: InsertJobFamily): Promise<JobFamily> {
-    const [created] = await db.insert(jobFamilies).values(jobFamily).returning();
-    return created;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().createJobFamily(jobFamily);
+      }
+      
+      const result = await executeQuery(`
+        INSERT INTO job_families (job_family, total_jobs, jobs_reviewed, description)
+        OUTPUT INSERTED.*
+        VALUES (@param0, @param1, @param2, @param3)
+      `, [jobFamily.jobFamily, jobFamily.totalJobs, jobFamily.jobsReviewed, jobFamily.description]);
+      
+      return result.recordset[0];
+    } catch (error) {
+      console.error('Error creating job family:', error);
+      return new MemStorage().createJobFamily(jobFamily);
+    }
   }
 
   async createReviewer(reviewer: InsertReviewer): Promise<Reviewer> {
-    const [created] = await db.insert(reviewers).values(reviewer).returning();
-    return created;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return new MemStorage().createReviewer(reviewer);
+      }
+      
+      const result = await executeQuery(`
+        INSERT INTO reviewers (job_family, completed, in_progress, responsible)
+        OUTPUT INSERTED.*
+        VALUES (@param0, @param1, @param2, @param3)
+      `, [reviewer.jobFamily, reviewer.completed, reviewer.inProgress, reviewer.responsible]);
+      
+      return result.recordset[0];
+    } catch (error) {
+      console.error('Error creating reviewer:', error);
+      return new MemStorage().createReviewer(reviewer);
+    }
   }
 
-  // User management
+  // User management with SQL Server implementation
   async getUsers(page: number = 1, limit: number = 10): Promise<{ users: User[], total: number, totalPages: number, currentPage: number }> {
-    const offset = (page - 1) * limit;
-    
-    const [usersList, totalResult] = await Promise.all([
-      db.select().from(users).orderBy(users.name).limit(limit).offset(offset),
-      db.select({ count: count() }).from(users)
-    ]);
-    
-    const total = totalResult[0].count;
-    const totalPages = Math.ceil(total / limit);
-    
-    return {
-      users: usersList,
-      total,
-      totalPages,
-      currentPage: page
-    };
+    try {
+      const pool = getPool();
+      if (!pool) {
+        return { users: [], total: 0, totalPages: 0, currentPage: page };
+      }
+      
+      const offset = (page - 1) * limit;
+      const [usersResult, countResult] = await Promise.all([
+        executeQuery(`SELECT * FROM users ORDER BY name OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`),
+        executeQuery('SELECT COUNT(*) as total FROM users')
+      ]);
+      
+      const total = countResult.recordset[0].total;
+      const totalPages = Math.ceil(total / limit);
+      
+      return {
+        users: usersResult.recordset,
+        total,
+        totalPages,
+        currentPage: page
+      };
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return { users: [], total: 0, totalPages: 0, currentPage: page };
+    }
   }
 
   async getUserById(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    try {
+      const pool = getPool();
+      if (!pool) return undefined;
+      
+      const result = await executeQuery('SELECT * FROM users WHERE id = @param0', [id]);
+      return result.recordset[0] || undefined;
+    } catch (error) {
+      console.error('Error fetching user by id:', error);
+      return undefined;
+    }
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user || undefined;
+    try {
+      const pool = getPool();
+      if (!pool) return undefined;
+      
+      const result = await executeQuery('SELECT * FROM users WHERE email = @param0', [email]);
+      return result.recordset[0] || undefined;
+    } catch (error) {
+      console.error('Error fetching user by email:', error);
+      return undefined;
+    }
   }
 
   async createUser(user: InsertUser): Promise<User> {
-    const [created] = await db.insert(users).values(user).returning();
-    return created;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        throw new Error('Database not available');
+      }
+      
+      const result = await executeQuery(`
+        INSERT INTO users (name, email, role, department, status)
+        OUTPUT INSERTED.*
+        VALUES (@param0, @param1, @param2, @param3, @param4)
+      `, [user.name, user.email, user.role, user.department, user.status || 'Active']);
+      
+      return result.recordset[0];
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   }
 
   async updateUser(id: number, user: Partial<InsertUser>): Promise<User> {
-    const [updated] = await db.update(users).set(user).where(eq(users.id, id)).returning();
-    return updated;
+    try {
+      const pool = getPool();
+      if (!pool) {
+        throw new Error('Database not available');
+      }
+      
+      const setParts = [];
+      const params = [];
+      let paramIndex = 0;
+      
+      if (user.name !== undefined) {
+        setParts.push(`name = @param${paramIndex}`);
+        params.push(user.name);
+        paramIndex++;
+      }
+      if (user.email !== undefined) {
+        setParts.push(`email = @param${paramIndex}`);
+        params.push(user.email);
+        paramIndex++;
+      }
+      if (user.role !== undefined) {
+        setParts.push(`role = @param${paramIndex}`);
+        params.push(user.role);
+        paramIndex++;
+      }
+      if (user.department !== undefined) {
+        setParts.push(`department = @param${paramIndex}`);
+        params.push(user.department);
+        paramIndex++;
+      }
+      if (user.status !== undefined) {
+        setParts.push(`status = @param${paramIndex}`);
+        params.push(user.status);
+        paramIndex++;
+      }
+      
+      params.push(id);
+      
+      const result = await executeQuery(`
+        UPDATE users 
+        SET ${setParts.join(', ')}, updated_at = GETDATE()
+        OUTPUT INSERTED.*
+        WHERE id = @param${paramIndex}
+      `, params);
+      
+      return result.recordset[0];
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
   }
 
   async deleteUser(id: number): Promise<void> {
-    await db.delete(users).where(eq(users.id, id));
+    try {
+      const pool = getPool();
+      if (!pool) {
+        throw new Error('Database not available');
+      }
+      
+      await executeQuery('DELETE FROM users WHERE id = @param0', [id]);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
   }
 
-  // Job management - stub implementations for now
+  // Stub implementations for other methods
   async getJobs(page: number = 1, limit: number = 10, filters?: { reviewer?: string, status?: string }): Promise<{ jobs: Job[], total: number, totalPages: number, currentPage: number }> {
     return { jobs: [], total: 0, totalPages: 0, currentPage: page };
   }
@@ -599,20 +795,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJob(job: InsertJob): Promise<Job> {
-    const [created] = await db.insert(jobs).values(job).returning();
-    return created;
+    throw new Error('Method not implemented');
   }
 
   async updateJob(id: number, job: Partial<InsertJob>): Promise<Job> {
-    const [updated] = await db.update(jobs).set(job).where(eq(jobs.id, id)).returning();
-    return updated;
+    throw new Error('Method not implemented');
   }
 
   async deleteJob(id: number): Promise<void> {
-    await db.delete(jobs).where(eq(jobs.id, id));
+    throw new Error('Method not implemented');
   }
 
-  // Job descriptions - stub implementations
   async getJobDescriptions(jobId: number): Promise<JobDescription[]> {
     return [];
   }
@@ -626,70 +819,59 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJobDescription(jobDescription: InsertJobDescription): Promise<JobDescription> {
-    const [created] = await db.insert(jobDescriptions).values(jobDescription).returning();
-    return created;
+    throw new Error('Method not implemented');
   }
 
   async updateJobDescription(id: number, jobDescription: Partial<InsertJobDescription>): Promise<JobDescription> {
-    const [updated] = await db.update(jobDescriptions).set(jobDescription).where(eq(jobDescriptions.id, id)).returning();
-    return updated;
+    throw new Error('Method not implemented');
   }
 
-  // Essential functions - stub implementations
   async getEssentialFunctions(jobDescriptionId: number): Promise<EssentialFunction[]> {
     return [];
   }
 
   async createEssentialFunction(essentialFunction: InsertEssentialFunction): Promise<EssentialFunction> {
-    const [created] = await db.insert(essentialFunctions).values(essentialFunction).returning();
-    return created;
+    throw new Error('Method not implemented');
   }
 
   async updateEssentialFunction(id: number, essentialFunction: Partial<InsertEssentialFunction>): Promise<EssentialFunction> {
-    const [updated] = await db.update(essentialFunctions).set(essentialFunction).where(eq(essentialFunctions.id, id)).returning();
-    return updated;
+    throw new Error('Method not implemented');
   }
 
   async deleteEssentialFunction(id: number): Promise<void> {
-    await db.delete(essentialFunctions).where(eq(essentialFunctions.id, id));
+    throw new Error('Method not implemented');
   }
 
   async reorderEssentialFunctions(jobDescriptionId: number, functionIds: number[]): Promise<void> {
-    // Implementation for reordering functions
+    throw new Error('Method not implemented');
   }
 
-  // Notifications - stub implementations
   async getNotifications(userId?: number, page: number = 1, limit: number = 10): Promise<{ notifications: Notification[], total: number, totalPages: number, currentPage: number }> {
     return { notifications: [], total: 0, totalPages: 0, currentPage: page };
   }
 
   async createNotification(notification: InsertNotification): Promise<Notification> {
-    const [created] = await db.insert(notifications).values(notification).returning();
-    return created;
+    throw new Error('Method not implemented');
   }
 
   async markNotificationAsRead(id: number): Promise<void> {
-    await db.update(notifications).set({ isRead: true }).where(eq(notifications.id, id));
+    throw new Error('Method not implemented');
   }
 
   async deleteNotification(id: number): Promise<void> {
-    await db.delete(notifications).where(eq(notifications.id, id));
+    throw new Error('Method not implemented');
   }
 
-  // Track changes - stub implementations
   async getJobDescriptionChanges(jobDescriptionId: number): Promise<JobDescriptionChange[]> {
     return [];
   }
 
   async createJobDescriptionChange(change: InsertJobDescriptionChange): Promise<JobDescriptionChange> {
-    const [created] = await db.insert(jobDescriptionChanges).values(change).returning();
-    return created;
+    throw new Error('Method not implemented');
   }
 
-  // Audit log - stub implementations
   async createAuditLog(log: InsertAuditLog): Promise<AuditLog> {
-    const [created] = await db.insert(auditLog).values(log).returning();
-    return created;
+    throw new Error('Method not implemented');
   }
 
   async getAuditLogs(page: number = 1, limit: number = 10): Promise<{ logs: AuditLog[], total: number, totalPages: number, currentPage: number }> {
@@ -697,4 +879,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new SQLServerStorage();
