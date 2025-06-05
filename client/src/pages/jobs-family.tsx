@@ -399,13 +399,69 @@ export default function JobsFamily() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Code</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Job Family</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Reviewer</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Responsible</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Last Updated</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("jobCode")}
+                      >
+                        <span>Job Code</span>
+                        {getSortIcon("jobCode")}
+                      </button>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("jobTitle")}
+                      >
+                        <span>Job Title</span>
+                        {getSortIcon("jobTitle")}
+                      </button>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("jobFamily")}
+                      >
+                        <span>Job Family</span>
+                        {getSortIcon("jobFamily")}
+                      </button>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("reviewer")}
+                      >
+                        <span>Reviewer</span>
+                        {getSortIcon("reviewer")}
+                      </button>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("responsible")}
+                      >
+                        <span>Responsible</span>
+                        {getSortIcon("responsible")}
+                      </button>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("status")}
+                      >
+                        <span>Status</span>
+                        {getSortIcon("status")}
+                      </button>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("lastUpdated")}
+                      >
+                        <span>Last Updated</span>
+                        {getSortIcon("lastUpdated")}
+                      </button>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">

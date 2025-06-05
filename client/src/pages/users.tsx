@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Edit3, Trash2, Bell, UserCheck, X } from "lucide-react";
+import { Search, Plus, Edit3, Trash2, Bell, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Link } from "wouter";
 
 interface User {
@@ -30,6 +30,8 @@ export default function Users() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [sortBy, setSortBy] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [newUser, setNewUser] = useState<Partial<User>>({
     name: "",
     email: "",
@@ -150,6 +152,48 @@ export default function Users() {
     const matchesStatus = statusFilter === "all" || user.status === statusFilter;
     
     return matchesSearch && matchesRole && matchesStatus;
+  }).sort((a, b) => {
+    if (!sortBy) return 0;
+    
+    let aValue: string | Date = "";
+    let bValue: string | Date = "";
+    
+    switch (sortBy) {
+      case "name":
+        aValue = a.name;
+        bValue = b.name;
+        break;
+      case "email":
+        aValue = a.email;
+        bValue = b.email;
+        break;
+      case "role":
+        aValue = a.role;
+        bValue = b.role;
+        break;
+      case "department":
+        aValue = a.department;
+        bValue = b.department;
+        break;
+      case "status":
+        aValue = a.status;
+        bValue = b.status;
+        break;
+      case "lastLogin":
+        aValue = new Date(a.lastLogin);
+        bValue = new Date(b.lastLogin);
+        break;
+      default:
+        return 0;
+    }
+    
+    if (aValue instanceof Date && bValue instanceof Date) {
+      const comparison = aValue.getTime() - bValue.getTime();
+      return sortOrder === "asc" ? comparison : -comparison;
+    } else {
+      const comparison = (aValue as string).localeCompare(bValue as string);
+      return sortOrder === "asc" ? comparison : -comparison;
+    }
   });
 
   const handleAddUser = () => {
@@ -201,10 +245,26 @@ export default function Users() {
     setUserToDelete(null);
   };
 
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortOrder("asc");
+    }
+  };
+
+  const getSortIcon = (column: string) => {
+    if (sortBy !== column) return <ArrowUpDown className="w-4 h-4" />;
+    return sortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
+  };
+
   const clearAllFilters = () => {
     setSearchTerm("");
     setRoleFilter("all");
     setStatusFilter("all");
+    setSortBy("");
+    setSortOrder("asc");
   };
 
   const hasActiveFilters = searchTerm !== "" || roleFilter !== "all" || statusFilter !== "all";
@@ -371,19 +431,49 @@ export default function Users() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      User
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("name")}
+                      >
+                        <span>User</span>
+                        {getSortIcon("name")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Role
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("role")}
+                      >
+                        <span>Role</span>
+                        {getSortIcon("role")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Department
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("department")}
+                      >
+                        <span>Department</span>
+                        {getSortIcon("department")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Status
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("status")}
+                      >
+                        <span>Status</span>
+                        {getSortIcon("status")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Last Login
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("lastLogin")}
+                      >
+                        <span>Last Login</span>
+                        {getSortIcon("lastLogin")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Actions
