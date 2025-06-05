@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema } from "@shared/schema";
-import { getConnectionStatus } from "./db";
+// Database connection status removed - using in-memory storage
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard summary endpoint
@@ -245,26 +245,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   wss.on('connection', (ws: WebSocket) => {
     console.log('New WebSocket connection established for health monitoring');
     
+    // Mock health status for in-memory storage
+    const getHealthStatus = () => ({
+      isConnected: true,
+      lastConnected: new Date().toISOString(),
+      lastError: null,
+      reconnectAttempts: 0,
+      maxReconnectAttempts: 5,
+      uptime: Date.now(),
+      timestamp: new Date().toISOString()
+    });
+    
     // Send initial status
-    const initialStatus = getConnectionStatus();
+    const initialStatus = getHealthStatus();
     ws.send(JSON.stringify({
       type: 'health_status',
-      data: {
-        ...initialStatus,
-        timestamp: new Date().toISOString()
-      }
+      data: initialStatus
     }));
     
     // Set up periodic status updates
     const statusInterval = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN) {
-        const currentStatus = getConnectionStatus();
+        const currentStatus = getHealthStatus();
         ws.send(JSON.stringify({
           type: 'health_status',
-          data: {
-            ...currentStatus,
-            timestamp: new Date().toISOString()
-          }
+          data: currentStatus
         }));
       }
     }, 5000); // Send updates every 5 seconds
@@ -282,13 +287,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         if (data.type === 'request_status') {
-          const status = getConnectionStatus();
+          const status = getHealthStatus();
           ws.send(JSON.stringify({
             type: 'health_status',
-            data: {
-              ...status,
-              timestamp: new Date().toISOString()
-            }
+            data: status
           }));
         }
       } catch (error) {
