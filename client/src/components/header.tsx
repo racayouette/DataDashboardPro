@@ -1,4 +1,4 @@
-import { ChartLine, Bell } from "lucide-react";
+import { LayoutDashboard, Bell } from "lucide-react";
 
 export function Header() {
   return (
@@ -7,7 +7,7 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ChartLine className="text-primary text-2xl" />
+              <LayoutDashboard className="text-primary text-2xl" />
             </div>
             <div className="ml-4">
               <h1 className="text-xl font-semibold text-gray-900">Notifications</h1>
