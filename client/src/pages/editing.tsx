@@ -40,7 +40,7 @@ export default function Editing() {
   const [jobSummary, setJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
   const [originalJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
   const [isEditingJobSummary, setIsEditingJobSummary] = useState(false);
-  const [trackChangesMode, setTrackChangesMode] = useState(false);
+  const [trackChangesMode, setTrackChangesMode] = useState(true);
   const [changes, setChanges] = useState<Array<{type: 'delete' | 'insert', text: string, position: number}>>([]);
   const [showAddFunctionModal, setShowAddFunctionModal] = useState(false);
   const [newFunctionText, setNewFunctionText] = useState("");
@@ -495,14 +495,21 @@ export default function Editing() {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Job Summary</h4>
                     <div className="flex items-center space-x-2">
-                      <Button 
-                        size="sm" 
-                        variant={trackChangesMode ? "default" : "outline"}
-                        onClick={() => setTrackChangesMode(!trackChangesMode)}
-                        className="text-xs"
-                      >
-                        Track Changes
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox"
+                          id="track-changes"
+                          checked={trackChangesMode}
+                          onChange={(e) => setTrackChangesMode(e.target.checked)}
+                          className="h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                        <label 
+                          htmlFor="track-changes" 
+                          className="text-xs font-medium cursor-pointer"
+                        >
+                          Track Changes
+                        </label>
+                      </div>
                       <Button 
                         size="sm" 
                         variant="ghost"
