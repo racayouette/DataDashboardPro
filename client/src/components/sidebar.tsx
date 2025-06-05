@@ -8,7 +8,7 @@ export function Sidebar() {
     { icon: LayoutDashboard, label: "Dashboard", path: "/", active: true },
     { icon: Users, label: "Jobs Family", path: "/jobs-family", active: false },
     { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
-    { icon: UserCheck, label: "Users", path: "/users", active: false },
+
     { icon: Bell, label: "Notifications", path: "/notifications", active: false },
     { icon: TrendingUp, label: "Essential Ranking", path: "/ranking", active: false, disabled: true },
     { icon: History, label: "History", path: "/history", active: false, disabled: true },
