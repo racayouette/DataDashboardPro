@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
 import { 
   ArrowLeft, 
@@ -37,6 +38,8 @@ export default function Editing() {
   const [isEditingJobSummary, setIsEditingJobSummary] = useState(false);
   const [trackChangesMode, setTrackChangesMode] = useState(false);
   const [changes, setChanges] = useState<Array<{type: 'delete' | 'insert', text: string, position: number}>>([]);
+  const [showAddFunctionModal, setShowAddFunctionModal] = useState(false);
+  const [newFunctionText, setNewFunctionText] = useState("");
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -171,6 +174,24 @@ export default function Editing() {
         })}
       </div>
     );
+  };
+
+  const handleAddNewFunction = () => {
+    if (newFunctionText.trim()) {
+      const newFunction = {
+        id: essentialFunctions.length + 1,
+        text: newFunctionText.trim(),
+        hasEdit: false
+      };
+      setEssentialFunctions([...essentialFunctions, newFunction]);
+      setNewFunctionText("");
+      setShowAddFunctionModal(false);
+    }
+  };
+
+  const handleCancelAddFunction = () => {
+    setNewFunctionText("");
+    setShowAddFunctionModal(false);
   };
 
   return (
@@ -415,7 +436,12 @@ export default function Editing() {
                       </div>
                     ))}
 
-                    <Button variant="outline" size="sm" className="mt-3">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-3"
+                      onClick={() => setShowAddFunctionModal(true)}
+                    >
                       <Plus className="w-4 h-4 mr-2" />
                       Add New Function
                     </Button>
@@ -471,6 +497,49 @@ export default function Editing() {
           </div>
         </div>
       </main>
+
+      {/* Add New Function Modal */}
+      <Dialog open={showAddFunctionModal} onOpenChange={(open) => {
+        if (!open) {
+          // Prevent closing unless explicitly cancelled or saved
+          return;
+        }
+      }}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add New Essential Function</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="function-text" className="text-sm font-medium">
+                Function Description
+              </label>
+              <Textarea
+                id="function-text"
+                value={newFunctionText}
+                onChange={(e) => setNewFunctionText(e.target.value)}
+                placeholder="Enter the new essential function description..."
+                className="min-h-[100px]"
+                autoFocus
+              />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button
+              variant="outline"
+              onClick={handleCancelAddFunction}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddNewFunction}
+              disabled={!newFunctionText.trim()}
+            >
+              Save
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
