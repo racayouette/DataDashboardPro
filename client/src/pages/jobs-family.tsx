@@ -38,6 +38,15 @@ export default function JobsFamily() {
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Check for reviewer parameter in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reviewerParam = urlParams.get('reviewer');
+    if (reviewerParam) {
+      setSearchTerm(reviewerParam);
+    }
+  }, []);
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: undefined,
     to: undefined,
