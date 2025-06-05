@@ -40,6 +40,7 @@ export default function Editing() {
   const [changes, setChanges] = useState<Array<{type: 'delete' | 'insert', text: string, position: number}>>([]);
   const [showAddFunctionModal, setShowAddFunctionModal] = useState(false);
   const [newFunctionText, setNewFunctionText] = useState("");
+  const [functionsHistory, setFunctionsHistory] = useState<Array<Array<{id: number, text: string, hasEdit: boolean}>>>([]);
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -63,6 +64,9 @@ export default function Editing() {
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     if (draggedItem === null) return;
+    
+    // Save current state to history before making changes
+    setFunctionsHistory(prev => [...prev, [...essentialFunctions]]);
     
     const draggedFunction = essentialFunctions[draggedItem];
     const newFunctions = [...essentialFunctions];
@@ -192,6 +196,14 @@ export default function Editing() {
   const handleCancelAddFunction = () => {
     setNewFunctionText("");
     setShowAddFunctionModal(false);
+  };
+
+  const handleUndoMove = () => {
+    if (functionsHistory.length > 0) {
+      const previousState = functionsHistory[functionsHistory.length - 1];
+      setEssentialFunctions(previousState);
+      setFunctionsHistory(prev => prev.slice(0, -1));
+    }
   };
 
   return (
@@ -402,7 +414,13 @@ export default function Editing() {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Essential Functions</h4>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={handleUndoMove}
+                        disabled={functionsHistory.length === 0}
+                        title="Undo last move"
+                      >
                         <Undo className="w-4 h-4" />
                       </Button>
                       <Button size="sm" variant="ghost">
