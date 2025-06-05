@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
-import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -42,6 +42,8 @@ export default function JobsFamily() {
     from: undefined,
     to: undefined,
   });
+  const [sortBy, setSortBy] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // Sample notifications
   const [notifications, setNotifications] = useState([
@@ -168,11 +170,27 @@ export default function JobsFamily() {
     return matchesSearch && matchesJobFamily && matchesStatus && matchesDateRange;
   });
 
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortOrder("asc");
+    }
+  };
+
+  const getSortIcon = (column: string) => {
+    if (sortBy !== column) return <ArrowUpDown className="w-4 h-4" />;
+    return sortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
+  };
+
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedJobFamily("");
     setSelectedStatus("");
     setDateRange({ from: undefined, to: undefined });
+    setSortBy("");
+    setSortOrder("asc");
     setCurrentPage(1);
   };
 

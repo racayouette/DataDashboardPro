@@ -31,6 +31,8 @@ export default function Editing() {
     { id: 4, text: "Support Safe Patient Transport Within The Facility", hasEdit: true }
   ]);
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  const [jobSummary, setJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
+  const [isEditingJobSummary, setIsEditingJobSummary] = useState(false);
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedItem(index);
@@ -67,15 +69,15 @@ export default function Editing() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-500">Job Description Review</span>
+            <div className="flex items-center space-x-3">
+              <Edit className="w-6 h-6 text-blue-600" />
+              <span className="text-xl font-semibold text-gray-900">Job Description Review</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Search className="w-5 h-5 text-gray-500" />
               <div className="relative">
-                <Bell className="w-5 h-5 text-gray-500" />
-                <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold leading-none scale-75">1</span>
+                <Bell className="w-6 h-6 text-gray-600" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">1</span>
                 </div>
               </div>
             </div>
@@ -201,8 +203,46 @@ export default function Editing() {
               </div>
               <div className="p-6">
                 <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <p className="text-sm mb-4">Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.</p>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold">Job Summary</h4>
+                    <Button 
+                      size="sm" 
+                      variant="ghost"
+                      onClick={() => setIsEditingJobSummary(!isEditingJobSummary)}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {isEditingJobSummary ? (
+                    <div className="space-y-2">
+                      <Textarea
+                        value={jobSummary}
+                        onChange={(e) => setJobSummary(e.target.value)}
+                        className="text-sm min-h-[80px]"
+                        placeholder="Enter job summary..."
+                      />
+                      <div className="flex space-x-2">
+                        <Button 
+                          size="sm" 
+                          onClick={() => setIsEditingJobSummary(false)}
+                        >
+                          Save
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            setJobSummary("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
+                            setIsEditingJobSummary(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm mb-4">{jobSummary}</p>
+                  )}
                 </div>
 
                 <div className="mb-6">

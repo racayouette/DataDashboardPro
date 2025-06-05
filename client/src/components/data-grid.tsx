@@ -10,7 +10,10 @@ import {
   TrendingUp,
   TrendingDown,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from "lucide-react";
 import type { Transaction, JobFamily, Reviewer } from "@shared/schema";
 
