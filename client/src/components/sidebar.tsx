@@ -63,7 +63,7 @@ export function Sidebar() {
           <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
             <span className="text-white text-sm font-medium">JM</span>
           </div>
-          <span className="text-sm font-medium">John marks</span>
+          <span className="text-sm font-medium">John Marks</span>
         </div>
       </div>
     </div>
