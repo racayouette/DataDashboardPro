@@ -41,6 +41,8 @@ export default function Editing() {
   const [showAddFunctionModal, setShowAddFunctionModal] = useState(false);
   const [newFunctionText, setNewFunctionText] = useState("");
   const [functionsHistory, setFunctionsHistory] = useState<Array<Array<{id: number, text: string, hasEdit: boolean}>>>([]);
+  const [editingFunctionId, setEditingFunctionId] = useState<number | null>(null);
+  const [editingFunctionText, setEditingFunctionText] = useState("");
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -204,6 +206,29 @@ export default function Editing() {
       setEssentialFunctions(previousState);
       setFunctionsHistory(prev => prev.slice(0, -1));
     }
+  };
+
+  const handleEditFunction = (functionId: number, currentText: string) => {
+    setEditingFunctionId(functionId);
+    setEditingFunctionText(currentText);
+  };
+
+  const handleSaveEditFunction = () => {
+    if (editingFunctionId !== null && editingFunctionText.trim()) {
+      const updatedFunctions = essentialFunctions.map(func => 
+        func.id === editingFunctionId 
+          ? { ...func, text: editingFunctionText.trim() }
+          : func
+      );
+      setEssentialFunctions(updatedFunctions);
+      setEditingFunctionId(null);
+      setEditingFunctionText("");
+    }
+  };
+
+  const handleCancelEditFunction = () => {
+    setEditingFunctionId(null);
+    setEditingFunctionText("");
   };
 
   return (
@@ -446,7 +471,15 @@ export default function Editing() {
                         <div className="flex-1 flex items-start justify-between">
                           <p className={`text-sm ${func.hasEdit ? 'font-medium' : ''} flex-1 pr-2`}>{func.text}</p>
                           {func.hasEdit && (
-                            <Button size="sm" variant="ghost" className="p-1 h-auto min-w-0">
+                            <Button 
+                              size="sm" 
+                              variant="ghost" 
+                              className="p-1 h-auto min-w-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditFunction(func.id, func.text);
+                              }}
+                            >
                               <Pencil className="w-3 h-3" />
                             </Button>
                           )}
@@ -552,6 +585,49 @@ export default function Editing() {
             <Button
               onClick={handleAddNewFunction}
               disabled={!newFunctionText.trim()}
+            >
+              Save
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Function Modal */}
+      <Dialog open={editingFunctionId !== null} onOpenChange={(open) => {
+        if (!open) {
+          // Prevent closing unless explicitly cancelled or saved
+          return;
+        }
+      }}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Essential Function</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="edit-function-text" className="text-sm font-medium">
+                Function Description
+              </label>
+              <Textarea
+                id="edit-function-text"
+                value={editingFunctionText}
+                onChange={(e) => setEditingFunctionText(e.target.value)}
+                placeholder="Enter the function description..."
+                className="min-h-[100px]"
+                autoFocus
+              />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button
+              variant="outline"
+              onClick={handleCancelEditFunction}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveEditFunction}
+              disabled={!editingFunctionText.trim()}
             >
               Save
             </Button>
