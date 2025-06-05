@@ -115,6 +115,10 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
           aValue = revA.inProgress;
           bValue = revB.inProgress;
           break;
+        case "responsible":
+          aValue = revA.responsible;
+          bValue = revB.responsible;
+          break;
         default:
           return 0;
       }
@@ -292,7 +296,13 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                       </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Responsible
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("responsible")}
+                      >
+                        <span>Responsible</span>
+                        {getSortIcon("responsible")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       <button 
