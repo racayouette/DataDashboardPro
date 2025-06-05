@@ -46,6 +46,7 @@ export default function Editing() {
   const [editingFunctionText, setEditingFunctionText] = useState("");
   const [originalEditingText, setOriginalEditingText] = useState("");
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [lastUpdatedDate, setLastUpdatedDate] = useState("May 30, 2025");
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -250,6 +251,26 @@ export default function Editing() {
     handleCancelEditFunction();
   };
 
+  const updateLastModifiedDate = () => {
+    const today = new Date();
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"];
+    const formattedDate = `${monthNames[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+    setLastUpdatedDate(formattedDate);
+  };
+
+  const handleSaveDraft = () => {
+    updateLastModifiedDate();
+  };
+
+  const handleSubmitForReview = () => {
+    updateLastModifiedDate();
+  };
+
+  const handleAcceptChanges = () => {
+    updateLastModifiedDate();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
@@ -393,7 +414,7 @@ export default function Editing() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium">Version 3</span>
-                    <span className="text-xs text-gray-500">Last Updated May 30, 2025</span>
+                    <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
                   </div>
                 </div>
               </div>
@@ -556,14 +577,24 @@ export default function Editing() {
 
           {/* Action Buttons */}
           <div className="flex justify-center space-x-4 mt-8">
-            <Button variant="outline" className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 flex flex-col items-center py-3">
+            <Button 
+              variant="outline" 
+              className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 flex flex-col items-center py-3"
+              onClick={handleSaveDraft}
+            >
               <span>Save Draft</span>
               <span className="text-xs text-gray-500 mt-0.5">Autosave Every 5 Min</span>
             </Button>
-            <Button className="bg-blue-900 text-white hover:bg-blue-800">
+            <Button 
+              className="bg-blue-900 text-white hover:bg-blue-800"
+              onClick={handleSubmitForReview}
+            >
               Submit For HR Review
             </Button>
-            <Button className="bg-blue-600 text-white hover:bg-blue-700">
+            <Button 
+              className="bg-blue-600 text-white hover:bg-blue-700"
+              onClick={handleAcceptChanges}
+            >
               Accept Changes
             </Button>
           </div>
