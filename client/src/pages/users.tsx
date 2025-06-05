@@ -203,7 +203,7 @@ export default function Users() {
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-medium text-sm">
                 JM
               </div>
               <div>
