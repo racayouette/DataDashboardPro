@@ -192,41 +192,29 @@ export default function Notifications() {
         <Header />
         <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
-            {/* Page Header */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    Manage your notifications and alerts ({unreadCount} unread)
-                  </p>
+            {/* Filters and Search */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex-1 mr-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    type="text"
+                    placeholder="Search by title, message, or category..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
                 </div>
-                <Button onClick={markAllAsRead} variant="outline">
-                  <Check className="w-4 h-4 mr-2" />
-                  Mark All Read
-                </Button>
               </div>
+              <Button onClick={markAllAsRead} variant="outline">
+                <Check className="w-4 h-4 mr-2" />
+                Mark All Read
+              </Button>
             </div>
 
-            {/* Filters and Search */}
+            {/* Additional Filters */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
               <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-end">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Search Notifications
-                  </label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                      type="text"
-                      placeholder="Search by title, message, or category..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-
                 <div className="w-full lg:w-48">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Type

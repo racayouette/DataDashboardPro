@@ -10,7 +10,7 @@ export function Header() {
               <ChartLine className="text-primary text-2xl" />
             </div>
             <div className="ml-4">
-              <h1 className="text-xl font-semibold text-gray-900">Analytics Dashboard</h1>
+              <h1 className="text-xl font-semibold text-gray-900">Notifications</h1>
             </div>
           </div>
           <div className="flex items-center space-x-4">
