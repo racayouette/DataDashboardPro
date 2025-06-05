@@ -244,6 +244,12 @@ export default function Editing() {
     setFunctionsHistory([]);
   };
 
+  const handleResetJobSummary = () => {
+    // Reset job summary to original database state
+    setJobSummary(originalJobSummary);
+    setIsEditingJobSummary(false);
+  };
+
   const handleEditFunction = (functionId: number, currentText: string) => {
     setEditingFunctionId(functionId);
     setEditingFunctionText(currentText);
@@ -524,6 +530,14 @@ export default function Editing() {
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={handleResetJobSummary}
+                        title="Reset to original job summary"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                   {isEditingJobSummary ? (
@@ -653,9 +667,6 @@ export default function Editing() {
                       onClick={() => setActiveTab("V3")}
                     >
                       V3
-                    </Button>
-                    <Button variant="default" size="sm">
-                      View Differences
                     </Button>
                   </div>
                 </div>
