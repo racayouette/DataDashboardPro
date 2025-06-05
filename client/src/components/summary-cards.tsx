@@ -48,8 +48,10 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
   const totalJobs = data.totalUsers;
   const jobsReviewed = parseFloat(data.revenue);
   const inProgress = data.orders;
+  const notStarted = parseFloat(data.growthRate);
   const reviewedPercentage = totalJobs > 0 ? ((jobsReviewed / totalJobs) * 100).toFixed(1) : "0.0";
   const inProgressPercentage = totalJobs > 0 ? ((inProgress / totalJobs) * 100).toFixed(1) : "0.0";
+  const notStartedPercentage = totalJobs > 0 ? ((notStarted / totalJobs) * 100).toFixed(1) : "0.0";
 
   const cards = [
     {
@@ -85,7 +87,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       icon: XCircle,
       iconBg: "bg-orange-100",
       iconColor: "text-orange-600",
-      change: "5.4%",
+      change: `${notStartedPercentage}%`,
       changeColor: "text-green-600",
     },
   ];
