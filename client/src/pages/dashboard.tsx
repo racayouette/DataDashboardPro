@@ -230,37 +230,41 @@ export default function Dashboard() {
         <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
 
         {/* Data Grids Section */}
-        <div className="grid grid-cols-2 gap-8">
-          {/* Left Grid - Job Family */}
-          <DataGrid
-            title="Job Family"
-            subtitle=""
-            data={jobFamiliesData?.jobFamilies}
-            isLoading={jobFamiliesLoading}
-            type="jobFamilies"
-            onJobFamilyClick={handleJobFamilyClick}
-            pagination={jobFamiliesData ? {
-              currentPage: jobFamiliesData.currentPage,
-              totalPages: jobFamiliesData.totalPages,
-              total: jobFamiliesData.total,
-              onPageChange: setJobFamiliesPage
-            } : undefined}
-          />
+        <div className="space-y-8">
+          {/* Job Family Grid */}
+          <div className="w-full">
+            <DataGrid
+              title="Job Family"
+              subtitle=""
+              data={jobFamiliesData?.jobFamilies}
+              isLoading={jobFamiliesLoading}
+              type="jobFamilies"
+              onJobFamilyClick={handleJobFamilyClick}
+              pagination={jobFamiliesData ? {
+                currentPage: jobFamiliesData.currentPage,
+                totalPages: jobFamiliesData.totalPages,
+                total: jobFamiliesData.total,
+                onPageChange: setJobFamiliesPage
+              } : undefined}
+            />
+          </div>
 
-          {/* Right Grid - Reviewer */}
-          <DataGrid
-            title="Reviewer"
-            subtitle=""
-            data={reviewersData?.reviewers}
-            isLoading={reviewersLoading}
-            type="reviewers"
-            pagination={reviewersData ? {
-              currentPage: reviewersData.currentPage,
-              totalPages: reviewersData.totalPages,
-              total: reviewersData.total,
-              onPageChange: setReviewersPage
-            } : undefined}
-          />
+          {/* Reviewer Grid */}
+          <div className="w-full">
+            <DataGrid
+              title="Reviewer"
+              subtitle=""
+              data={reviewersData?.reviewers}
+              isLoading={reviewersLoading}
+              type="reviewers"
+              pagination={reviewersData ? {
+                currentPage: reviewersData.currentPage,
+                totalPages: reviewersData.totalPages,
+                total: reviewersData.total,
+                onPageChange: setReviewersPage
+              } : undefined}
+            />
+          </div>
         </div>
       </main>
     </div>
