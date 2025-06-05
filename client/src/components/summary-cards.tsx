@@ -47,7 +47,9 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
 
   const totalJobs = data.totalUsers;
   const jobsReviewed = parseFloat(data.revenue);
+  const inProgress = data.orders;
   const reviewedPercentage = totalJobs > 0 ? ((jobsReviewed / totalJobs) * 100).toFixed(1) : "0.0";
+  const inProgressPercentage = totalJobs > 0 ? ((inProgress / totalJobs) * 100).toFixed(1) : "0.0";
 
   const cards = [
     {
@@ -74,7 +76,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       icon: TrendingUp,
       iconBg: "bg-purple-100",
       iconColor: "text-green-600",
-      change: "2.1%",
+      change: `${inProgressPercentage}%`,
       changeColor: "text-green-600",
     },
     {
