@@ -106,6 +106,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Export file download endpoints
+  app.get("/api/downloads/:filename", async (req, res) => {
+    const { filename } = req.params;
+    
+    // Security: only allow specific export files
+    const allowedFiles = [
+      'ANGULAR_EXPORT_README.md',
+      'ANGULAR_CONVERSION_COMPLETE.md',
+      'database-schema.sql',
+      'database-sample-data.sql',
+      'EXPORT_README.md',
+      'angular-conversion-export.tar.gz'
+    ];
+
+    if (!allowedFiles.includes(filename)) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    try {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      
+      const filePath = path.resolve(process.cwd(), filename);
+      
+      // Check if file exists
+      try {
+        await fs.access(filePath);
+      } catch {
+        return res.status(404).json({ error: "File not found" });
+      }
+
+      // Get file stats for proper headers
+      const stats = await fs.stat(filePath);
+      
+      // Set appropriate headers based on file type
+      const contentType = filename.endsWith('.md') ? 'text/markdown' : 
+                         filename.endsWith('.sql') ? 'application/sql' : 
+                         filename.endsWith('.tar.gz') ? 'application/gzip' : 
+                         'application/octet-stream';
+      
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Length', stats.size);
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      
+      // Stream the file
+      const fileBuffer = await fs.readFile(filePath);
+      res.send(fileBuffer);
+      
+      console.log(`File downloaded: ${filename}`);
+    } catch (error) {
+      console.error(`Download error for ${filename}:`, error);
+      res.status(500).json({ error: "Download failed" });
+    }
+  });
+
+  // Get available export files info
+  app.get("/api/downloads", async (_req, res) => {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    
+    const formatFileSize = (bytes: number): string => {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    };
+    
+    const exportFiles = [
+      {
+        id: 'angular-readme',
+        name: 'Angular 19 Setup Guide',
+        description: 'Complete installation and configuration guide for Angular conversion',
+        filename: 'ANGULAR_EXPORT_README.md',
+        type: 'documentation',
+        available: false,
+        size: '0 KB'
+      },
+      {
+        id: 'angular-conversion',
+        name: 'Angular Conversion Guide',
+        description: 'Detailed component-by-component conversion documentation',
+        filename: 'ANGULAR_CONVERSION_COMPLETE.md',
+        type: 'documentation',
+        available: false,
+        size: '0 KB'
+      },
+      {
+        id: 'database-schema',
+        name: 'Database Schema',
+        description: 'Complete SQL Server database structure and table definitions',
+        filename: 'database-schema.sql',
+        type: 'database',
+        available: false,
+        size: '0 KB'
+      },
+      {
+        id: 'database-sample',
+        name: 'Sample Data',
+        description: 'Pre-populated sample data for testing and development',
+        filename: 'database-sample-data.sql',
+        type: 'database',
+        available: false,
+        size: '0 KB'
+      },
+      {
+        id: 'complete-archive',
+        name: 'Complete Project Archive',
+        description: 'All files bundled in a single downloadable archive',
+        filename: 'angular-conversion-export.tar.gz',
+        type: 'archive',
+        available: false,
+        size: '0 KB'
+      }
+    ];
+
+    // Check each file and get actual size
+    for (const file of exportFiles) {
+      try {
+        const filePath = path.resolve(process.cwd(), file.filename);
+        const stats = await fs.stat(filePath);
+        file.available = true;
+        file.size = formatFileSize(stats.size);
+      } catch {
+        // File doesn't exist, keep default values
+      }
+    }
+
+    res.json(exportFiles);
+  });
+
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time database health monitoring
