@@ -14,9 +14,6 @@ export function Header() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="text-gray-500 hover:text-gray-700 transition-colors">
-              <Bell className="h-5 w-5" />
-            </button>
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-medium">JD</span>
