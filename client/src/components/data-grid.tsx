@@ -152,13 +152,13 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                       Reviewer
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      Responsible
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Completed
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       In Progress
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Responsible
                     </th>
                   </>
                 )}
@@ -229,13 +229,13 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                         </a>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {reviewer.responsible}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {reviewer.completed}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {reviewer.inProgress}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {reviewer.responsible}
                       </td>
                     </tr>
                   ))}
