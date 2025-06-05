@@ -28,7 +28,7 @@ export default function Editing() {
   const [jobCode, setJobCode] = useState("");
   const [essentialFunctions, setEssentialFunctions] = useState([
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
-    { id: 2, text: "Aid With Patient Hygiene And Nutritional Needs", hasEdit: false },
+    { id: 2, text: "Aid With Patient Hygiene And Nutritional Needs", hasEdit: true },
     { id: 3, text: "Maintain Patient Care Logs And Coordinate With Nursing Staff", hasEdit: true },
     { id: 4, text: "Support Safe Patient Transport Within The Facility", hasEdit: true }
   ]);
