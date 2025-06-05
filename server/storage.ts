@@ -52,7 +52,7 @@ export class MemStorage implements IStorage {
     // Create dashboard summary
     const summary: DashboardSummary = {
       id: this.currentSummaryId++,
-      totalUsers: 24531,
+      totalUsers: 9000,
       revenue: "127450.00",
       orders: 1847,
       growthRate: "18.70",
