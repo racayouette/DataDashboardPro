@@ -253,7 +253,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                 onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
                 disabled={pagination.currentPage === 1}
               >
-                <ChevronLeft className="h-4 w-4" />
+                &lt;
               </Button>
               
               {/* Dynamic cycling page buttons */}
@@ -292,7 +292,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                 onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
                 disabled={pagination.currentPage === pagination.totalPages}
               >
-                <ChevronRight className="h-4 w-4" />
+                &gt;
               </Button>
             </div>
           </div>
