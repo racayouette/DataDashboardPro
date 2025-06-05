@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { useLocation } from "wouter";
 import { 
   ArrowLeft, 
@@ -43,6 +44,8 @@ export default function Editing() {
   const [functionsHistory, setFunctionsHistory] = useState<Array<Array<{id: number, text: string, hasEdit: boolean}>>>([]);
   const [editingFunctionId, setEditingFunctionId] = useState<number | null>(null);
   const [editingFunctionText, setEditingFunctionText] = useState("");
+  const [originalEditingText, setOriginalEditingText] = useState("");
+  const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -211,6 +214,7 @@ export default function Editing() {
   const handleEditFunction = (functionId: number, currentText: string) => {
     setEditingFunctionId(functionId);
     setEditingFunctionText(currentText);
+    setOriginalEditingText(currentText);
   };
 
   const handleSaveEditFunction = () => {
@@ -229,6 +233,21 @@ export default function Editing() {
   const handleCancelEditFunction = () => {
     setEditingFunctionId(null);
     setEditingFunctionText("");
+    setOriginalEditingText("");
+    setShowCloseConfirmation(false);
+  };
+
+  const handleCloseEditModal = () => {
+    const hasChanges = editingFunctionText !== originalEditingText;
+    if (hasChanges) {
+      setShowCloseConfirmation(true);
+    } else {
+      handleCancelEditFunction();
+    }
+  };
+
+  const confirmCloseEditModal = () => {
+    handleCancelEditFunction();
   };
 
   return (
@@ -595,8 +614,7 @@ export default function Editing() {
       {/* Edit Function Modal */}
       <Dialog open={editingFunctionId !== null} onOpenChange={(open) => {
         if (!open) {
-          // Prevent closing unless explicitly cancelled or saved
-          return;
+          handleCloseEditModal();
         }
       }}>
         <DialogContent className="sm:max-w-[425px]">
@@ -634,6 +652,26 @@ export default function Editing() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Close Confirmation Dialog */}
+      <AlertDialog open={showCloseConfirmation} onOpenChange={setShowCloseConfirmation}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to lose your changes?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowCloseConfirmation(false)}>
+              Keep Editing
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmCloseEditModal}>
+              Discard Changes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
