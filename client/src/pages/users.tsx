@@ -75,7 +75,7 @@ export default function Users() {
       role: "Admin",
       department: "IT",
       status: "Active",
-      lastLogin: "2024-06-04"
+      lastLogin: "June 4, 2025"
     },
     {
       id: 2,
@@ -84,7 +84,7 @@ export default function Users() {
       role: "HR Manager",
       department: "Human Resources",
       status: "Active",
-      lastLogin: "2024-06-03"
+      lastLogin: "June 3, 2025"
     },
     {
       id: 3,
@@ -93,7 +93,7 @@ export default function Users() {
       role: "Reviewer",
       department: "Operations",
       status: "Active",
-      lastLogin: "2024-06-02"
+      lastLogin: "June 2, 2025"
     },
     {
       id: 4,
@@ -102,7 +102,7 @@ export default function Users() {
       role: "Employee",
       department: "Marketing",
       status: "Inactive",
-      lastLogin: "2024-05-28"
+      lastLogin: "May 28, 2025"
     },
     {
       id: 5,
@@ -111,7 +111,7 @@ export default function Users() {
       role: "Reviewer",
       department: "Quality Assurance",
       status: "Active",
-      lastLogin: "2024-06-01"
+      lastLogin: "June 1, 2025"
     }
   ]);
 
