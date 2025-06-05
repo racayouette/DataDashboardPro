@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Search, Bell, X, Trash2 } from "lucide-react";
+import { RefreshCw, Search, Bell, X, Trash2, LayoutDashboard } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
@@ -142,7 +142,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-blue-600 rounded"></div>
+              <LayoutDashboard className="w-6 h-6 text-blue-600" />
               <span className="text-xl font-semibold text-gray-900">Dashboard</span>
             </div>
           </div>
