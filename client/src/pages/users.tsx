@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Edit3, Trash2, Bell, UserCheck } from "lucide-react";
+import { Search, Plus, Edit3, Trash2, Bell, UserCheck, X } from "lucide-react";
 import { Link } from "wouter";
 
 interface User {
@@ -180,6 +180,14 @@ export default function Users() {
     }
   };
 
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setRoleFilter("all");
+    setStatusFilter("all");
+  };
+
+  const hasActiveFilters = searchTerm !== "" || roleFilter !== "all" || statusFilter !== "all";
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
@@ -268,15 +276,28 @@ export default function Users() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Search Users
                 </label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    type="text"
-                    placeholder="Search by name, email, or department..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      type="text"
+                      placeholder="Search by name, email, or department..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  {hasActiveFilters && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={clearAllFilters}
+                      className="text-gray-600 hover:text-gray-800"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      Clear
+                    </Button>
+                  )}
                 </div>
               </div>
 
