@@ -30,12 +30,13 @@ export default function Editing() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("V3");
   const [jobCode, setJobCode] = useState("");
-  const [essentialFunctions, setEssentialFunctions] = useState([
+  const originalEssentialFunctions = [
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
     { id: 2, text: "Aid With Patient Hygiene And Nutritional Needs", hasEdit: true },
     { id: 3, text: "Maintain Patient Care Logs And Coordinate With Nursing Staff", hasEdit: true },
     { id: 4, text: "Support Safe Patient Transport Within The Facility", hasEdit: true }
-  ]);
+  ];
+  const [essentialFunctions, setEssentialFunctions] = useState(originalEssentialFunctions);
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [jobSummary, setJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
   const [originalJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
@@ -235,6 +236,12 @@ export default function Editing() {
       setEssentialFunctions(previousState);
       setFunctionsHistory(prev => prev.slice(0, -1));
     }
+  };
+
+  const handleResetFunctions = () => {
+    // Reset to original database state
+    setEssentialFunctions([...originalEssentialFunctions]);
+    setFunctionsHistory([]);
   };
 
   const handleEditFunction = (functionId: number, currentText: string) => {
@@ -569,7 +576,12 @@ export default function Editing() {
                       >
                         <Undo className="w-4 h-4" />
                       </Button>
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={handleResetFunctions}
+                        title="Reset to original functions"
+                      >
                         <RotateCcw className="w-4 h-4" />
                       </Button>
                     </div>
