@@ -147,9 +147,60 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Bell className="w-6 h-6 text-gray-600" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            <div className="relative" ref={notificationRef}>
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative"
+              >
+                <Bell className="w-6 h-6 text-gray-600" />
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">{notifications.length}</span>
+                  </span>
+                )}
+              </button>
+              
+              {/* Notification Dropdown */}
+              {showNotifications && (
+                <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="p-3 border-b border-gray-100">
+                    <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {notifications.map((notification, index) => (
+                      <div
+                        key={index}
+                        className="p-3 hover:bg-gray-50 border-b border-gray-50 last:border-b-0 transition-colors"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 cursor-pointer">
+                            <p className="text-sm text-gray-700">{notification}</p>
+                            <p className="text-xs text-gray-400 mt-1">Just now</p>
+                          </div>
+                          <button
+                            className="ml-2 p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-red-500 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setNotifications(prev => prev.filter((_, i) => i !== index));
+                            }}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-3 border-t border-gray-100">
+                    <Link 
+                      href="/notifications"
+                      className="text-xs text-blue-600 hover:text-blue-700 font-medium underline"
+                      onClick={() => setShowNotifications(false)}
+                    >
+                      View all notifications
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
