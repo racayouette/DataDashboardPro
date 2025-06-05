@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { 
   ArrowLeft, 
   Search, 
@@ -47,6 +49,30 @@ export default function Editing() {
   const [originalEditingText, setOriginalEditingText] = useState("");
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [lastUpdatedDate, setLastUpdatedDate] = useState("May 30, 2025");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Fetch notifications
+  const { data: notificationsData } = useQuery({
+    queryKey: ['/api/notifications'],
+    queryFn: async () => {
+      const response = await fetch('/api/notifications?limit=5');
+      if (!response.ok) throw new Error('Failed to fetch notifications');
+      return response.json();
+    },
+  });
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -289,13 +315,65 @@ export default function Editing() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <button className="relative">
+              <div className="relative" ref={notificationRef}>
+                <button 
+                  className="relative hover:bg-gray-100 p-2 rounded-full transition-colors"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                >
                   <Bell className="w-6 h-6 text-gray-600" />
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">4</span>
-                  </span>
+                  {notificationsData?.notifications?.length > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">
+                        {notificationsData.notifications.length}
+                      </span>
+                    </span>
+                  )}
                 </button>
+
+                {/* Notifications Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-50">
+                    <div className="p-4 border-b">
+                      <h3 className="font-semibold text-gray-900">Notifications</h3>
+                    </div>
+                    <div className="max-h-80 overflow-y-auto">
+                      {notificationsData?.notifications?.length > 0 ? (
+                        notificationsData.notifications.map((notification: any) => (
+                          <div key={notification.id} className="p-4 border-b hover:bg-gray-50">
+                            <div className="flex items-start space-x-3">
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                  {notification.title}
+                                </p>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                  {new Date(notification.createdAt).toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-8 text-center text-gray-500">
+                          <Bell className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                          <p>No notifications</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4 border-t bg-gray-50 rounded-b-lg">
+                      <Link 
+                        href="/notifications" 
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        onClick={() => setShowNotifications(false)}
+                      >
+                        View all notifications
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
