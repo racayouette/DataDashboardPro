@@ -14,12 +14,6 @@ export function Header() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">JD</span>
-              </div>
-              <span className="text-sm font-medium text-gray-700">John Doe</span>
-            </div>
           </div>
         </div>
       </div>
