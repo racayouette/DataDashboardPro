@@ -1,4 +1,4 @@
-import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase, Eye } from "lucide-react";
+import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase, Eye, XCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardSummary } from "@shared/schema";
@@ -74,9 +74,9 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       changeColor: "text-red-600",
     },
     {
-      title: "Growth Rate",
+      title: "Not Started",
       value: `${parseFloat(data.growthRate)}%`,
-      icon: TrendingUp,
+      icon: XCircle,
       iconBg: "bg-orange-100",
       iconColor: "text-orange-600",
       change: "+5.4%",
