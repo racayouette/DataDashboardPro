@@ -315,9 +315,9 @@ export default function Editing() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative" ref={notificationRef}>
-                <button 
-                  className="relative hover:bg-gray-100 p-2 rounded-full transition-colors"
+                <button
                   onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative"
                 >
                   <Bell className="w-6 h-6 text-gray-600" />
                   {notifications.length > 0 && (
