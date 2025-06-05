@@ -62,6 +62,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       iconColor: "text-primary",
       change: "12.5%",
       changeColor: "text-green-600",
+      statusText: "Completed",
     },
     {
       title: "Jobs Reviewed",
@@ -71,6 +72,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       iconColor: "text-green-600",
       change: `${reviewedPercentage}%`,
       changeColor: "text-green-600",
+      statusText: "Reviewed",
     },
     {
       title: "In Progress",
@@ -80,6 +82,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       iconColor: "text-green-600",
       change: `${inProgressPercentage}%`,
       changeColor: "text-green-600",
+      statusText: "Reviewed",
     },
     {
       title: "Not Started",
@@ -89,6 +92,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       iconColor: "text-orange-600",
       change: `${notStartedPercentage}%`,
       changeColor: "text-green-600",
+      statusText: "Reviewed",
     },
   ];
 
@@ -110,7 +114,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
               </div>
               <div className="mt-4 flex items-center">
                 <span className={`${card.changeColor} text-sm font-medium`}>{card.change}</span>
-                <span className="text-gray-500 text-sm ml-2">Reviewed</span>
+                <span className="text-gray-500 text-sm ml-2">{card.statusText}</span>
               </div>
             </CardContent>
           </Card>
