@@ -60,8 +60,8 @@ export function Sidebar() {
       {/* User Profile - at bottom of sidebar */}
       <div className="mt-auto">
         <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors">
-          <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-xs font-medium">JM</span>
+          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-sm font-medium">JM</span>
           </div>
           <span className="text-sm font-medium">John marks</span>
         </div>
