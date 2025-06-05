@@ -32,6 +32,7 @@ export const reviewers = pgTable("reviewers", {
   jobFamily: text("job_family").notNull(),
   completed: integer("completed").notNull(),
   inProgress: integer("in_progress").notNull(),
+  responsible: text("responsible").notNull(),
 });
 
 export const insertDashboardSummarySchema = createInsertSchema(dashboardSummary).omit({

@@ -221,54 +221,64 @@ export class MemStorage implements IStorage {
     // Create reviewers
     const sampleReviewers: Omit<Reviewer, 'id'>[] = [
       {
-        jobFamily: "Sarah M.",
+        jobFamily: "Sarah Mitchell",
         completed: 82,
         inProgress: 5,
+        responsible: "James Patterson",
       },
       {
-        jobFamily: "Kelly J.",
+        jobFamily: "Kelly Johnson",
         completed: 67,
         inProgress: 12,
+        responsible: "Maria Rodriguez",
       },
       {
-        jobFamily: "Robert K.",
+        jobFamily: "Robert Kennedy",
         completed: 12,
         inProgress: 18,
+        responsible: "Lisa Thompson",
       },
       {
-        jobFamily: "Adam L.",
+        jobFamily: "Adam Lambert",
         completed: 33,
         inProgress: 4,
+        responsible: "Daniel Wilson",
       },
       {
-        jobFamily: "Jennifer W.",
+        jobFamily: "Jennifer Williams",
         completed: 45,
         inProgress: 8,
+        responsible: "Nancy Davis",
       },
       {
-        jobFamily: "Michael R.",
+        jobFamily: "Michael Roberts",
         completed: 38,
         inProgress: 15,
+        responsible: "Steven Clark",
       },
       {
-        jobFamily: "Linda T.",
+        jobFamily: "Linda Taylor",
         completed: 56,
         inProgress: 6,
+        responsible: "Karen Miller",
       },
       {
-        jobFamily: "David P.",
+        jobFamily: "David Phillips",
         completed: 29,
         inProgress: 11,
+        responsible: "Patricia Moore",
       },
       {
-        jobFamily: "Emma S.",
+        jobFamily: "Emma Sullivan",
         completed: 41,
         inProgress: 9,
+        responsible: "Richard Garcia",
       },
       {
-        jobFamily: "Chris H.",
+        jobFamily: "Chris Harrison",
         completed: 52,
         inProgress: 7,
+        responsible: "Michelle Brown",
       },
     ];
 
