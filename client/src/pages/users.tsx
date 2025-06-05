@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Search, Plus, Edit3, Trash2, Bell, UserCheck, X } from "lucide-react";
 import { Link } from "wouter";
@@ -26,7 +27,9 @@ export default function Users() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [newUser, setNewUser] = useState<Partial<User>>({
     name: "",
     email: "",
@@ -180,8 +183,22 @@ export default function Users() {
     }
   };
 
-  const handleDeleteUser = (userId: number) => {
-    setUsers(users.filter(user => user.id !== userId));
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteUser = () => {
+    if (userToDelete) {
+      setUsers(users.filter(user => user.id !== userToDelete.id));
+      setShowDeleteDialog(false);
+      setUserToDelete(null);
+    }
+  };
+
+  const cancelDeleteUser = () => {
+    setShowDeleteDialog(false);
+    setUserToDelete(null);
   };
 
   const clearAllFilters = () => {
@@ -415,7 +432,7 @@ export default function Users() {
                             variant="outline" 
                             size="sm" 
                             className="text-red-600 hover:text-red-700"
-                            onClick={() => handleDeleteUser(user.id)}
+                            onClick={() => handleDeleteUser(user)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -612,6 +629,24 @@ export default function Users() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={showDeleteDialog} onOpenChange={() => {}}>
+          <AlertDialogContent onPointerDownOutside={(e) => e.preventDefault()}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete the user "{userToDelete?.name}". This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={cancelDeleteUser}>No</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteUser} className="bg-red-600 hover:bg-red-700">
+                Yes
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </div>
   );
