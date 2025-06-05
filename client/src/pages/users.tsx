@@ -180,6 +180,10 @@ export default function Users() {
     }
   };
 
+  const handleDeleteUser = (userId: number) => {
+    setUsers(users.filter(user => user.id !== userId));
+  };
+
   const clearAllFilters = () => {
     setSearchTerm("");
     setRoleFilter("all");
@@ -407,7 +411,12 @@ export default function Users() {
                           >
                             <Edit3 className="w-4 h-4" />
                           </Button>
-                          <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="text-red-600 hover:text-red-700"
+                            onClick={() => handleDeleteUser(user.id)}
+                          >
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
