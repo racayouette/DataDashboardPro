@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
-import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, UserCheck } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -191,7 +191,7 @@ export default function JobsFamily() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
-              <UserCheck className="w-6 h-6 text-blue-600" />
+              <Users className="w-6 h-6 text-blue-600" />
               <span className="text-xl font-semibold text-gray-900">Jobs Family</span>
             </div>
             <div className="flex items-center space-x-4">
