@@ -455,7 +455,7 @@ export default function JobsFamily() {
                       size="sm"
                       onClick={() => setCurrentPage(pageNum)}
                     >
-                      {pageNum.toString().padStart(2, '0')}
+                      {pageNum}
                     </Button>
                   ));
                 })()}
