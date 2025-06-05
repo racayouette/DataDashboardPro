@@ -248,22 +248,37 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                 disabled={pagination.currentPage === 1}
               >
                 <ChevronLeft className="h-4 w-4" />
-                Previous
               </Button>
               
-              <div className="flex items-center space-x-1">
-                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+              {/* Dynamic cycling page buttons */}
+              {(() => {
+                const getVisiblePages = () => {
+                  if (pagination.totalPages <= 2) {
+                    return Array.from({ length: pagination.totalPages }, (_, i) => i + 1);
+                  }
+                  
+                  // Always show 2 buttons, positioned based on current page
+                  if (pagination.currentPage === 1) {
+                    return [1, 2];
+                  } else if (pagination.currentPage === pagination.totalPages) {
+                    return [pagination.totalPages - 1, pagination.totalPages];
+                  } else {
+                    return [pagination.currentPage, pagination.currentPage + 1];
+                  }
+                };
+                
+                return getVisiblePages().map((pageNum) => (
                   <Button
-                    key={page}
-                    variant={page === pagination.currentPage ? "default" : "outline"}
+                    key={pageNum}
+                    variant={pagination.currentPage === pageNum ? "default" : "outline"}
                     size="sm"
-                    onClick={() => pagination.onPageChange(page)}
+                    onClick={() => pagination.onPageChange(pageNum)}
                     className="w-8 h-8"
                   >
-                    {page}
+                    {pageNum}
                   </Button>
-                ))}
-              </div>
+                ));
+              })()}
               
               <Button
                 variant="outline"
@@ -271,7 +286,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                 onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
                 disabled={pagination.currentPage === pagination.totalPages}
               >
-                Next
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
