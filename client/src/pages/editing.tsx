@@ -269,10 +269,12 @@ export default function Editing() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <Bell className="w-6 h-6 text-gray-600" />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">1</span>
-                </div>
+                <button className="relative">
+                  <Bell className="w-6 h-6 text-gray-600" />
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">4</span>
+                  </span>
+                </button>
               </div>
             </div>
           </div>
