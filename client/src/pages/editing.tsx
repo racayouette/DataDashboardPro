@@ -185,7 +185,7 @@ export default function Editing() {
       const newFunction = {
         id: essentialFunctions.length + 1,
         text: newFunctionText.trim(),
-        hasEdit: false
+        hasEdit: true
       };
       setEssentialFunctions([...essentialFunctions, newFunction]);
       setNewFunctionText("");
