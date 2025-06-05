@@ -1,4 +1,4 @@
-import { Users, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
+import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardSummary } from "@shared/schema";
@@ -49,7 +49,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
     {
       title: "Total Jobs",
       value: data.totalUsers.toLocaleString(),
-      icon: Users,
+      icon: Briefcase,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
       change: "+12.5%",
