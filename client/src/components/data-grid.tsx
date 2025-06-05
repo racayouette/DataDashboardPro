@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { 
   Laptop, 
   Smartphone, 
@@ -33,6 +34,100 @@ interface DataGridProps {
 }
 
 export function DataGrid({ title, subtitle, data, isLoading, type, pagination, onJobFamilyClick }: DataGridProps) {
+  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const getSortIcon = (field: string) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="w-4 h-4" />;
+    }
+    return sortDirection === "asc" ? 
+      <ArrowUp className="w-4 h-4" /> : 
+      <ArrowDown className="w-4 h-4" />;
+  };
+
+  const sortedData = data ? [...data].sort((a, b) => {
+    if (!sortField) return 0;
+    
+    let aValue: any;
+    let bValue: any;
+    
+    if (type === "transactions") {
+      const transA = a as Transaction;
+      const transB = b as Transaction;
+      switch (sortField) {
+        case "customerName":
+          aValue = transA.customerName;
+          bValue = transB.customerName;
+          break;
+        case "amount":
+          aValue = parseFloat(transA.amount);
+          bValue = parseFloat(transB.amount);
+          break;
+        case "status":
+          aValue = transA.status;
+          bValue = transB.status;
+          break;
+        default:
+          return 0;
+      }
+    } else if (type === "jobFamilies") {
+      const jobA = a as JobFamily;
+      const jobB = b as JobFamily;
+      switch (sortField) {
+        case "jobFamily":
+          aValue = jobA.jobFamily;
+          bValue = jobB.jobFamily;
+          break;
+        case "totalJobs":
+          aValue = jobA.totalJobs;
+          bValue = jobB.totalJobs;
+          break;
+        case "jobsReviewed":
+          aValue = jobA.jobsReviewed;
+          bValue = jobB.jobsReviewed;
+          break;
+        default:
+          return 0;
+      }
+    } else if (type === "reviewers") {
+      const revA = a as Reviewer;
+      const revB = b as Reviewer;
+      switch (sortField) {
+        case "jobFamily":
+          aValue = revA.jobFamily;
+          bValue = revB.jobFamily;
+          break;
+        case "completed":
+          aValue = revA.completed;
+          bValue = revB.completed;
+          break;
+        case "inProgress":
+          aValue = revA.inProgress;
+          bValue = revB.inProgress;
+          break;
+        default:
+          return 0;
+      }
+    }
+    
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      const comparison = aValue.localeCompare(bValue);
+      return sortDirection === "asc" ? comparison : -comparison;
+    } else {
+      const comparison = aValue - bValue;
+      return sortDirection === "asc" ? comparison : -comparison;
+    }
+  }) : [];
   if (isLoading) {
     return (
       <Card>
@@ -125,13 +220,31 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                 {type === "transactions" ? (
                   <>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Customer
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("customerName")}
+                      >
+                        <span>Customer</span>
+                        {getSortIcon("customerName")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("amount")}
+                      >
+                        <span>Amount</span>
+                        {getSortIcon("amount")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("status")}
+                      >
+                        <span>Status</span>
+                        {getSortIcon("status")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
@@ -140,28 +253,64 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                 ) : type === "jobFamilies" ? (
                   <>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Job Family
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("jobFamily")}
+                      >
+                        <span>Job Family</span>
+                        {getSortIcon("jobFamily")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Total Jobs
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("totalJobs")}
+                      >
+                        <span>Total Jobs</span>
+                        {getSortIcon("totalJobs")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Jobs Reviewed
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("jobsReviewed")}
+                      >
+                        <span>Jobs Reviewed</span>
+                        {getSortIcon("jobsReviewed")}
+                      </button>
                     </th>
                   </>
                 ) : (
                   <>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Reviewer
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("jobFamily")}
+                      >
+                        <span>Reviewer</span>
+                        {getSortIcon("jobFamily")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Responsible
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Completed
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("completed")}
+                      >
+                        <span>Completed</span>
+                        {getSortIcon("completed")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      In Progress
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("inProgress")}
+                      >
+                        <span>In Progress</span>
+                        {getSortIcon("inProgress")}
+                      </button>
                     </th>
                   </>
                 )}
@@ -169,7 +318,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {type === "transactions"
-                ? (data as Transaction[]).map((transaction) => (
+                ? (sortedData as Transaction[]).map((transaction) => (
                     <tr key={transaction.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
@@ -202,7 +351,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                     </tr>
                   ))
                 : type === "jobFamilies"
-                ? (data as JobFamily[]).map((jobFamily) => (
+                ? (sortedData as JobFamily[]).map((jobFamily) => (
                     <tr 
                       key={jobFamily.id} 
                       className="hover:bg-gray-50 transition-colors cursor-pointer"
@@ -221,7 +370,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                       </td>
                     </tr>
                   ))
-                : (data as Reviewer[]).map((reviewer) => (
+                : (sortedData as Reviewer[]).map((reviewer) => (
                     <tr key={reviewer.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <a 
