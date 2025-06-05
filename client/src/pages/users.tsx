@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Edit3, Trash2, Bell, Users as UsersIcon } from "lucide-react";
+import { Search, Plus, Edit3, Trash2, Bell, UserCheck } from "lucide-react";
 import { Link } from "wouter";
 
 interface User {
@@ -189,7 +189,7 @@ export default function Users() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <UsersIcon className="w-6 h-6 text-blue-600" />
+              <UserCheck className="w-6 h-6 text-blue-600" />
               <span className="text-xl font-semibold text-gray-900">Users Management</span>
             </div>
           </div>
