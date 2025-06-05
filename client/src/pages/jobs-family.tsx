@@ -197,12 +197,12 @@ export default function JobsFamily() {
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative hover:bg-gray-100 p-2 rounded-lg transition-colors"
+                  className="relative"
                 >
-                  <Bell className="w-5 h-5 text-gray-500" />
-                  <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold leading-none scale-75">1</span>
-                  </div>
+                  <Bell className="w-6 h-6 text-gray-600" />
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">1</span>
+                  </span>
                 </button>
                 
                 {/* Notification Dropdown */}
