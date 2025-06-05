@@ -23,7 +23,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="space-y-2 mb-16">
+      <nav className="space-y-2 flex-1">
         {menuItems.filter(item => !item.hidden).map((item) => {
           const Icon = item.icon;
           const isActive = location === item.path;
@@ -43,8 +43,8 @@ export function Sidebar() {
         })}
       </nav>
       
-      {/* User Profile - positioned higher */}
-      <div>
+      {/* User Profile - positioned at bottom */}
+      <div className="mt-auto mb-4">
         <Link href="/users">
           <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors cursor-pointer">
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
