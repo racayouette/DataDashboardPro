@@ -134,6 +134,15 @@ export default function Settings() {
       department: "Quality Assurance",
       status: "Active",
       lastLogin: "June 1, 2025"
+    },
+    {
+      id: 6,
+      name: "John Mark",
+      email: "john.mark@company.com",
+      role: "Admin",
+      department: "Executive",
+      status: "Active",
+      lastLogin: "June 5, 2025"
     }
   ]);
 
@@ -650,8 +659,6 @@ export default function Settings() {
         return renderNotificationSettings();
       case 'users':
         return renderUsersSection();
-      case 'preferences':
-        return renderUserPreferences();
       case 'monitoring':
         return renderDatabaseHealth();
       default:
