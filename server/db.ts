@@ -20,22 +20,140 @@ const config: sql.config = {
 };
 
 let pool: sql.ConnectionPool;
+let connectionStatus = {
+  isConnected: false,
+  lastConnected: null as Date | null,
+  lastError: null as string | null,
+  reconnectAttempts: 0,
+  maxReconnectAttempts: 5
+};
+
+// Health monitoring interval
+let healthCheckInterval: NodeJS.Timeout | null = null;
 
 export async function initializeDatabase() {
   try {
     pool = await new sql.ConnectionPool(config).connect();
-    console.log('Connected to SQL Server');
+    
+    // Set up connection event handlers
+    pool.on('connect', () => {
+      connectionStatus.isConnected = true;
+      connectionStatus.lastConnected = new Date();
+      connectionStatus.lastError = null;
+      connectionStatus.reconnectAttempts = 0;
+      console.log('✅ Connected to SQL Server');
+      
+      // Start health monitoring
+      startHealthMonitoring();
+    });
+    
+    pool.on('close', () => {
+      connectionStatus.isConnected = false;
+      console.log('🔌 SQL Server connection closed');
+      attemptReconnection();
+    });
+    
+    pool.on('error', (err) => {
+      connectionStatus.isConnected = false;
+      connectionStatus.lastError = err.message;
+      console.error('❌ SQL Server connection error:', err);
+      attemptReconnection();
+    });
     
     // Create database and tables if they don't exist
     await createTablesIfNotExists();
     
     return pool;
   } catch (err) {
+    connectionStatus.isConnected = false;
+    connectionStatus.lastError = err instanceof Error ? err.message : 'Unknown error';
     console.error('Database connection failed:', err);
-    // Fallback to mock data if SQL Server is not available
     console.log('Using in-memory storage as fallback');
+    
+    // Still attempt periodic reconnection
+    attemptReconnection();
     return null;
   }
+}
+
+function startHealthMonitoring() {
+  if (healthCheckInterval) {
+    clearInterval(healthCheckInterval);
+  }
+  
+  healthCheckInterval = setInterval(async () => {
+    await performHealthCheck();
+  }, 30000); // Check every 30 seconds
+}
+
+async function performHealthCheck() {
+  if (!pool) return;
+  
+  try {
+    await pool.request().query('SELECT 1 as HealthCheck');
+    if (!connectionStatus.isConnected) {
+      connectionStatus.isConnected = true;
+      connectionStatus.lastConnected = new Date();
+      connectionStatus.lastError = null;
+      console.log('✅ SQL Server health check passed - connection restored');
+    }
+  } catch (err) {
+    connectionStatus.isConnected = false;
+    connectionStatus.lastError = err instanceof Error ? err.message : 'Health check failed';
+    console.error('❌ SQL Server health check failed:', err);
+    attemptReconnection();
+  }
+}
+
+async function attemptReconnection() {
+  if (connectionStatus.reconnectAttempts >= connectionStatus.maxReconnectAttempts) {
+    console.log(`⚠️ Max reconnection attempts (${connectionStatus.maxReconnectAttempts}) reached. Will retry in 5 minutes.`);
+    
+    setTimeout(() => {
+      connectionStatus.reconnectAttempts = 0;
+      attemptReconnection();
+    }, 300000); // 5 minutes
+    return;
+  }
+  
+  connectionStatus.reconnectAttempts++;
+  const delay = Math.min(1000 * Math.pow(2, connectionStatus.reconnectAttempts), 30000); // Exponential backoff, max 30s
+  
+  console.log(`🔄 Attempting to reconnect to SQL Server (attempt ${connectionStatus.reconnectAttempts}/${connectionStatus.maxReconnectAttempts}) in ${delay/1000}s...`);
+  
+  setTimeout(async () => {
+    try {
+      if (pool) {
+        await pool.close();
+      }
+      
+      pool = await new sql.ConnectionPool(config).connect();
+      await createTablesIfNotExists();
+      
+      connectionStatus.isConnected = true;
+      connectionStatus.lastConnected = new Date();
+      connectionStatus.lastError = null;
+      connectionStatus.reconnectAttempts = 0;
+      
+      console.log('✅ Successfully reconnected to SQL Server');
+      startHealthMonitoring();
+      
+    } catch (err) {
+      connectionStatus.lastError = err instanceof Error ? err.message : 'Reconnection failed';
+      console.error(`❌ Reconnection attempt ${connectionStatus.reconnectAttempts} failed:`, err);
+      
+      if (connectionStatus.reconnectAttempts < connectionStatus.maxReconnectAttempts) {
+        attemptReconnection();
+      }
+    }
+  }, delay);
+}
+
+export function getConnectionStatus() {
+  return {
+    ...connectionStatus,
+    uptime: connectionStatus.lastConnected ? Date.now() - connectionStatus.lastConnected.getTime() : 0
+  };
 }
 
 async function createTablesIfNotExists() {

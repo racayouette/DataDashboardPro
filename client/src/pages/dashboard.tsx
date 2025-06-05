@@ -5,6 +5,7 @@ import { RefreshCw, Search, Bell, X, Trash2, LayoutDashboard } from "lucide-reac
 import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
+import { DatabaseHealthMonitor } from "@/components/database-health-monitor";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import type { DashboardSummary, Transaction, JobFamily, Reviewer } from "@shared/schema";
@@ -227,6 +228,11 @@ export default function Dashboard() {
 
         {/* Summary Cards */}
         <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
+
+        {/* Database Health Monitor */}
+        <div className="mb-8">
+          <DatabaseHealthMonitor />
+        </div>
 
         {/* Data Grids Section */}
         <div className="grid grid-cols-2 gap-8">
