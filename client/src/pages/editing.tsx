@@ -324,7 +324,7 @@ export default function Editing() {
                 <Edit className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-gray-600">Last Edited By</span>
               </div>
-              <p className="text-blue-600 font-semibold">Sarah M.</p>
+              <p className="text-blue-600 font-semibold">Sarah Mitchell</p>
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
