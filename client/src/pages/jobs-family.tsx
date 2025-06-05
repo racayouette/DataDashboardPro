@@ -200,9 +200,11 @@ export default function JobsFamily() {
                   className="relative"
                 >
                   <Bell className="w-6 h-6 text-gray-600" />
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">1</span>
-                  </span>
+                  {notifications.length > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">{notifications.length}</span>
+                    </span>
+                  )}
                 </button>
                 
                 {/* Notification Dropdown */}
