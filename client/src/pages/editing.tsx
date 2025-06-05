@@ -33,7 +33,10 @@ export default function Editing() {
   ]);
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [jobSummary, setJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
+  const [originalJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
   const [isEditingJobSummary, setIsEditingJobSummary] = useState(false);
+  const [trackChangesMode, setTrackChangesMode] = useState(false);
+  const [changes, setChanges] = useState<Array<{type: 'delete' | 'insert', text: string, position: number}>>([]);
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -69,6 +72,105 @@ export default function Editing() {
     
     setEssentialFunctions(newFunctions);
     setDraggedItem(null);
+  };
+
+  // Function to create diff between original and current text
+  const createTextDiff = (original: string, current: string) => {
+    const originalWords = original.split(' ');
+    const currentWords = current.split(' ');
+    const result = [];
+    let originalIndex = 0;
+    let currentIndex = 0;
+
+    while (originalIndex < originalWords.length || currentIndex < currentWords.length) {
+      if (originalIndex >= originalWords.length) {
+        // Remaining words are additions
+        result.push({ type: 'insert', text: currentWords.slice(currentIndex).join(' ') });
+        break;
+      } else if (currentIndex >= currentWords.length) {
+        // Remaining words are deletions
+        result.push({ type: 'delete', text: originalWords.slice(originalIndex).join(' ') });
+        break;
+      } else if (originalWords[originalIndex] === currentWords[currentIndex]) {
+        // Words match
+        result.push({ type: 'unchanged', text: originalWords[originalIndex] });
+        originalIndex++;
+        currentIndex++;
+      } else {
+        // Find next matching word
+        let found = false;
+        for (let i = currentIndex + 1; i < currentWords.length; i++) {
+          if (originalWords[originalIndex] === currentWords[i]) {
+            // Words between currentIndex and i are insertions
+            result.push({ type: 'insert', text: currentWords.slice(currentIndex, i).join(' ') });
+            currentIndex = i;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // Check if original word was deleted
+          let foundInOriginal = false;
+          for (let i = originalIndex + 1; i < originalWords.length; i++) {
+            if (originalWords[i] === currentWords[currentIndex]) {
+              // Words between originalIndex and i are deletions
+              result.push({ type: 'delete', text: originalWords.slice(originalIndex, i).join(' ') });
+              originalIndex = i;
+              foundInOriginal = true;
+              break;
+            }
+          }
+          if (!foundInOriginal) {
+            // Replace: delete original, insert current
+            result.push({ type: 'delete', text: originalWords[originalIndex] });
+            result.push({ type: 'insert', text: currentWords[currentIndex] });
+            originalIndex++;
+            currentIndex++;
+          }
+        }
+      }
+    }
+
+    return result;
+  };
+
+  const renderTrackedChanges = () => {
+    if (!trackChangesMode) {
+      return <p className="text-sm mb-4">{jobSummary}</p>;
+    }
+
+    const diff = createTextDiff(originalJobSummary, jobSummary);
+    
+    return (
+      <div className="text-sm mb-4 leading-relaxed">
+        {diff.map((change, index) => {
+          if (change.type === 'unchanged') {
+            return <span key={index}>{change.text} </span>;
+          } else if (change.type === 'delete') {
+            return (
+              <span 
+                key={index} 
+                className="bg-red-100 text-red-700 line-through decoration-red-500"
+                title="Deleted text"
+              >
+                {change.text} 
+              </span>
+            );
+          } else if (change.type === 'insert') {
+            return (
+              <span 
+                key={index} 
+                className="bg-green-100 text-green-700 font-medium"
+                title="Added text"
+              >
+                {change.text} 
+              </span>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
   };
 
   return (
@@ -220,13 +322,23 @@ export default function Editing() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Job Summary</h4>
-                    <Button 
-                      size="sm" 
-                      variant="ghost"
-                      onClick={() => setIsEditingJobSummary(!isEditingJobSummary)}
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center space-x-2">
+                      <Button 
+                        size="sm" 
+                        variant={trackChangesMode ? "default" : "outline"}
+                        onClick={() => setTrackChangesMode(!trackChangesMode)}
+                        className="text-xs"
+                      >
+                        Track Changes
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => setIsEditingJobSummary(!isEditingJobSummary)}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                   {isEditingJobSummary ? (
                     <div className="space-y-2">
@@ -239,7 +351,12 @@ export default function Editing() {
                       <div className="flex space-x-2">
                         <Button 
                           size="sm" 
-                          onClick={() => setIsEditingJobSummary(false)}
+                          onClick={() => {
+                            setIsEditingJobSummary(false);
+                            if (trackChangesMode) {
+                              setTrackChangesMode(true);
+                            }
+                          }}
                         >
                           Save
                         </Button>
@@ -247,7 +364,7 @@ export default function Editing() {
                           size="sm" 
                           variant="outline"
                           onClick={() => {
-                            setJobSummary("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
+                            setJobSummary(originalJobSummary);
                             setIsEditingJobSummary(false);
                           }}
                         >
@@ -256,7 +373,7 @@ export default function Editing() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm mb-4">{jobSummary}</p>
+                    renderTrackedChanges()
                   )}
                 </div>
 
