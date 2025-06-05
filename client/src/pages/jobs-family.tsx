@@ -478,7 +478,7 @@ export default function JobsFamily() {
                     <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
-                          onClick={() => setLocation("/editing")}
+                          onClick={() => setLocation(`/editing?jobCode=${entry.jobCode}`)}
                           className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
                         >
                           {entry.jobCode}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useLocation } from "wouter";
@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 export default function Editing() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("V3");
+  const [jobCode, setJobCode] = useState("");
   const [essentialFunctions, setEssentialFunctions] = useState([
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
     { id: 2, text: "Aid With Patient Hygiene And Nutritional Needs", hasEdit: false },
@@ -33,6 +34,15 @@ export default function Editing() {
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [jobSummary, setJobSummary] = useState("Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.");
   const [isEditingJobSummary, setIsEditingJobSummary] = useState(false);
+
+  // Get job code from URL parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobCodeParam = urlParams.get('jobCode');
+    if (jobCodeParam) {
+      setJobCode(jobCodeParam);
+    }
+  }, []);
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedItem(index);
@@ -71,7 +81,12 @@ export default function Editing() {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
               <Edit className="w-6 h-6 text-blue-600" />
-              <span className="text-xl font-semibold text-gray-900">Job Description Review</span>
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">Job Description Review</h1>
+                {jobCode && (
+                  <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode}</p>
+                )}
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
