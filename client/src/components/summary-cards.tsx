@@ -75,7 +75,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
     },
     {
       title: "Not Started",
-      value: `${parseFloat(data.growthRate)}%`,
+      value: parseFloat(data.growthRate).toString(),
       icon: XCircle,
       iconBg: "bg-orange-100",
       iconColor: "text-orange-600",
