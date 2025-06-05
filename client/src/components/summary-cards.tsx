@@ -67,7 +67,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
     {
       title: "In Progress",
       value: data.orders.toLocaleString(),
-      icon: ShoppingCart,
+      icon: TrendingUp,
       iconBg: "bg-purple-100",
       iconColor: "text-purple-600",
       change: "-2.1%",
