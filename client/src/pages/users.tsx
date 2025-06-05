@@ -188,17 +188,20 @@ export default function Users() {
         {/* Top Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 bg-blue-600 rounded"></div>
+              <span className="text-xl font-semibold text-gray-900">Users Management</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                 JM
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Users Management</h1>
                 <p className="text-sm text-gray-600">John Marks</p>
               </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-4">
             <div className="relative" ref={notificationRef}>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
