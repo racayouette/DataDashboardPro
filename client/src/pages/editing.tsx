@@ -572,9 +572,6 @@ export default function Editing() {
                       <Button size="sm" variant="ghost">
                         <RotateCcw className="w-4 h-4" />
                       </Button>
-                      <Button size="sm" variant="outline">
-                        Clear Formatting
-                      </Button>
                     </div>
                   </div>
                   
