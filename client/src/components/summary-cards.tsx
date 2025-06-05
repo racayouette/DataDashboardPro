@@ -45,6 +45,10 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
     );
   }
 
+  const totalJobs = data.totalUsers;
+  const jobsReviewed = parseFloat(data.revenue);
+  const reviewedPercentage = totalJobs > 0 ? ((jobsReviewed / totalJobs) * 100).toFixed(1) : "0.0";
+
   const cards = [
     {
       title: "Total Jobs",
@@ -61,7 +65,7 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       icon: Eye,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
-      change: "8.2%",
+      change: `${reviewedPercentage}%`,
       changeColor: "text-green-600",
     },
     {
