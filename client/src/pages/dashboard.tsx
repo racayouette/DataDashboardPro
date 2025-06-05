@@ -1,11 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Search, Bell, X } from "lucide-react";
+import { RefreshCw, Search, Bell, X, Trash2 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 import type { DashboardSummary, Transaction, JobFamily, Reviewer } from "@shared/schema";
 
 export default function Dashboard() {
@@ -15,6 +16,33 @@ export default function Dashboard() {
   const [jobFamiliesPage, setJobFamiliesPage] = useState(1);
   const [reviewersPage, setReviewersPage] = useState(1);
   const [selectedJobFamily, setSelectedJobFamily] = useState<JobFamily | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Sample notifications
+  const [notifications, setNotifications] = useState([
+    "Review deadline approaching",
+    "New job submitted", 
+    "Status update required",
+    "Feedback pending approval"
+  ]);
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    }
+
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showNotifications]);
 
   const {
     data: summaryData,
