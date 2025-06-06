@@ -287,7 +287,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                         className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
                         onClick={() => handleSort("jobFamily")}
                       >
-                        <span>Reviewer</span>
+                        <span>Functional Leader</span>
                         {getSortIcon("jobFamily")}
                       </button>
                     </th>
