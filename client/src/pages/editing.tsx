@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +27,9 @@ import {
   Eye,
   Edit,
   GripVertical,
-  Trash2
+  Trash2,
+  X,
+  UserPlus
 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +61,29 @@ export default function Editing() {
   const [lastUpdatedDate, setLastUpdatedDate] = useState("May 30, 2025");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+  
+  // State for managing multiple last edited by users
+  const [lastEditedByUsers, setLastEditedByUsers] = useState<string[]>(["Sarah Mitchell"]);
+  
+  // Available users for assignment
+  const availableUsers = [
+    "John Smith",
+    "Sarah Johnson", 
+    "Michael Brown",
+    "Emily Davis",
+    "David Wilson",
+    "John Mark",
+    "Sarah Mitchell",
+    "Kelly Johnson",
+    "Robert Kennedy",
+    "Adam Lambert",
+    "Jennifer Williams",
+    "Michael Roberts",
+    "Linda Taylor",
+    "David Phillips",
+    "Emma Sullivan",
+    "Chris Harrison"
+  ];
 
   // Sample notifications matching dashboard
   const [notifications, setNotifications] = useState([
@@ -82,6 +113,22 @@ export default function Editing() {
       setJobCode(jobCodeParam);
     }
   }, []);
+
+  // Functions for managing last edited by users
+  const addUserToLastEditedBy = (userName: string) => {
+    if (!lastEditedByUsers.includes(userName)) {
+      setLastEditedByUsers(prev => [...prev, userName]);
+    }
+  };
+
+  const removeUserFromLastEditedBy = (userName: string) => {
+    setLastEditedByUsers(prev => prev.filter(user => user !== userName));
+  };
+
+  // Get available users that aren't already added
+  const getAvailableUsersForSelection = () => {
+    return availableUsers.filter(user => !lastEditedByUsers.includes(user));
+  };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedItem(index);
@@ -428,11 +475,57 @@ export default function Editing() {
           {/* Additional Info Cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex items-center space-x-2 mb-2">
-                <Edit className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">Last Edited By</span>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Edit className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600">Last Edited By</span>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost" 
+                      size="sm"
+                      className="h-6 w-6 p-0 hover:bg-blue-50"
+                      disabled={getAvailableUsersForSelection().length === 0}
+                    >
+                      <UserPlus className="w-3 h-3 text-blue-600" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {getAvailableUsersForSelection().map((user) => (
+                      <DropdownMenuItem
+                        key={user}
+                        onClick={() => addUserToLastEditedBy(user)}
+                        className="cursor-pointer"
+                      >
+                        {user}
+                      </DropdownMenuItem>
+                    ))}
+                    {getAvailableUsersForSelection().length === 0 && (
+                      <DropdownMenuItem disabled>
+                        All users added
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              <p className="text-blue-600 font-semibold">Sarah Mitchell</p>
+              <div className="space-y-2">
+                {lastEditedByUsers.map((user, index) => (
+                  <div key={index} className="flex items-center justify-between group">
+                    <span className="text-blue-600 font-semibold text-sm">{user}</span>
+                    {lastEditedByUsers.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
+                        onClick={() => removeUserFromLastEditedBy(user)}
+                      >
+                        <X className="w-3 h-3 text-red-500" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
