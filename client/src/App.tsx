@@ -31,6 +31,25 @@ function Router() {
 }
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ username: string, fullName: string, email: string } | null>(null);
+
+  const handleAuthenticated = (userData: { username: string, fullName: string, email: string }) => {
+    setCurrentUser(userData);
+    setIsAuthenticated(true);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <WindowsAuth onAuthenticated={handleAuthenticated} />
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
