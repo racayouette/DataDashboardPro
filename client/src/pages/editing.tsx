@@ -1228,6 +1228,14 @@ export default function Editing() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Comments */}
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-3">Comments</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-500 italic">{originalAdditionalText}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1262,6 +1270,14 @@ export default function Editing() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Comments */}
+                  <div>
+                    <h4 className="font-medium text-gray-900 mb-3">Comments</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-500 italic">{additionalText || "Add a comment here..."}</p>
                     </div>
                   </div>
                 </div>
