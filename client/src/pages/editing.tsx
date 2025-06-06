@@ -1196,10 +1196,10 @@ export default function Editing() {
             <DialogTitle className="text-xl font-semibold">Compare Versions</DialogTitle>
           </DialogHeader>
           <div className="flex h-full p-6 pt-0 gap-6">
-            {/* Previous Version Box */}
+            {/* Original Job Description Box */}
             <div className="flex-1 flex flex-col">
               <div className="mb-4">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Previous Version</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Original Job Description</h3>
                 <p className="text-sm text-gray-500">Last modified: May 15, 2025</p>
               </div>
               <div className="flex-1 bg-white border border-gray-200 rounded-lg p-6 overflow-y-auto">
