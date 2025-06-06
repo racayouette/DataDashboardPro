@@ -9,12 +9,13 @@ import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
 
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import type { DashboardSummary, Transaction, JobFamily, Reviewer } from "@shared/schema";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [transactionsPage, setTransactionsPage] = useState(1);
   const [jobFamiliesPage, setJobFamiliesPage] = useState(1);
   const [reviewersPage, setReviewersPage] = useState(1);
@@ -62,6 +63,11 @@ export default function Dashboard() {
       setPasswordError("Incorrect password");
       setPassword("");
     }
+  };
+
+  // Handle dialog close - redirect to Jobs Family page
+  const handleDialogClose = () => {
+    setLocation("/jobs-family");
   };
 
   const {
@@ -160,7 +166,7 @@ export default function Dashboard() {
       {/* Show password dialog if protected */}
       {isPasswordProtected ? (
         <main className="flex-1 flex items-center justify-center">
-          <Dialog open={true}>
+          <Dialog open={true} onOpenChange={handleDialogClose}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <div className="flex items-center space-x-2 mb-2">
