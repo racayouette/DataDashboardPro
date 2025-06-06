@@ -37,7 +37,6 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Editing() {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("V3");
   const [jobCode, setJobCode] = useState("");
   const originalEssentialFunctions = [
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
@@ -428,6 +427,11 @@ export default function Editing() {
     updateLastModifiedDate();
   };
 
+  const handleCompareVersions = () => {
+    // Handle compare versions functionality
+    console.log("Compare versions clicked");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
@@ -719,7 +723,7 @@ export default function Editing() {
                     <h3 className="text-lg font-semibold">AI-Generated Job Description</h3>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">Version {activeTab.replace('V', '')}</span>
+                    <span className="text-sm font-medium">Version 3</span>
                     <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
                   </div>
                 </div>
@@ -864,33 +868,7 @@ export default function Editing() {
                   </div>
                 </div>
 
-                {/* Compare Versions */}
-                <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Compare Versions</h4>
-                  <div className="flex space-x-2">
-                    <Button 
-                      variant={activeTab === "V1" ? "default" : "outline"} 
-                      size="sm"
-                      onClick={() => setActiveTab("V1")}
-                    >
-                      V1
-                    </Button>
-                    <Button 
-                      variant={activeTab === "V2" ? "default" : "outline"} 
-                      size="sm"
-                      onClick={() => setActiveTab("V2")}
-                    >
-                      V2
-                    </Button>
-                    <Button 
-                      variant={activeTab === "V3" ? "default" : "outline"} 
-                      size="sm"
-                      onClick={() => setActiveTab("V3")}
-                    >
-                      V3
-                    </Button>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
@@ -916,6 +894,13 @@ export default function Editing() {
               disabled={hasChanges}
             >
               Accept Changes
+            </Button>
+            <Button 
+              variant="outline"
+              className="bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200"
+              onClick={handleCompareVersions}
+            >
+              Compare Versions
             </Button>
           </div>
         </div>
