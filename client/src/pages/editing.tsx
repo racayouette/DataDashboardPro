@@ -78,6 +78,13 @@ export default function Editing() {
   // State for Compare Versions modal
   const [showCompareModal, setShowCompareModal] = useState(false);
   
+  // State for additional text section
+  const [additionalText, setAdditionalText] = useState("Additional requirements and considerations for this role may include specialized training, certifications, or equipment handling protocols.");
+  const [originalAdditionalText] = useState("Additional requirements and considerations for this role may include specialized training, certifications, or equipment handling protocols.");
+  const [isEditingAdditionalText, setIsEditingAdditionalText] = useState(false);
+  const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
+  const [additionalTextComment, setAdditionalTextComment] = useState("");
+  
   // Function to check for changes
   const checkForChanges = () => {
     // Check if job summary has changed
@@ -443,6 +450,36 @@ export default function Editing() {
 
   const handleCompareVersions = () => {
     setShowCompareModal(true);
+  };
+
+  const handleEditAdditionalText = () => {
+    setIsEditingAdditionalText(true);
+  };
+
+  const handleSaveAdditionalText = () => {
+    setIsEditingAdditionalText(false);
+    updateLastModifiedDate();
+  };
+
+  const handleCancelAdditionalText = () => {
+    setAdditionalText(originalAdditionalText);
+    setIsEditingAdditionalText(false);
+  };
+
+  const handleAdditionalTextComment = () => {
+    setShowAdditionalTextCommentModal(true);
+  };
+
+  const handleSaveAdditionalTextComment = () => {
+    // Save the comment functionality here
+    console.log("Additional text comment saved:", additionalTextComment);
+    setShowAdditionalTextCommentModal(false);
+    setAdditionalTextComment("");
+  };
+
+  const handleCancelAdditionalTextComment = () => {
+    setAdditionalTextComment("");
+    setShowAdditionalTextCommentModal(false);
   };
 
   return (
@@ -881,6 +918,64 @@ export default function Editing() {
                   </div>
                 </div>
 
+                {/* Additional Requirements Section */}
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold">Additional Requirements</h4>
+                    <div className="flex space-x-2">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={handleAdditionalTextComment}
+                        title="Add comment"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    {isEditingAdditionalText ? (
+                      <div className="space-y-3">
+                        <Textarea
+                          value={additionalText}
+                          onChange={(e) => setAdditionalText(e.target.value)}
+                          className="min-h-[120px] resize-none"
+                          autoFocus
+                        />
+                        <div className="flex justify-end space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCancelAdditionalText}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={handleSaveAdditionalText}
+                          >
+                            Save
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="group relative">
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                          {additionalText}
+                        </p>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                          onClick={handleEditAdditionalText}
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
               </div>
             </div>
@@ -1043,6 +1138,47 @@ export default function Editing() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Additional Text Comment Modal */}
+      <Dialog open={showAdditionalTextCommentModal} onOpenChange={() => {
+        // Prevent closing unless explicitly cancelled or saved
+        return;
+      }}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add Comment for Additional Requirements</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label htmlFor="additional-text-comment" className="text-sm font-medium">
+                Comment
+              </label>
+              <Textarea
+                id="additional-text-comment"
+                value={additionalTextComment}
+                onChange={(e) => setAdditionalTextComment(e.target.value)}
+                placeholder="Enter your comment about the additional requirements..."
+                className="min-h-[100px]"
+                autoFocus
+              />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button
+              variant="outline"
+              onClick={handleCancelAdditionalTextComment}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveAdditionalTextComment}
+              disabled={!additionalTextComment.trim()}
+            >
+              Save
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Compare Versions Modal */}
       <Dialog open={showCompareModal} onOpenChange={setShowCompareModal}>
