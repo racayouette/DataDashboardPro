@@ -921,7 +921,7 @@ export default function Editing() {
                 {/* Additional Requirements Section */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold">Additional Requirements</h4>
+                    <h4 className="font-semibold">Comments</h4>
                     <div className="flex space-x-2">
                       <Button 
                         size="sm" 
