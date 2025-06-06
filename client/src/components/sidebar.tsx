@@ -5,8 +5,8 @@ export function Sidebar() {
   const [location] = useLocation();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: true },
-    { icon: Users, label: "Jobs Family", path: "/jobs-family", active: false },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: false },
+    { icon: Users, label: "Jobs Family", path: "/jobs-family", active: true },
     { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
     { icon: Bell, label: "Notifications", path: "/notifications", active: false },
     { icon: Settings, label: "Settings", path: "/settings", active: false },
