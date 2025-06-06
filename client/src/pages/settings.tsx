@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 interface NotificationSettings {
   emailNotifications: boolean;
@@ -40,11 +41,34 @@ interface User {
   lastLogin: string;
 }
 
+interface Reviewer {
+  id: number;
+  jobFamily: string;
+  completed: number;
+  inProgress: number;
+  responsible: string;
+  username: string | null;
+  fullName: string | null;
+  email: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('notifications');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Fetch reviewers data
+  const { data: reviewersData, isLoading: reviewersLoading } = useQuery({
+    queryKey: ['/api/reviewers'],
+    queryFn: async () => {
+      const response = await fetch('/api/reviewers');
+      if (!response.ok) throw new Error('Failed to fetch reviewers');
+      return response.json();
+    }
+  });
 
   // Settings state
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
@@ -159,6 +183,7 @@ export default function Settings() {
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
+    { id: 'reviewers', label: 'Reviewers', icon: UserCheck },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
 
@@ -255,6 +280,82 @@ export default function Settings() {
       setShowDeleteDialog(false);
     }
   };
+
+  const renderReviewersSection = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Reviewer Management</h3>
+      
+      {reviewersLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
+          <span className="ml-2 text-gray-500">Loading reviewers...</span>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Job Family
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Responsible
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Completed
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    In Progress
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Username
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Full Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {reviewersData?.reviewers?.map((reviewer: Reviewer) => (
+                  <tr key={reviewer.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {reviewer.jobFamily}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {reviewer.responsible}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant="default" className="bg-green-100 text-green-800">
+                        {reviewer.completed}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                        {reviewer.inProgress}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {reviewer.username || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {reviewer.fullName || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {reviewer.email || '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   const renderUsersSection = () => (
     <div className="space-y-6">
@@ -659,6 +760,8 @@ export default function Settings() {
         return renderNotificationSettings();
       case 'users':
         return renderUsersSection();
+      case 'reviewers':
+        return renderReviewersSection();
       case 'monitoring':
         return renderDatabaseHealth();
       default:
