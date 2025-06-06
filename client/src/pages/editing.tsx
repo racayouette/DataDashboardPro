@@ -926,8 +926,8 @@ export default function Editing() {
                       <Button 
                         size="sm" 
                         variant="ghost"
-                        onClick={handleAdditionalTextComment}
-                        title="Add comment"
+                        onClick={handleEditAdditionalText}
+                        title="Edit additional requirements"
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -964,14 +964,6 @@ export default function Editing() {
                         <p className="text-sm text-gray-700 leading-relaxed">
                           {additionalText}
                         </p>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                          onClick={handleEditAdditionalText}
-                        >
-                          <Pencil className="w-3 h-3" />
-                        </Button>
                       </div>
                     )}
                   </div>
