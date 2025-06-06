@@ -413,6 +413,7 @@ export default function Settings() {
   };
 
   const handleShieldClick = (fieldType: 'completed' | 'inProgress') => {
+    console.log('Shield clicked for field:', fieldType);
     setUnlockField(fieldType);
     setShowPasswordDialog(true);
     setPasswordInput("");
@@ -1487,7 +1488,11 @@ export default function Settings() {
                     {editingResponsible.completed > 0 && (
                       <button
                         type="button"
-                        onClick={() => handleShieldClick('completed')}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleShieldClick('completed');
+                        }}
                         className="p-1 hover:bg-gray-100 rounded transition-colors"
                         title="Click to unlock field"
                       >
@@ -1511,7 +1516,11 @@ export default function Settings() {
                     {editingResponsible.inProgress > 0 && (
                       <button
                         type="button"
-                        onClick={() => handleShieldClick('inProgress')}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleShieldClick('inProgress');
+                        }}
                         className="p-1 hover:bg-gray-100 rounded transition-colors"
                         title="Click to unlock field"
                       >
