@@ -902,6 +902,30 @@ export class MemStorage implements IStorage {
     
     return { logs, total, totalPages, currentPage: page };
   }
+
+  async getReviewerByUsername(username: string): Promise<Reviewer | undefined> {
+    const reviewers = Array.from(this.reviewersList.values());
+    return reviewers.find(reviewer => reviewer.username === username);
+  }
+
+  async createUserInReviewers(userData: { username: string, fullName: string, email: string }): Promise<Reviewer> {
+    const id = ++this.currentReviewerId;
+    const now = new Date();
+    const newReviewer: Reviewer = {
+      id,
+      username: userData.username,
+      fullName: userData.fullName,
+      email: userData.email,
+      jobFamily: "General",
+      completed: 0,
+      inProgress: 0,
+      responsible: userData.fullName,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.reviewersList.set(id, newReviewer);
+    return newReviewer;
+  }
 }
 
 export const storage = new MemStorage();

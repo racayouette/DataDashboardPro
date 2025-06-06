@@ -318,5 +318,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { username, fullName, email } = req.body;
+      
+      if (!username || !fullName || !email) {
+        return res.status(400).json({ error: "All fields are required" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getReviewerByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ error: "User already exists" });
+      }
+
+      const newUser = await storage.createUserInReviewers({ username, fullName, email });
+      res.status(201).json(newUser);
+    } catch (error) {
+      console.error("Error registering user:", error);
+      res.status(500).json({ error: "Failed to register user" });
+    }
+  });
+
   return httpServer;
 }
