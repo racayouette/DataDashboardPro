@@ -337,7 +337,7 @@ export class MemStorage implements IStorage {
       this.jobFamiliesList.set(fullJobFamily.id, fullJobFamily);
     });
 
-    // Create reviewers
+    // Create reviewers with authentication fields
     const sampleReviewers: Omit<Reviewer, 'id'>[] = [
       {
         username: null,
@@ -388,6 +388,9 @@ export class MemStorage implements IStorage {
         completed: 91,
         inProgress: 3,
         responsible: "Lisa Anderson",
+        username: null,
+        fullName: null,
+        email: null,
         createdAt: now,
         updatedAt: now,
       },
@@ -396,6 +399,9 @@ export class MemStorage implements IStorage {
         completed: 38,
         inProgress: 15,
         responsible: "Thomas Garcia",
+        username: null,
+        fullName: null,
+        email: null,
         createdAt: now,
         updatedAt: now,
       },
@@ -404,6 +410,9 @@ export class MemStorage implements IStorage {
         completed: 56,
         inProgress: 9,
         responsible: "David Thompson",
+        username: null,
+        fullName: null,
+        email: null,
         createdAt: now,
         updatedAt: now,
       },
@@ -882,6 +891,11 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const newChange: JobDescriptionChange = {
       ...change,
+      jobDescriptionId: change.jobDescriptionId ?? null,
+      userId: change.userId ?? null,
+      oldValue: change.oldValue ?? null,
+      newValue: change.newValue ?? null,
+      position: change.position ?? null,
       id: this.currentJobDescriptionChangeId++,
       createdAt: now,
     };
@@ -894,9 +908,13 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const newLog: AuditLog = {
       ...log,
+      userId: log.userId ?? null,
+      entityId: log.entityId ?? null,
+      ipAddress: log.ipAddress ?? null,
+      userAgent: log.userAgent ?? null,
+      details: log.details ?? {},
       id: this.currentAuditLogId++,
       createdAt: now,
-      updatedAt: now,
     };
     this.auditLogsList.set(newLog.id, newLog);
     return newLog;
