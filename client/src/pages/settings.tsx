@@ -1121,7 +1121,21 @@ export default function Settings() {
           </label>
         </div>
 
-
+        {/* Save Changes Button */}
+        <div className="flex justify-end pt-4 border-t border-gray-200">
+          <button
+            onClick={handleSaveSettings}
+            disabled={isSaving}
+            className="flex items-center space-x-2 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+          >
+            {isSaving ? (
+              <RefreshCw className="w-3 h-3 animate-spin" />
+            ) : (
+              <Save className="w-3 h-3" />
+            )}
+            <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -1451,18 +1465,6 @@ export default function Settings() {
               <span className="text-xl font-semibold text-gray-900">Settings</span>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleSaveSettings}
-                disabled={isSaving}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
-              >
-                {isSaving ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4" />
-                )}
-                <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
-              </button>
             </div>
           </div>
 
