@@ -64,48 +64,6 @@ export default function Dashboard() {
     }
   };
 
-  // Show password dialog if protected
-  if (isPasswordProtected) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex">
-        <Sidebar />
-        <main className="flex-1 flex items-center justify-center">
-          <Dialog open={true}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <div className="flex items-center space-x-2 mb-2">
-                  <Lock className="w-5 h-5 text-blue-600" />
-                  <DialogTitle>Dashboard Access Required</DialogTitle>
-                </div>
-                <DialogDescription>
-                  Please enter the password to access the Dashboard
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                <div>
-                  <Input
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={passwordError ? "border-red-500" : ""}
-                    autoFocus
-                  />
-                  {passwordError && (
-                    <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-                  )}
-                </div>
-                <Button type="submit" className="w-full">
-                  Access Dashboard
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </main>
-      </div>
-    );
-  }
-
   const {
     data: summaryData,
     isLoading: summaryLoading,
@@ -199,7 +157,43 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
       
-      <main className="flex-1 p-6">
+      {/* Show password dialog if protected */}
+      {isPasswordProtected ? (
+        <main className="flex-1 flex items-center justify-center">
+          <Dialog open={true}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <div className="flex items-center space-x-2 mb-2">
+                  <Lock className="w-5 h-5 text-blue-600" />
+                  <DialogTitle>Dashboard Access Required</DialogTitle>
+                </div>
+                <DialogDescription>
+                  Please enter the password to access the Dashboard
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={passwordError ? "border-red-500" : ""}
+                    autoFocus
+                  />
+                  {passwordError && (
+                    <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+                  )}
+                </div>
+                <Button type="submit" className="w-full">
+                  Access Dashboard
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </main>
+      ) : (
+        <main className="flex-1 p-6">
         {/* Top Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
@@ -323,7 +317,8 @@ export default function Dashboard() {
             } : undefined}
           />
         </div>
-      </main>
+        </main>
+      )}
     </div>
   );
 }
