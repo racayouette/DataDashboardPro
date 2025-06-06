@@ -922,8 +922,8 @@ export default function Editing() {
                 {/* Additional Requirements Section */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold">Comments</h4>
                     <div className="flex items-center space-x-3">
-                      <h4 className="font-semibold">Comments</h4>
                       <div className="flex items-center space-x-2">
                         <input
                           type="checkbox"
@@ -939,8 +939,6 @@ export default function Editing() {
                           Critical
                         </label>
                       </div>
-                    </div>
-                    <div className="flex space-x-2">
                       <Button 
                         size="sm" 
                         variant="ghost"
