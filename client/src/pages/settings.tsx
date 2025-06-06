@@ -131,6 +131,25 @@ export default function Settings() {
     email: ""
   });
 
+  // Responsible people management state
+  const [responsibleSearchTerm, setResponsibleSearchTerm] = useState("");
+  const [showAddResponsibleModal, setShowAddResponsibleModal] = useState(false);
+  const [showEditResponsibleModal, setShowEditResponsibleModal] = useState(false);
+  const [showDeleteResponsibleDialog, setShowDeleteResponsibleDialog] = useState(false);
+  const [editingResponsible, setEditingResponsible] = useState<Reviewer | null>(null);
+  const [responsibleToDelete, setResponsibleToDelete] = useState<Reviewer | null>(null);
+  const [responsibleSortBy, setResponsibleSortBy] = useState<string>("");
+  const [responsibleSortOrder, setResponsibleSortOrder] = useState<"asc" | "desc">("asc");
+  const [newResponsible, setNewResponsible] = useState<Partial<Reviewer>>({
+    jobFamily: "",
+    responsible: "",
+    completed: 0,
+    inProgress: 0,
+    username: "",
+    fullName: "",
+    email: ""
+  });
+
   // Sample user data
   const [users, setUsers] = useState<User[]>([
     {
@@ -383,6 +402,90 @@ export default function Settings() {
       console.log('Deleting reviewer:', reviewerToDelete);
       setReviewerToDelete(null);
       setShowDeleteReviewerDialog(false);
+    }
+  };
+
+  // Responsible people management functions
+  const filteredResponsible = (reviewersData?.reviewers || []).filter((reviewer: Reviewer) => {
+    const matchesSearch = reviewer.responsible.toLowerCase().includes(responsibleSearchTerm.toLowerCase()) ||
+                         (reviewer.username && reviewer.username.toLowerCase().includes(responsibleSearchTerm.toLowerCase())) ||
+                         (reviewer.fullName && reviewer.fullName.toLowerCase().includes(responsibleSearchTerm.toLowerCase())) ||
+                         (reviewer.email && reviewer.email.toLowerCase().includes(responsibleSearchTerm.toLowerCase()));
+    
+    return matchesSearch;
+  });
+
+  const sortedResponsible = [...filteredResponsible].sort((a, b) => {
+    if (!responsibleSortBy) return 0;
+    
+    const aValue = a[responsibleSortBy as keyof Reviewer];
+    const bValue = b[responsibleSortBy as keyof Reviewer];
+    
+    if (responsibleSortOrder === "asc") {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
+  const handleResponsibleSort = (column: string) => {
+    if (responsibleSortBy === column) {
+      setResponsibleSortOrder(responsibleSortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setResponsibleSortBy(column);
+      setResponsibleSortOrder("asc");
+    }
+  };
+
+  const getResponsibleSortIcon = (column: string) => {
+    if (responsibleSortBy !== column) {
+      return <ArrowUpDown className="w-4 h-4" />;
+    }
+    return responsibleSortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
+  };
+
+  const handleAddResponsible = () => {
+    if (newResponsible.responsible) {
+      // This would be an API call in a real implementation
+      console.log('Adding responsible person:', newResponsible);
+      setNewResponsible({
+        jobFamily: "",
+        responsible: "",
+        completed: 0,
+        inProgress: 0,
+        username: "",
+        fullName: "",
+        email: ""
+      });
+      setShowAddResponsibleModal(false);
+    }
+  };
+
+  const handleEditResponsible = (responsible: Reviewer) => {
+    setEditingResponsible(responsible);
+    setShowEditResponsibleModal(true);
+  };
+
+  const handleUpdateResponsible = () => {
+    if (editingResponsible) {
+      // This would be an API call in a real implementation
+      console.log('Updating responsible person:', editingResponsible);
+      setEditingResponsible(null);
+      setShowEditResponsibleModal(false);
+    }
+  };
+
+  const handleDeleteResponsible = (responsible: Reviewer) => {
+    setResponsibleToDelete(responsible);
+    setShowDeleteResponsibleDialog(true);
+  };
+
+  const confirmDeleteResponsible = () => {
+    if (responsibleToDelete) {
+      // This would be an API call in a real implementation
+      console.log('Deleting responsible person:', responsibleToDelete);
+      setResponsibleToDelete(null);
+      setShowDeleteResponsibleDialog(false);
     }
   };
 
@@ -1040,19 +1143,281 @@ export default function Settings() {
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Responsible Person Management</h3>
       
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <div className="text-center py-8">
-          <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-900 mb-2">Responsible Person Settings</h4>
-          <p className="text-gray-500 mb-6">
-            Manage responsible persons for job families and review processes.
-          </p>
-          <Button className="flex items-center gap-2 mx-auto">
+      {/* Search and Actions */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            placeholder="Search responsible persons..."
+            value={responsibleSearchTerm}
+            onChange={(e) => setResponsibleSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowAddResponsibleModal(true)} className="flex items-center gap-2">
             <Plus className="w-4 h-4" />
             Add Responsible Person
           </Button>
         </div>
       </div>
+
+      {reviewersLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
+          <span className="ml-2 text-gray-500">Loading responsible persons...</span>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleResponsibleSort('responsible')}
+                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
+                    >
+                      Full Name {getResponsibleSortIcon('responsible')}
+                    </button>
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleResponsibleSort('completed')}
+                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
+                    >
+                      Completed {getResponsibleSortIcon('completed')}
+                    </button>
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleResponsibleSort('inProgress')}
+                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
+                    >
+                      In Progress {getResponsibleSortIcon('inProgress')}
+                    </button>
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleResponsibleSort('username')}
+                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
+                    >
+                      Username {getResponsibleSortIcon('username')}
+                    </button>
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <span className="text-sm font-medium text-gray-500 tracking-wider">
+                      Actions
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {sortedResponsible.map((responsible: Reviewer) => (
+                  <tr key={responsible.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{responsible.responsible}</div>
+                        <div className="text-sm text-gray-500">{responsible.email || '-'}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant="default" className="bg-green-100 text-green-800">
+                        {responsible.completed}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                        {responsible.inProgress}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {responsible.username || '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditResponsible(responsible)}
+                          className="text-blue-600 hover:text-blue-700"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteResponsible(responsible)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Add Responsible Person Modal */}
+      <Dialog open={showAddResponsibleModal} onOpenChange={setShowAddResponsibleModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Responsible Person</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="responsibleName">Full Name</Label>
+              <Input
+                id="responsibleName"
+                value={newResponsible.responsible || ""}
+                onChange={(e) => setNewResponsible({ ...newResponsible, responsible: e.target.value })}
+                placeholder="Enter full name"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="responsibleCompleted">Completed</Label>
+                <Input
+                  id="responsibleCompleted"
+                  type="number"
+                  value={newResponsible.completed || 0}
+                  onChange={(e) => setNewResponsible({ ...newResponsible, completed: parseInt(e.target.value) || 0 })}
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="responsibleInProgress">In Progress</Label>
+                <Input
+                  id="responsibleInProgress"
+                  type="number"
+                  value={newResponsible.inProgress || 0}
+                  onChange={(e) => setNewResponsible({ ...newResponsible, inProgress: parseInt(e.target.value) || 0 })}
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="responsibleUsername">Username</Label>
+              <Input
+                id="responsibleUsername"
+                value={newResponsible.username || ""}
+                onChange={(e) => setNewResponsible({ ...newResponsible, username: e.target.value })}
+                placeholder="Enter username"
+              />
+            </div>
+            <div>
+              <Label htmlFor="responsibleEmail">Email</Label>
+              <Input
+                id="responsibleEmail"
+                type="email"
+                value={newResponsible.email || ""}
+                onChange={(e) => setNewResponsible({ ...newResponsible, email: e.target.value })}
+                placeholder="Enter email address"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setShowAddResponsibleModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddResponsible}>
+                Add Responsible Person
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Responsible Person Modal */}
+      <Dialog open={showEditResponsibleModal} onOpenChange={setShowEditResponsibleModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Responsible Person</DialogTitle>
+          </DialogHeader>
+          {editingResponsible && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="editResponsibleName">Full Name</Label>
+                <Input
+                  id="editResponsibleName"
+                  value={editingResponsible.responsible}
+                  onChange={(e) => setEditingResponsible({ ...editingResponsible, responsible: e.target.value })}
+                  placeholder="Enter full name"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="editResponsibleCompleted">Completed</Label>
+                  <Input
+                    id="editResponsibleCompleted"
+                    type="number"
+                    value={editingResponsible.completed}
+                    onChange={(e) => setEditingResponsible({ ...editingResponsible, completed: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editResponsibleInProgress">In Progress</Label>
+                  <Input
+                    id="editResponsibleInProgress"
+                    type="number"
+                    value={editingResponsible.inProgress}
+                    onChange={(e) => setEditingResponsible({ ...editingResponsible, inProgress: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="editResponsibleUsername">Username</Label>
+                <Input
+                  id="editResponsibleUsername"
+                  value={editingResponsible.username || ""}
+                  onChange={(e) => setEditingResponsible({ ...editingResponsible, username: e.target.value })}
+                  placeholder="Enter username"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editResponsibleEmail">Email</Label>
+                <Input
+                  id="editResponsibleEmail"
+                  type="email"
+                  value={editingResponsible.email || ""}
+                  onChange={(e) => setEditingResponsible({ ...editingResponsible, email: e.target.value })}
+                  placeholder="Enter email address"
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setShowEditResponsibleModal(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleUpdateResponsible}>
+                  Update Responsible Person
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Responsible Person Confirmation */}
+      <AlertDialog open={showDeleteResponsibleDialog} onOpenChange={setShowDeleteResponsibleDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the responsible person
+              "{responsibleToDelete?.responsible}" and remove their data from the system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteResponsible}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 
