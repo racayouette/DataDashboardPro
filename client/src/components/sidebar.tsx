@@ -26,7 +26,10 @@ export function Sidebar() {
       <nav className="space-y-2 flex-1">
         {menuItems.filter(item => !item.hidden).map((item) => {
           const Icon = item.icon;
-          const isActive = location === item.path;
+          // Special case for Jobs Family: highlight when on root path or jobs-family path
+          const isActive = item.path === "/jobs-family" 
+            ? (location === "/" || location === "/jobs-family")
+            : location === item.path;
           
           return (
             <Link key={item.path} href={item.path}>
