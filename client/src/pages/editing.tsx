@@ -84,6 +84,7 @@ export default function Editing() {
   const [isEditingAdditionalText, setIsEditingAdditionalText] = useState(false);
   const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
   const [additionalTextComment, setAdditionalTextComment] = useState("");
+  const [isCritical, setIsCritical] = useState(false);
   
   // Function to check for changes
   const checkForChanges = () => {
@@ -921,7 +922,24 @@ export default function Editing() {
                 {/* Additional Requirements Section */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold">Comments</h4>
+                    <div className="flex items-center space-x-3">
+                      <h4 className="font-semibold">Comments</h4>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="critical-checkbox"
+                          checked={isCritical}
+                          onChange={(e) => setIsCritical(e.target.checked)}
+                          className="h-4 w-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                        />
+                        <label 
+                          htmlFor="critical-checkbox" 
+                          className="text-sm font-medium cursor-pointer text-red-600"
+                        >
+                          Critical
+                        </label>
+                      </div>
+                    </div>
                     <div className="flex space-x-2">
                       <Button 
                         size="sm" 
