@@ -1005,9 +1005,9 @@ export default function Editing() {
               Submit For HR Review
             </Button>
             <Button 
-              className={hasChanges ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}
+              className={(hasChanges || isCritical) ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}
               onClick={handleAcceptChanges}
-              disabled={hasChanges}
+              disabled={hasChanges || isCritical}
             >
               Accept Changes
             </Button>
