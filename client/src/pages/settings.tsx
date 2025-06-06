@@ -382,7 +382,10 @@ export default function Settings() {
   };
 
   const handleEditReviewer = (reviewer: Reviewer) => {
-    setEditingReviewer(reviewer);
+    setEditingReviewer({
+      ...reviewer,
+      fullName: reviewer.jobFamily // Set reviewer name in Full Name field
+    });
     setShowEditReviewerModal(true);
   };
 
