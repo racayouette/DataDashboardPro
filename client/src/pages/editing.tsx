@@ -563,14 +563,6 @@ export default function Editing() {
               </div>
               <p className="text-blue-600 font-semibold">May 30, 2025</p>
             </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex items-center space-x-2 mb-2">
-                <FileText className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">Current Version</span>
-              </div>
-              <p className="text-blue-600 font-semibold">V3</p>
-            </div>
           </div>
 
           {/* Main Content Area */}
