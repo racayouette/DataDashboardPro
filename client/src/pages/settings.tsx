@@ -121,6 +121,10 @@ export default function Settings() {
   const [reviewerToDelete, setReviewerToDelete] = useState<Reviewer | null>(null);
   const [reviewerSortBy, setReviewerSortBy] = useState<string>("");
   const [reviewerSortOrder, setReviewerSortOrder] = useState<"asc" | "desc">("asc");
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [unlockField, setUnlockField] = useState<'completed' | 'inProgress' | null>(null);
   const [newReviewer, setNewReviewer] = useState<Partial<Reviewer>>({
     jobFamily: "",
     responsible: "",
@@ -403,6 +407,37 @@ export default function Settings() {
       setReviewerToDelete(null);
       setShowDeleteReviewerDialog(false);
     }
+  };
+
+  const handleShieldClick = (fieldType: 'completed' | 'inProgress') => {
+    setUnlockField(fieldType);
+    setShowPasswordDialog(true);
+    setPasswordInput("");
+    setPasswordError("");
+  };
+
+  const handlePasswordSubmit = () => {
+    if (passwordInput === "Sunshine") {
+      if (editingReviewer && unlockField) {
+        setEditingReviewer({ 
+          ...editingReviewer, 
+          [unlockField]: 0 
+        });
+      }
+      setShowPasswordDialog(false);
+      setPasswordInput("");
+      setPasswordError("");
+      setUnlockField(null);
+    } else {
+      setPasswordError("Incorrect password");
+    }
+  };
+
+  const handlePasswordCancel = () => {
+    setShowPasswordDialog(false);
+    setPasswordInput("");
+    setPasswordError("");
+    setUnlockField(null);
   };
 
   // Responsible people management functions
@@ -717,7 +752,14 @@ export default function Settings() {
                       className="flex-1"
                     />
                     {editingReviewer.completed > 0 && (
-                      <ShieldCheck className="w-4 h-4 text-gray-400" />
+                      <button
+                        type="button"
+                        onClick={() => handleShieldClick('completed')}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Click to unlock field"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
+                      </button>
                     )}
                   </div>
                 </div>
@@ -734,7 +776,14 @@ export default function Settings() {
                       className="flex-1"
                     />
                     {editingReviewer.inProgress > 0 && (
-                      <ShieldCheck className="w-4 h-4 text-gray-400" />
+                      <button
+                        type="button"
+                        onClick={() => handleShieldClick('inProgress')}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Click to unlock field"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
+                      </button>
                     )}
                   </div>
                 </div>
@@ -787,6 +836,40 @@ export default function Settings() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Password Dialog */}
+      <Dialog open={showPasswordDialog} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Unlock Field</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="password">Enter password to unlock the {unlockField} field:</Label>
+              <Input
+                id="password"
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Enter password"
+                onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
+                autoFocus
+              />
+              {passwordError && (
+                <p className="text-sm text-red-600 mt-1">{passwordError}</p>
+              )}
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handlePasswordCancel}>
+                Cancel
+              </Button>
+              <Button onClick={handlePasswordSubmit}>
+                Unlock
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 
