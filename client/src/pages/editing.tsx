@@ -58,6 +58,7 @@ export default function Editing() {
   const [editingFunctionText, setEditingFunctionText] = useState("");
   const [originalEditingText, setOriginalEditingText] = useState("");
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
   const [lastUpdatedDate, setLastUpdatedDate] = useState("May 30, 2025");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -415,12 +416,22 @@ export default function Editing() {
   };
 
   const handleSubmitForReview = () => {
+    setShowSubmitConfirmation(true);
+  };
+
+  const confirmSubmitForReview = () => {
     updateLastModifiedDate();
     
     // Add notification with the current job number
     const currentJobCode = jobCode || "10001"; // Use actual job code or fallback
     const newNotification = `${currentJobCode} was reviewed and needs your approval`;
     setNotifications(prev => [newNotification, ...prev]);
+    
+    setShowSubmitConfirmation(false);
+  };
+
+  const cancelSubmitForReview = () => {
+    setShowSubmitConfirmation(false);
   };
 
   const handleAcceptChanges = () => {
@@ -1006,6 +1017,26 @@ export default function Editing() {
             </AlertDialogCancel>
             <AlertDialogAction onClick={confirmCloseEditModal}>
               Discard Changes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Submit For Review Confirmation Dialog */}
+      <AlertDialog open={showSubmitConfirmation} onOpenChange={() => {}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Submit For HR Review</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to submit this job description for HR review? This will notify the HR team for approval.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelSubmitForReview}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmSubmitForReview}>
+              Ok
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
