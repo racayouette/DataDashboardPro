@@ -65,6 +65,9 @@ export default function Editing() {
   // State for managing multiple last edited by users
   const [lastEditedByUsers, setLastEditedByUsers] = useState<string[]>(["Sarah Mitchell"]);
   
+  // State for managing reviewers
+  const [reviewers, setReviewers] = useState<string[]>(["Kelly Johnson"]);
+  
   // Available users for assignment
   const availableUsers = [
     "John Smith",
@@ -125,9 +128,25 @@ export default function Editing() {
     setLastEditedByUsers(prev => prev.filter(user => user !== userName));
   };
 
-  // Get available users that aren't already added
+  // Get available users that aren't already added to last edited by
   const getAvailableUsersForSelection = () => {
     return availableUsers.filter(user => !lastEditedByUsers.includes(user));
+  };
+
+  // Functions for managing reviewers
+  const addReviewer = (userName: string) => {
+    if (!reviewers.includes(userName)) {
+      setReviewers(prev => [...prev, userName]);
+    }
+  };
+
+  const removeReviewer = (userName: string) => {
+    setReviewers(prev => prev.filter(user => user !== userName));
+  };
+
+  // Get available users that aren't already added to reviewers
+  const getAvailableReviewers = () => {
+    return availableUsers.filter(user => !reviewers.includes(user));
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
@@ -519,6 +538,61 @@ export default function Editing() {
                         size="sm"
                         className="h-5 w-5 p-0 hover:bg-red-100"
                         onClick={() => removeUserFromLastEditedBy(user)}
+                        title={`Remove ${user}`}
+                      >
+                        <X className="w-3 h-3 text-red-500 hover:text-red-700" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4 text-green-600" />
+                  <span className="text-sm font-medium text-gray-600">Reviewers</span>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost" 
+                      size="sm"
+                      className="h-6 w-6 p-0 hover:bg-green-50"
+                      disabled={getAvailableReviewers().length === 0}
+                    >
+                      <UserPlus className="w-3 h-3 text-green-600" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {getAvailableReviewers().map((user) => (
+                      <DropdownMenuItem
+                        key={user}
+                        onClick={() => addReviewer(user)}
+                        className="cursor-pointer"
+                      >
+                        {user}
+                      </DropdownMenuItem>
+                    ))}
+                    {getAvailableReviewers().length === 0 && (
+                      <DropdownMenuItem disabled>
+                        All users added
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="space-y-2">
+                {reviewers.map((user, index) => (
+                  <div key={index} className="flex items-center justify-between bg-green-50 px-2 py-1 rounded">
+                    <span className="text-green-700 font-medium text-sm">{user}</span>
+                    {reviewers.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-5 w-5 p-0 hover:bg-red-100"
+                        onClick={() => removeReviewer(user)}
                         title={`Remove ${user}`}
                       >
                         <X className="w-3 h-3 text-red-500 hover:text-red-700" />
