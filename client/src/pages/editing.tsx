@@ -369,6 +369,11 @@ export default function Editing() {
 
   const handleSubmitForReview = () => {
     updateLastModifiedDate();
+    
+    // Add notification with the current job number
+    const currentJobCode = jobCode || "10001"; // Use actual job code or fallback
+    const newNotification = `${currentJobCode} was reviewed and needs your approval`;
+    setNotifications(prev => [newNotification, ...prev]);
   };
 
   const handleAcceptChanges = () => {
