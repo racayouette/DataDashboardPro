@@ -26,7 +26,7 @@ interface JobEntry {
   jobFamily: string;
   reviewer: string;
   responsible: string;
-  status: "In Progress" | "Not Started" | "Completed" | "Reviewed";
+  status: "In Progress" | "Not Started" | "Completed" | "Reviewed" | "HR Review";
   lastUpdated: string;
 }
 
@@ -107,8 +107,8 @@ export default function JobsFamily() {
 
   // Sample data based on the image
   const jobEntries: JobEntry[] = [
-    { id: 1, jobCode: "10001", jobTitle: "Patient Care Technician", jobFamily: "Clinical Support", reviewer: "Sarah Mitchell", responsible: "Jennifer Collins", status: "In Progress", lastUpdated: "June 15, 2025" },
-    { id: 2, jobCode: "10002", jobTitle: "Radiology Tech", jobFamily: "Clinical Support", reviewer: "Kelly Johnson", responsible: "Robert Wilson", status: "Not Started", lastUpdated: "January 8, 2025" },
+    { id: 1, jobCode: "10001", jobTitle: "Patient Care Technician", jobFamily: "Clinical Support", reviewer: "Sarah Mitchell", responsible: "Jennifer Collins", status: "HR Review", lastUpdated: "June 15, 2025" },
+    { id: 2, jobCode: "10002", jobTitle: "Radiology Tech", jobFamily: "Clinical Support", reviewer: "Kelly Johnson", responsible: "Robert Wilson", status: "HR Review", lastUpdated: "January 8, 2025" },
     { id: 3, jobCode: "10003", jobTitle: "Billing Specialist", jobFamily: "Revenue Cycle", reviewer: "Robert Kennedy", responsible: "David Thompson", status: "Reviewed", lastUpdated: "March 22, 2025" },
     { id: 4, jobCode: "10004", jobTitle: "Financial Analyst", jobFamily: "Finance", reviewer: "Adam Lambert", responsible: "Susan Davis", status: "In Progress", lastUpdated: "May 10, 2025" },
     { id: 5, jobCode: "10005", jobTitle: "Nurse Practitioner", jobFamily: "Clinical Support", reviewer: "Jennifer Williams", responsible: "Patricia Miller", status: "In Progress", lastUpdated: "April 18, 2025" },
@@ -164,6 +164,8 @@ export default function JobsFamily() {
         return "bg-green-100 text-green-800";
       case "Reviewed":
         return "bg-purple-100 text-purple-800";
+      case "HR Review":
+        return "bg-orange-100 text-orange-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
