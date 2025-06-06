@@ -59,6 +59,7 @@ export default function Editing() {
   const [originalEditingText, setOriginalEditingText] = useState("");
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
+  const [showAcceptConfirmation, setShowAcceptConfirmation] = useState(false);
   const [lastUpdatedDate, setLastUpdatedDate] = useState("May 30, 2025");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -446,7 +447,18 @@ export default function Editing() {
   };
 
   const handleAcceptChanges = () => {
+    setShowAcceptConfirmation(true);
+  };
+
+  const handleConfirmAcceptChanges = () => {
     updateLastModifiedDate();
+    setShowAcceptConfirmation(false);
+    // Logic to accept all changes and finalize the job description
+    console.log("All changes accepted and finalized");
+  };
+
+  const handleCancelAcceptChanges = () => {
+    setShowAcceptConfirmation(false);
   };
 
   const handleCompareVersions = () => {
@@ -950,7 +962,7 @@ export default function Editing() {
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     {isEditingAdditionalText ? (
                       <div className="space-y-3">
                         <Textarea
