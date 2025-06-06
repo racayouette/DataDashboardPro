@@ -129,22 +129,12 @@ export function WindowsAuth({ onAuthenticated }: WindowsAuthProps) {
   }
 
   return (
-    <Dialog open={showAuthDialog} onOpenChange={() => {}}>
+    <Dialog open={showAuthDialog} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <User className="w-5 h-5 text-blue-600" />
-              <DialogTitle>Windows Authentication</DialogTitle>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-              className="h-6 w-6 p-0"
-            >
-              <X className="w-4 h-4" />
-            </Button>
+          <div className="flex items-center space-x-2">
+            <User className="w-5 h-5 text-blue-600" />
+            <DialogTitle>Windows Authentication</DialogTitle>
           </div>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
