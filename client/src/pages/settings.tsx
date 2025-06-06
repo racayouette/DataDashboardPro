@@ -852,39 +852,6 @@ export default function Settings() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Password Dialog */}
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Unlock Field</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="password">Enter password to unlock the {unlockField} field:</Label>
-              <Input
-                id="password"
-                type="password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="Enter password"
-                onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
-                autoFocus
-              />
-              {passwordError && (
-                <p className="text-sm text-red-600 mt-1">{passwordError}</p>
-              )}
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={handlePasswordCancel}>
-                Cancel
-              </Button>
-              <Button onClick={handlePasswordSubmit}>
-                Unlock
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 
@@ -1649,6 +1616,40 @@ export default function Settings() {
           </div>
         </div>
       </main>
+
+      {/* Password Dialog - Moved outside main container to prevent z-index issues */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Unlock Field</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="password">Enter password to unlock the {unlockField} field:</Label>
+              <Input
+                id="password"
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Enter password"
+                onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
+                autoFocus
+              />
+              {passwordError && (
+                <p className="text-sm text-red-600 mt-1">{passwordError}</p>
+              )}
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handlePasswordCancel}>
+                Cancel
+              </Button>
+              <Button onClick={handlePasswordSubmit}>
+                Unlock
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
