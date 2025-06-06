@@ -112,6 +112,25 @@ export default function Settings() {
     status: "Active"
   });
 
+  // Reviewers management state
+  const [reviewerSearchTerm, setReviewerSearchTerm] = useState("");
+  const [showAddReviewerModal, setShowAddReviewerModal] = useState(false);
+  const [showEditReviewerModal, setShowEditReviewerModal] = useState(false);
+  const [showDeleteReviewerDialog, setShowDeleteReviewerDialog] = useState(false);
+  const [editingReviewer, setEditingReviewer] = useState<Reviewer | null>(null);
+  const [reviewerToDelete, setReviewerToDelete] = useState<Reviewer | null>(null);
+  const [reviewerSortBy, setReviewerSortBy] = useState<string>("");
+  const [reviewerSortOrder, setReviewerSortOrder] = useState<"asc" | "desc">("asc");
+  const [newReviewer, setNewReviewer] = useState<Partial<Reviewer>>({
+    jobFamily: "",
+    responsible: "",
+    completed: 0,
+    inProgress: 0,
+    username: "",
+    fullName: "",
+    email: ""
+  });
+
   // Sample user data
   const [users, setUsers] = useState<User[]>([
     {
@@ -184,6 +203,7 @@ export default function Settings() {
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
     { id: 'reviewers', label: 'Reviewers', icon: UserCheck },
+    { id: 'responsible', label: 'Responsible', icon: Shield },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
 
@@ -281,10 +301,114 @@ export default function Settings() {
     }
   };
 
+  // Reviewers management functions
+  const filteredReviewers = (reviewersData?.reviewers || []).filter((reviewer: Reviewer) => {
+    const matchesSearch = reviewer.jobFamily.toLowerCase().includes(reviewerSearchTerm.toLowerCase()) ||
+                         reviewer.responsible.toLowerCase().includes(reviewerSearchTerm.toLowerCase()) ||
+                         (reviewer.username && reviewer.username.toLowerCase().includes(reviewerSearchTerm.toLowerCase())) ||
+                         (reviewer.fullName && reviewer.fullName.toLowerCase().includes(reviewerSearchTerm.toLowerCase())) ||
+                         (reviewer.email && reviewer.email.toLowerCase().includes(reviewerSearchTerm.toLowerCase()));
+    
+    return matchesSearch;
+  });
+
+  const sortedReviewers = [...filteredReviewers].sort((a, b) => {
+    if (!reviewerSortBy) return 0;
+    
+    const aValue = a[reviewerSortBy as keyof Reviewer];
+    const bValue = b[reviewerSortBy as keyof Reviewer];
+    
+    if (reviewerSortOrder === "asc") {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
+  const handleReviewerSort = (column: string) => {
+    if (reviewerSortBy === column) {
+      setReviewerSortOrder(reviewerSortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setReviewerSortBy(column);
+      setReviewerSortOrder("asc");
+    }
+  };
+
+  const getReviewerSortIcon = (column: string) => {
+    if (reviewerSortBy !== column) {
+      return <ArrowUpDown className="w-4 h-4" />;
+    }
+    return reviewerSortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
+  };
+
+  const handleAddReviewer = () => {
+    if (newReviewer.jobFamily && newReviewer.responsible) {
+      // This would be an API call in a real implementation
+      console.log('Adding reviewer:', newReviewer);
+      setNewReviewer({
+        jobFamily: "",
+        responsible: "",
+        completed: 0,
+        inProgress: 0,
+        username: "",
+        fullName: "",
+        email: ""
+      });
+      setShowAddReviewerModal(false);
+    }
+  };
+
+  const handleEditReviewer = (reviewer: Reviewer) => {
+    setEditingReviewer(reviewer);
+    setShowEditReviewerModal(true);
+  };
+
+  const handleUpdateReviewer = () => {
+    if (editingReviewer) {
+      // This would be an API call in a real implementation
+      console.log('Updating reviewer:', editingReviewer);
+      setEditingReviewer(null);
+      setShowEditReviewerModal(false);
+    }
+  };
+
+  const handleDeleteReviewer = (reviewer: Reviewer) => {
+    setReviewerToDelete(reviewer);
+    setShowDeleteReviewerDialog(true);
+  };
+
+  const confirmDeleteReviewer = () => {
+    if (reviewerToDelete) {
+      // This would be an API call in a real implementation
+      console.log('Deleting reviewer:', reviewerToDelete);
+      setReviewerToDelete(null);
+      setShowDeleteReviewerDialog(false);
+    }
+  };
+
   const renderReviewersSection = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">Reviewer Management</h3>
       
+      {/* Search and Actions */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            placeholder="Search reviewers..."
+            value={reviewerSearchTerm}
+            onChange={(e) => setReviewerSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowAddReviewerModal(true)} className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Add Reviewer
+          </Button>
+        </div>
+      </div>
+
       {reviewersLoading ? (
         <div className="flex items-center justify-center py-8">
           <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
@@ -296,31 +420,71 @@ export default function Settings() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Job Family
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('jobFamily')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      Job Family {getReviewerSortIcon('jobFamily')}
+                    </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Responsible
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('responsible')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      Responsible {getReviewerSortIcon('responsible')}
+                    </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Completed
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('completed')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      Completed {getReviewerSortIcon('completed')}
+                    </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    In Progress
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('inProgress')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      In Progress {getReviewerSortIcon('inProgress')}
+                    </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Username
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('username')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      Username {getReviewerSortIcon('username')}
+                    </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Full Name
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('fullName')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      Full Name {getReviewerSortIcon('fullName')}
+                    </button>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
+                  <th className="px-6 py-3 text-left">
+                    <button
+                      onClick={() => handleReviewerSort('email')}
+                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    >
+                      Email {getReviewerSortIcon('email')}
+                    </button>
+                  </th>
+                  <th className="px-6 py-3 text-left">
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </span>
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {reviewersData?.reviewers?.map((reviewer: Reviewer) => (
+                {sortedReviewers.map((reviewer: Reviewer) => (
                   <tr key={reviewer.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {reviewer.jobFamily}
@@ -347,6 +511,26 @@ export default function Settings() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {reviewer.email || '-'}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditReviewer(reviewer)}
+                          className="text-blue-600 hover:text-blue-700"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteReviewer(reviewer)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -354,6 +538,199 @@ export default function Settings() {
           </div>
         </div>
       )}
+
+      {/* Add Reviewer Modal */}
+      <Dialog open={showAddReviewerModal} onOpenChange={setShowAddReviewerModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Reviewer</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="jobFamily">Job Family</Label>
+              <Input
+                id="jobFamily"
+                value={newReviewer.jobFamily || ""}
+                onChange={(e) => setNewReviewer({ ...newReviewer, jobFamily: e.target.value })}
+                placeholder="Enter job family"
+              />
+            </div>
+            <div>
+              <Label htmlFor="responsible">Responsible Person</Label>
+              <Input
+                id="responsible"
+                value={newReviewer.responsible || ""}
+                onChange={(e) => setNewReviewer({ ...newReviewer, responsible: e.target.value })}
+                placeholder="Enter responsible person"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="completed">Completed</Label>
+                <Input
+                  id="completed"
+                  type="number"
+                  value={newReviewer.completed || 0}
+                  onChange={(e) => setNewReviewer({ ...newReviewer, completed: parseInt(e.target.value) || 0 })}
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <Label htmlFor="inProgress">In Progress</Label>
+                <Input
+                  id="inProgress"
+                  type="number"
+                  value={newReviewer.inProgress || 0}
+                  onChange={(e) => setNewReviewer({ ...newReviewer, inProgress: parseInt(e.target.value) || 0 })}
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                value={newReviewer.username || ""}
+                onChange={(e) => setNewReviewer({ ...newReviewer, username: e.target.value })}
+                placeholder="Enter username"
+              />
+            </div>
+            <div>
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                value={newReviewer.fullName || ""}
+                onChange={(e) => setNewReviewer({ ...newReviewer, fullName: e.target.value })}
+                placeholder="Enter full name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={newReviewer.email || ""}
+                onChange={(e) => setNewReviewer({ ...newReviewer, email: e.target.value })}
+                placeholder="Enter email address"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setShowAddReviewerModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddReviewer}>
+                Add Reviewer
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Reviewer Modal */}
+      <Dialog open={showEditReviewerModal} onOpenChange={setShowEditReviewerModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Reviewer</DialogTitle>
+          </DialogHeader>
+          {editingReviewer && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="editJobFamily">Job Family</Label>
+                <Input
+                  id="editJobFamily"
+                  value={editingReviewer.jobFamily}
+                  onChange={(e) => setEditingReviewer({ ...editingReviewer, jobFamily: e.target.value })}
+                  placeholder="Enter job family"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editResponsible">Responsible Person</Label>
+                <Input
+                  id="editResponsible"
+                  value={editingReviewer.responsible}
+                  onChange={(e) => setEditingReviewer({ ...editingReviewer, responsible: e.target.value })}
+                  placeholder="Enter responsible person"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="editCompleted">Completed</Label>
+                  <Input
+                    id="editCompleted"
+                    type="number"
+                    value={editingReviewer.completed}
+                    onChange={(e) => setEditingReviewer({ ...editingReviewer, completed: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editInProgress">In Progress</Label>
+                  <Input
+                    id="editInProgress"
+                    type="number"
+                    value={editingReviewer.inProgress}
+                    onChange={(e) => setEditingReviewer({ ...editingReviewer, inProgress: parseInt(e.target.value) || 0 })}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="editUsername">Username</Label>
+                <Input
+                  id="editUsername"
+                  value={editingReviewer.username || ""}
+                  onChange={(e) => setEditingReviewer({ ...editingReviewer, username: e.target.value })}
+                  placeholder="Enter username"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editFullName">Full Name</Label>
+                <Input
+                  id="editFullName"
+                  value={editingReviewer.fullName || ""}
+                  onChange={(e) => setEditingReviewer({ ...editingReviewer, fullName: e.target.value })}
+                  placeholder="Enter full name"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editEmail">Email</Label>
+                <Input
+                  id="editEmail"
+                  type="email"
+                  value={editingReviewer.email || ""}
+                  onChange={(e) => setEditingReviewer({ ...editingReviewer, email: e.target.value })}
+                  placeholder="Enter email address"
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setShowEditReviewerModal(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleUpdateReviewer}>
+                  Update Reviewer
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Reviewer Confirmation */}
+      <AlertDialog open={showDeleteReviewerDialog} onOpenChange={setShowDeleteReviewerDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the reviewer
+              "{reviewerToDelete?.jobFamily}" and remove their data from the system.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteReviewer}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 
@@ -681,24 +1058,7 @@ export default function Settings() {
           </label>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div>
-            <label className="text-sm font-medium text-gray-700">Push Notifications</label>
-            <p className="text-sm text-gray-500">Receive browser push notifications</p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={notificationSettings.pushNotifications}
-              onChange={(e) => setNotificationSettings(prev => ({
-                ...prev,
-                pushNotifications: e.target.checked
-              }))}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
-        </div>
+
 
         <div className="flex items-center justify-between">
           <div>
@@ -754,6 +1114,26 @@ export default function Settings() {
     </div>
   );
 
+  const renderResponsibleSection = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Responsible Person Management</h3>
+      
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="text-center py-8">
+          <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h4 className="text-lg font-medium text-gray-900 mb-2">Responsible Person Settings</h4>
+          <p className="text-gray-500 mb-6">
+            Manage responsible persons for job families and review processes.
+          </p>
+          <Button className="flex items-center gap-2 mx-auto">
+            <Plus className="w-4 h-4" />
+            Add Responsible Person
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'notifications':
@@ -762,6 +1142,8 @@ export default function Settings() {
         return renderUsersSection();
       case 'reviewers':
         return renderReviewersSection();
+      case 'responsible':
+        return renderResponsibleSection();
       case 'monitoring':
         return renderDatabaseHealth();
       default:
@@ -794,19 +1176,6 @@ export default function Settings() {
                 )}
                 <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
               </button>
-              <div className="relative" ref={notificationRef}>
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative"
-                >
-                  <Bell className="w-6 h-6 text-gray-600" />
-                  {notifications.length > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">{notifications.length}</span>
-                    </span>
-                  )}
-                </button>
-              </div>
             </div>
           </div>
 
