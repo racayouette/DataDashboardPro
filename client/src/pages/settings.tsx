@@ -428,14 +428,7 @@ export default function Settings() {
                       Job Family {getReviewerSortIcon('jobFamily')}
                     </button>
                   </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('responsible')}
-                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
-                    >
-                      Responsible {getReviewerSortIcon('responsible')}
-                    </button>
-                  </th>
+
                   <th className="px-6 py-3 text-left">
                     <button
                       onClick={() => handleReviewerSort('completed')}
@@ -488,9 +481,6 @@ export default function Settings() {
                   <tr key={reviewer.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {reviewer.jobFamily}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {reviewer.responsible}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Badge variant="default" className="bg-green-100 text-green-800">
@@ -555,15 +545,7 @@ export default function Settings() {
                 placeholder="Enter job family"
               />
             </div>
-            <div>
-              <Label htmlFor="responsible">Responsible Person</Label>
-              <Input
-                id="responsible"
-                value={newReviewer.responsible || ""}
-                onChange={(e) => setNewReviewer({ ...newReviewer, responsible: e.target.value })}
-                placeholder="Enter responsible person"
-              />
-            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="completed">Completed</Label>
@@ -643,15 +625,7 @@ export default function Settings() {
                   placeholder="Enter job family"
                 />
               </div>
-              <div>
-                <Label htmlFor="editResponsible">Responsible Person</Label>
-                <Input
-                  id="editResponsible"
-                  value={editingReviewer.responsible}
-                  onChange={(e) => setEditingReviewer({ ...editingReviewer, responsible: e.target.value })}
-                  placeholder="Enter responsible person"
-                />
-              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="editCompleted">Completed</Label>
