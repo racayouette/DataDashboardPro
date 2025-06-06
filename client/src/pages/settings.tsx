@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown, ShieldCheck } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 interface NotificationSettings {
@@ -717,7 +717,7 @@ export default function Settings() {
                       className="flex-1"
                     />
                     {editingReviewer.completed > 0 && (
-                      <Lock className="w-4 h-4 text-gray-400" />
+                      <ShieldCheck className="w-4 h-4 text-gray-400" />
                     )}
                   </div>
                 </div>
@@ -734,7 +734,7 @@ export default function Settings() {
                       className="flex-1"
                     />
                     {editingReviewer.inProgress > 0 && (
-                      <Lock className="w-4 h-4 text-gray-400" />
+                      <ShieldCheck className="w-4 h-4 text-gray-400" />
                     )}
                   </div>
                 </div>
