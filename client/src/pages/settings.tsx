@@ -788,7 +788,7 @@ export default function Settings() {
                 <th className="px-6 py-3 text-left">
                   <button
                     onClick={() => handleSort('name')}
-                    className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
                   >
                     Name {getSortIcon('name')}
                   </button>
@@ -796,7 +796,7 @@ export default function Settings() {
                 <th className="px-6 py-3 text-left">
                   <button
                     onClick={() => handleSort('role')}
-                    className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
                   >
                     Role {getSortIcon('role')}
                   </button>
@@ -804,7 +804,7 @@ export default function Settings() {
                 <th className="px-6 py-3 text-left">
                   <button
                     onClick={() => handleSort('department')}
-                    className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
                   >
                     Department {getSortIcon('department')}
                   </button>
@@ -812,18 +812,18 @@ export default function Settings() {
                 <th className="px-6 py-3 text-left">
                   <button
                     onClick={() => handleSort('status')}
-                    className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
+                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
                   >
                     Status {getSortIcon('status')}
                   </button>
                 </th>
                 <th className="px-6 py-3 text-left">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <span className="text-sm font-medium text-gray-500 tracking-wider">
                     Last Login
                   </span>
                 </th>
                 <th className="px-6 py-3 text-left">
-                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <span className="text-sm font-medium text-gray-500 tracking-wider">
                     Actions
                   </span>
                 </th>
