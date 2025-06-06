@@ -427,6 +427,12 @@ export default function Settings() {
           [unlockField]: 0 
         });
       }
+      if (editingResponsible && unlockField) {
+        setEditingResponsible({ 
+          ...editingResponsible, 
+          [unlockField]: 0 
+        });
+      }
       setShowPasswordDialog(false);
       setPasswordInput("");
       setPasswordError("");
@@ -500,7 +506,10 @@ export default function Settings() {
   };
 
   const handleEditResponsible = (responsible: Reviewer) => {
-    setEditingResponsible(responsible);
+    setEditingResponsible({
+      ...responsible,
+      fullName: responsible.responsible // Set responsible person name in Full Name field
+    });
     setShowEditResponsibleModal(true);
   };
 
@@ -1465,23 +1474,51 @@ export default function Settings() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="editResponsibleCompleted">Completed</Label>
-                  <Input
-                    id="editResponsibleCompleted"
-                    type="number"
-                    value={editingResponsible.completed}
-                    onChange={(e) => setEditingResponsible({ ...editingResponsible, completed: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="editResponsibleCompleted"
+                      type="number"
+                      value={editingResponsible.completed}
+                      onChange={(e) => setEditingResponsible({ ...editingResponsible, completed: parseInt(e.target.value) || 0 })}
+                      placeholder="0"
+                      disabled={editingResponsible.completed > 0}
+                      className="flex-1"
+                    />
+                    {editingResponsible.completed > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleShieldClick('completed')}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Click to unlock field"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="editResponsibleInProgress">In Progress</Label>
-                  <Input
-                    id="editResponsibleInProgress"
-                    type="number"
-                    value={editingResponsible.inProgress}
-                    onChange={(e) => setEditingResponsible({ ...editingResponsible, inProgress: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="editResponsibleInProgress"
+                      type="number"
+                      value={editingResponsible.inProgress}
+                      onChange={(e) => setEditingResponsible({ ...editingResponsible, inProgress: parseInt(e.target.value) || 0 })}
+                      placeholder="0"
+                      disabled={editingResponsible.inProgress > 0}
+                      className="flex-1"
+                    />
+                    {editingResponsible.inProgress > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleShieldClick('inProgress')}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Click to unlock field"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
               <div>
