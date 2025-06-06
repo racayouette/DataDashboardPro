@@ -454,14 +454,7 @@ export default function Settings() {
                     </button>
                   </th>
 
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('email')}
-                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
-                    >
-                      Email {getReviewerSortIcon('email')}
-                    </button>
-                  </th>
+
                   <th className="px-6 py-3 text-left">
                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -472,8 +465,11 @@ export default function Settings() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedReviewers.map((reviewer: Reviewer) => (
                   <tr key={reviewer.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {reviewer.fullName || '-'}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{reviewer.jobFamily}</div>
+                        <div className="text-sm text-gray-500">{reviewer.email || '-'}</div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Badge variant="default" className="bg-green-100 text-green-800">
@@ -487,9 +483,6 @@ export default function Settings() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {reviewer.username || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {reviewer.email || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
