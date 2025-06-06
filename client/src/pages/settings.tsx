@@ -706,23 +706,37 @@ export default function Settings() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="editCompleted">Completed</Label>
-                  <Input
-                    id="editCompleted"
-                    type="number"
-                    value={editingReviewer.completed}
-                    onChange={(e) => setEditingReviewer({ ...editingReviewer, completed: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="editCompleted"
+                      type="number"
+                      value={editingReviewer.completed}
+                      onChange={(e) => setEditingReviewer({ ...editingReviewer, completed: parseInt(e.target.value) || 0 })}
+                      placeholder="0"
+                      disabled={editingReviewer.completed > 0}
+                      className="flex-1"
+                    />
+                    {editingReviewer.completed > 0 && (
+                      <Lock className="w-4 h-4 text-gray-400" />
+                    )}
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="editInProgress">In Progress</Label>
-                  <Input
-                    id="editInProgress"
-                    type="number"
-                    value={editingReviewer.inProgress}
-                    onChange={(e) => setEditingReviewer({ ...editingReviewer, inProgress: parseInt(e.target.value) || 0 })}
-                    placeholder="0"
-                  />
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="editInProgress"
+                      type="number"
+                      value={editingReviewer.inProgress}
+                      onChange={(e) => setEditingReviewer({ ...editingReviewer, inProgress: parseInt(e.target.value) || 0 })}
+                      placeholder="0"
+                      disabled={editingReviewer.inProgress > 0}
+                      className="flex-1"
+                    />
+                    {editingReviewer.inProgress > 0 && (
+                      <Lock className="w-4 h-4 text-gray-400" />
+                    )}
+                  </div>
                 </div>
               </div>
               <div>
