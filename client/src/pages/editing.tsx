@@ -511,16 +511,17 @@ export default function Editing() {
               </div>
               <div className="space-y-2">
                 {lastEditedByUsers.map((user, index) => (
-                  <div key={index} className="flex items-center justify-between group">
-                    <span className="text-blue-600 font-semibold text-sm">{user}</span>
+                  <div key={index} className="flex items-center justify-between bg-blue-50 px-2 py-1 rounded">
+                    <span className="text-blue-700 font-medium text-sm">{user}</span>
                     {lastEditedByUsers.length > 1 && (
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
+                        className="h-5 w-5 p-0 hover:bg-red-100"
                         onClick={() => removeUserFromLastEditedBy(user)}
+                        title={`Remove ${user}`}
                       >
-                        <X className="w-3 h-3 text-red-500" />
+                        <X className="w-3 h-3 text-red-500 hover:text-red-700" />
                       </Button>
                     )}
                   </div>
