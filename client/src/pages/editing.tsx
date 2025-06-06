@@ -79,7 +79,7 @@ export default function Editing() {
   const [showCompareModal, setShowCompareModal] = useState(false);
   
   // State for additional text section
-  const [additionalText, setAdditionalText] = useState("Additional requirements and considerations for this role may include specialized training, certifications, or equipment handling protocols.");
+  const [additionalText, setAdditionalText] = useState("");
   const [originalAdditionalText] = useState("Additional requirements and considerations for this role may include specialized training, certifications, or equipment handling protocols.");
   const [isEditingAdditionalText, setIsEditingAdditionalText] = useState(false);
   const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
@@ -957,6 +957,7 @@ export default function Editing() {
                           value={additionalText}
                           onChange={(e) => setAdditionalText(e.target.value)}
                           className="min-h-[120px] resize-none"
+                          placeholder="Add a comment here..."
                           autoFocus
                         />
                         <div className="flex justify-end space-x-2">
@@ -977,8 +978,8 @@ export default function Editing() {
                       </div>
                     ) : (
                       <div className="group relative">
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {additionalText}
+                        <p className="text-sm text-gray-500 leading-relaxed italic">
+                          {additionalText || "Add a comment here..."}
                         </p>
                       </div>
                     )}
