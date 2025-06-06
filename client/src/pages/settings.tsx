@@ -414,10 +414,12 @@ export default function Settings() {
 
   const handleShieldClick = (fieldType: 'completed' | 'inProgress') => {
     console.log('Shield clicked for field:', fieldType);
+    console.log('Current showPasswordDialog state:', showPasswordDialog);
     setUnlockField(fieldType);
     setShowPasswordDialog(true);
     setPasswordInput("");
     setPasswordError("");
+    console.log('Setting showPasswordDialog to true');
   };
 
   const handlePasswordSubmit = () => {
@@ -851,7 +853,7 @@ export default function Settings() {
       </AlertDialog>
 
       {/* Password Dialog */}
-      <Dialog open={showPasswordDialog} onOpenChange={() => {}}>
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Unlock Field</DialogTitle>
