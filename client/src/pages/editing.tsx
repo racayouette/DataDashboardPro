@@ -72,6 +72,29 @@ export default function Editing() {
   // State for managing responsible users
   const [responsibleUsers, setResponsibleUsers] = useState<string[]>(["Jennifer Collins"]);
   
+  // State to track if any changes have been made
+  const [hasChanges, setHasChanges] = useState(false);
+  
+  // Function to check for changes
+  const checkForChanges = () => {
+    // Check if job summary has changed
+    const summaryChanged = jobSummary !== originalJobSummary;
+    
+    // Check if essential functions order has changed
+    const functionsOrderChanged = JSON.stringify(essentialFunctions.map(f => f.id)) !== 
+                                 JSON.stringify(originalEssentialFunctions.map(f => f.id));
+    
+    // Check if essential functions content has changed
+    const functionsContentChanged = JSON.stringify(essentialFunctions) !== 
+                                   JSON.stringify(originalEssentialFunctions);
+    
+    // Check if new functions have been added
+    const functionsCountChanged = essentialFunctions.length !== originalEssentialFunctions.length;
+    
+    const hasAnyChanges = summaryChanged || functionsOrderChanged || functionsContentChanged || functionsCountChanged;
+    setHasChanges(hasAnyChanges);
+  };
+  
   // Available users for assignment
   const availableUsers = [
     "John Smith",
@@ -111,6 +134,11 @@ export default function Editing() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Check for changes whenever relevant data changes
+  useEffect(() => {
+    checkForChanges();
+  }, [jobSummary, essentialFunctions]);
 
   // Get job code from URL parameter
   useEffect(() => {
@@ -871,11 +899,10 @@ export default function Editing() {
           <div className="flex justify-center space-x-4 mt-8">
             <Button 
               variant="outline" 
-              className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 flex flex-col items-center py-3"
+              className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
               onClick={handleSaveDraft}
             >
-              <span>Save Draft</span>
-              <span className="text-xs text-gray-500 mt-0.5">Autosave Every 5 Min</span>
+              Save Draft
             </Button>
             <Button 
               className="bg-blue-900 text-white hover:bg-blue-800"
@@ -884,8 +911,9 @@ export default function Editing() {
               Submit For HR Review
             </Button>
             <Button 
-              className="bg-blue-600 text-white hover:bg-blue-700"
+              className={hasChanges ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}
               onClick={handleAcceptChanges}
+              disabled={hasChanges}
             >
               Accept Changes
             </Button>
