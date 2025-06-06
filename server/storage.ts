@@ -34,6 +34,10 @@ export interface IStorage {
   createJobFamily(jobFamily: InsertJobFamily): Promise<JobFamily>;
   createReviewer(reviewer: InsertReviewer): Promise<Reviewer>;
   
+  // Authentication
+  getReviewerByUsername(username: string): Promise<Reviewer | undefined>;
+  createUserInReviewers(userData: { username: string, fullName: string, email: string }): Promise<Reviewer>;
+  
   // User management
   getUsers(page?: number, limit?: number): Promise<{ users: User[], total: number, totalPages: number, currentPage: number }>;
   getUserById(id: number): Promise<User | undefined>;
@@ -336,6 +340,9 @@ export class MemStorage implements IStorage {
     // Create reviewers
     const sampleReviewers: Omit<Reviewer, 'id'>[] = [
       {
+        username: null,
+        fullName: null,
+        email: null,
         jobFamily: "Sarah Mitchell",
         completed: 82,
         inProgress: 5,
@@ -344,6 +351,9 @@ export class MemStorage implements IStorage {
         updatedAt: now,
       },
       {
+        username: null,
+        fullName: null,
+        email: null,
         jobFamily: "Kelly Johnson",
         completed: 67,
         inProgress: 12,

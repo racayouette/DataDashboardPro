@@ -107,6 +107,9 @@ export const transactions = pgTable("transactions", {
 // Reviewers (dashboard widget data)
 export const reviewers = pgTable("reviewers", {
   id: serial("id").primaryKey(),
+  username: text("username"),
+  fullName: text("full_name"),
+  email: text("email"),
   jobFamily: text("job_family").notNull(),
   completed: integer("completed").notNull(),
   inProgress: integer("in_progress").notNull(),
