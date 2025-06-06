@@ -425,7 +425,7 @@ export default function Settings() {
                       onClick={() => handleReviewerSort('jobFamily')}
                       className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
                     >
-                      Job Family {getReviewerSortIcon('jobFamily')}
+                      Full Name {getReviewerSortIcon('jobFamily')}
                     </button>
                   </th>
 
@@ -453,14 +453,7 @@ export default function Settings() {
                       Username {getReviewerSortIcon('username')}
                     </button>
                   </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('fullName')}
-                      className="flex items-center gap-1 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-700"
-                    >
-                      Full Name {getReviewerSortIcon('fullName')}
-                    </button>
-                  </th>
+
                   <th className="px-6 py-3 text-left">
                     <button
                       onClick={() => handleReviewerSort('email')}
@@ -480,7 +473,7 @@ export default function Settings() {
                 {sortedReviewers.map((reviewer: Reviewer) => (
                   <tr key={reviewer.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {reviewer.jobFamily}
+                      {reviewer.fullName || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Badge variant="default" className="bg-green-100 text-green-800">
@@ -494,9 +487,6 @@ export default function Settings() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {reviewer.username || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {reviewer.fullName || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {reviewer.email || '-'}
@@ -537,12 +527,12 @@ export default function Settings() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="jobFamily">Job Family</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
-                id="jobFamily"
-                value={newReviewer.jobFamily || ""}
-                onChange={(e) => setNewReviewer({ ...newReviewer, jobFamily: e.target.value })}
-                placeholder="Enter job family"
+                id="fullName"
+                value={newReviewer.fullName || ""}
+                onChange={(e) => setNewReviewer({ ...newReviewer, fullName: e.target.value })}
+                placeholder="Enter full name"
               />
             </div>
 
@@ -578,15 +568,6 @@ export default function Settings() {
               />
             </div>
             <div>
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                value={newReviewer.fullName || ""}
-                onChange={(e) => setNewReviewer({ ...newReviewer, fullName: e.target.value })}
-                placeholder="Enter full name"
-              />
-            </div>
-            <div>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -617,12 +598,12 @@ export default function Settings() {
           {editingReviewer && (
             <div className="space-y-4">
               <div>
-                <Label htmlFor="editJobFamily">Job Family</Label>
+                <Label htmlFor="editFullName">Full Name</Label>
                 <Input
-                  id="editJobFamily"
-                  value={editingReviewer.jobFamily}
-                  onChange={(e) => setEditingReviewer({ ...editingReviewer, jobFamily: e.target.value })}
-                  placeholder="Enter job family"
+                  id="editFullName"
+                  value={editingReviewer.fullName || ""}
+                  onChange={(e) => setEditingReviewer({ ...editingReviewer, fullName: e.target.value })}
+                  placeholder="Enter full name"
                 />
               </div>
 
@@ -655,15 +636,6 @@ export default function Settings() {
                   value={editingReviewer.username || ""}
                   onChange={(e) => setEditingReviewer({ ...editingReviewer, username: e.target.value })}
                   placeholder="Enter username"
-                />
-              </div>
-              <div>
-                <Label htmlFor="editFullName">Full Name</Label>
-                <Input
-                  id="editFullName"
-                  value={editingReviewer.fullName || ""}
-                  onChange={(e) => setEditingReviewer({ ...editingReviewer, fullName: e.target.value })}
-                  placeholder="Enter full name"
                 />
               </div>
               <div>
