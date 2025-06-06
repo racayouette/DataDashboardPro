@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
-import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,7 +26,7 @@ interface JobEntry {
   jobFamily: string;
   reviewer: string;
   responsible: string;
-  status: "In Progress" | "Not Started" | "Completed";
+  status: "In Progress" | "Not Started" | "Completed" | "Reviewed";
   lastUpdated: string;
 }
 
@@ -38,6 +38,32 @@ export default function JobsFamily() {
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+  
+  // State for reviewer assignments - first 2 rows start as null (unset)
+  const [reviewerAssignments, setReviewerAssignments] = useState<{ [key: number]: string | null }>({
+    1: null, // First row - unset
+    2: null, // Second row - unset
+  });
+  
+  // Available users for reviewer assignment
+  const availableUsers = [
+    "John Smith",
+    "Sarah Johnson", 
+    "Michael Brown",
+    "Emily Davis",
+    "David Wilson",
+    "John Mark",
+    "Sarah Mitchell",
+    "Kelly Johnson",
+    "Robert Kennedy",
+    "Adam Lambert",
+    "Jennifer Williams",
+    "Michael Roberts",
+    "Linda Taylor",
+    "David Phillips",
+    "Emma Sullivan",
+    "Chris Harrison"
+  ];
 
   // Check for reviewer parameter in URL
   useEffect(() => {
@@ -136,6 +162,8 @@ export default function JobsFamily() {
         return "bg-red-100 text-red-800";
       case "Completed":
         return "bg-green-100 text-green-800";
+      case "Reviewed":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -208,6 +236,53 @@ export default function JobsFamily() {
   const totalPages = Math.ceil(filteredEntries.length / 10);
   const startIndex = (currentPage - 1) * 10;
   const paginatedEntries = filteredEntries.slice(startIndex, startIndex + 10);
+
+  // Function to handle reviewer assignment
+  const handleReviewerAssignment = (entryId: number, userName: string) => {
+    setReviewerAssignments(prev => ({
+      ...prev,
+      [entryId]: userName
+    }));
+  };
+
+  // Function to get the reviewer display for a given entry
+  const getReviewerDisplay = (entry: JobEntry, index: number) => {
+    const actualIndex = startIndex + index + 1; // Calculate actual row number
+    
+    // For first 2 rows, show icon or assigned name
+    if (actualIndex <= 2) {
+      const assignedReviewer = reviewerAssignments[actualIndex];
+      
+      if (assignedReviewer) {
+        return <span className="text-sm text-gray-900">{assignedReviewer}</span>;
+      }
+      
+      // Show empty person icon dropdown
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+              <UserCircle className="w-4 h-4 text-gray-400 hover:text-blue-600" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            {availableUsers.map((user) => (
+              <DropdownMenuItem
+                key={user}
+                onClick={() => handleReviewerAssignment(actualIndex, user)}
+                className="cursor-pointer"
+              >
+                {user}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    }
+    
+    // For other rows, show original reviewer name
+    return <span className="text-sm text-gray-600">{entry.reviewer}</span>;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -474,7 +549,7 @@ export default function JobsFamily() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {paginatedEntries.map((entry) => (
+                  {paginatedEntries.map((entry, index) => (
                     <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
@@ -486,7 +561,7 @@ export default function JobsFamily() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobTitle}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.jobFamily}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.reviewer}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{getReviewerDisplay(entry, index)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.responsible}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
