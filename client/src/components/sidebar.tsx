@@ -104,7 +104,7 @@ export function Sidebar() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <Shield className="w-4 h-4 text-blue-200" />
-              <span className="text-blue-200 text-sm font-medium">Windows Auth</span>
+              <span className="text-blue-200 text-sm font-medium">Windows Auth Forever Loop</span>
             </div>
             <div className="relative">
               <button
