@@ -759,11 +759,11 @@ export default function JobFinalReview() {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Essential Functions</h4>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-3 pl-4">
                     {essentialFunctions.map((func, index) => (
                       <div key={func.id} className="flex items-start gap-3">
-                        <span className="flex-shrink-0 mt-1">•</span>
-                        <p className="text-sm flex-1">{func.text}</p>
+                        <span className="flex-shrink-0 mt-0.5 text-sm font-bold">•</span>
+                        <p className="text-sm flex-1 leading-relaxed">{func.text}</p>
                       </div>
                     ))}
                   </div>
