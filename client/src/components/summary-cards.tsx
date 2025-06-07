@@ -124,14 +124,42 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       changeColor: "text-green-600",
       statusText: "",
     },
+    {
+      title: "",
+      value: "",
+      icon: null,
+      iconBg: "",
+      iconColor: "",
+      change: "",
+      changeColor: "",
+      statusText: "",
+      isEmpty: true,
+    },
+    {
+      title: "",
+      value: "",
+      icon: null,
+      iconBg: "",
+      iconColor: "",
+      change: "",
+      changeColor: "",
+      statusText: "",
+      isEmpty: true,
+    },
   ];
 
   const cards = variant === 'second' ? secondCards : defaultCards;
 
   return (
-    <div className={`grid ${variant === 'second' ? 'grid-cols-2' : 'grid-cols-4'} gap-6 mb-8`}>
+    <div className={`grid ${variant === 'second' ? 'grid-cols-4' : 'grid-cols-4'} gap-6 mb-8`}>
       {cards.map((card, index) => {
         const Icon = card.icon;
+        
+        // Handle empty cards for layout spacing
+        if ((card as any).isEmpty) {
+          return <div key={index} className="invisible"></div>;
+        }
+        
         return (
           <Card key={index} className="p-6 hover:shadow-md transition-shadow">
             <CardContent className="p-0">
@@ -140,9 +168,11 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{card.value}</p>
                 </div>
-                <div className="w-12 h-12 flex items-center justify-center mt-1">
-                  <Icon className={`${card.iconColor} text-xl`} />
-                </div>
+                {Icon && (
+                  <div className="w-12 h-12 flex items-center justify-center mt-1">
+                    <Icon className={`${card.iconColor} text-xl`} />
+                  </div>
+                )}
               </div>
               <div className="mt-4 flex items-center">
                 <span className={`${card.changeColor} text-sm font-medium`}>{card.change}</span>
