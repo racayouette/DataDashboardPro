@@ -741,41 +741,9 @@ export default function JobFinalReview() {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Job Summary</h4>
                   </div>
-                  {isEditingJobSummary ? (
-                    <div className="space-y-2">
-                      <Textarea
-                        value={jobSummary}
-                        onChange={(e) => setJobSummary(e.target.value)}
-                        className="text-sm min-h-[80px]"
-                        placeholder="Enter job summary..."
-                      />
-                      <div className="flex space-x-2">
-                        <Button 
-                          size="sm" 
-                          onClick={() => {
-                            setIsEditingJobSummary(false);
-                            if (trackChangesMode) {
-                              setTrackChangesMode(true);
-                            }
-                          }}
-                        >
-                          Save
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => {
-                            setJobSummary(originalJobSummary);
-                            setIsEditingJobSummary(false);
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    renderTrackedChanges()
-                  )}
+                  <div className="p-4">
+                    <p className="text-sm">{jobSummary}</p>
+                  </div>
                 </div>
 
                 <div className="mb-6">
