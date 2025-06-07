@@ -50,6 +50,7 @@ export default function CompareVersions() {
             <Card>
               <CardHeader>
                 <CardTitle>Current Version</CardTitle>
+                <p className="text-sm text-gray-600">Last modified: June 7, 2025</p>
               </CardHeader>
               <CardContent>
                 {/* Content will be added here */}
