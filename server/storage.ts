@@ -145,7 +145,7 @@ export class MemStorage implements IStorage {
       totalUsers: 9000,
       revenue: "712",
       orders: 132,
-      growthRate: "56",
+      growthRate: "8560",
       jobsReviewed: 145,
       inProgress: 85,
       notStarted: 40,
