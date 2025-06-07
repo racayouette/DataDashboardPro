@@ -1389,7 +1389,21 @@ export default function Editing() {
       </Dialog>
 
       {/* Job Summary Popup Editor */}
-      <Dialog open={showJobSummaryPopup} onOpenChange={() => {}}>
+      <Dialog open={showJobSummaryPopup} onOpenChange={(open) => {
+        if (!open) {
+          // Handle X button click
+          const hasChanges = popupJobSummary !== popupOriginalJobSummary;
+          if (hasChanges) {
+            // Show warning if changes exist
+            if (window.confirm("You have unsaved changes. Are you sure you want to close? Your changes will be lost.")) {
+              handlePopupCancel();
+            }
+          } else {
+            // No changes, allow closing
+            handlePopupCancel();
+          }
+        }
+      }}>
         <DialogContent className="max-w-6xl h-[80vh] flex flex-col" aria-describedby="job-summary-editor-description">
           <DialogHeader>
             <DialogTitle>Edit Job Summary</DialogTitle>
