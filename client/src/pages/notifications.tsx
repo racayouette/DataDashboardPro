@@ -247,12 +247,6 @@ export default function Notifications() {
                             {notification.message}
                           </p>
                           <div className="flex items-center gap-3">
-                            <Badge className={`px-2 py-1 text-xs ${getTypeBadge(notification.type)}`}>
-                              {notification.type}
-                            </Badge>
-                            <Badge className={`px-2 py-1 text-xs ${getPriorityBadge(notification.priority)}`}>
-                              {notification.priority} priority
-                            </Badge>
                             <span className="text-xs text-gray-500 dark:text-gray-400">
                               {notification.category}
                             </span>
