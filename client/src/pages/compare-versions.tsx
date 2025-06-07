@@ -430,43 +430,7 @@ export default function CompareVersions() {
               </div>
             </div>
 
-            {/* Footer Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
-                <div className="p-6">
-                  <div className="border-t pt-4">
-                    <h5 className="text-xs font-semibold text-gray-600 mb-2">Legend:</h5>
-                    <div className="flex flex-wrap gap-4 text-xs">
-                      <div className="flex items-center space-x-1">
-                        <div className="w-3 h-3 bg-red-100 border border-red-200 rounded"></div>
-                        <span>Removed</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <div className="w-3 h-3 bg-green-100 border border-green-200 rounded"></div>
-                        <span>Added</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
-                <div className="p-6">
-                  <div className="border-t pt-4">
-                    <h5 className="text-xs font-semibold text-gray-600 mb-2">Changes Summary:</h5>
-                    <div className="flex flex-wrap gap-4 text-xs">
-                      <div className="flex items-center space-x-1">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>Real-time comparison active</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <span>Edit mode available</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </main>
