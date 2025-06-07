@@ -554,10 +554,12 @@ export default function Editing() {
     return (
       <div className="flex-1 min-h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
         <div 
-          className="text-sm whitespace-pre-wrap"
+          className="text-sm break-words"
           style={{ 
             lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif'
+            fontFamily: 'Arial, sans-serif',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap'
           }}
         >
           {diff.map((change, index) => {
