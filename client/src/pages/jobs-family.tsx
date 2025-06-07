@@ -389,6 +389,25 @@ export default function JobsFamily() {
     
     // Always show the actual reviewer name as clickable link if it exists
     if (entry.reviewer && entry.reviewer.trim() !== "") {
+      // Check if reviewer contains multiple names separated by comma
+      if (entry.reviewer.includes(', ')) {
+        const reviewerNames = entry.reviewer.split(', ');
+        return (
+          <div className="flex flex-wrap gap-1">
+            {reviewerNames.map((name, nameIndex) => (
+              <button
+                key={nameIndex}
+                onClick={() => handleFunctionalLeaderClick(name.trim())}
+                className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
+              >
+                {name.trim()}{nameIndex < reviewerNames.length - 1 ? ',' : ''}
+              </button>
+            ))}
+          </div>
+        );
+      }
+      
+      // Single reviewer name
       return (
         <button
           onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
