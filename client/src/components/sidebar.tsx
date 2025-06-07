@@ -169,6 +169,7 @@ export function Sidebar() {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your user name"
                 onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+                autoComplete="off"
               />
             </div>
             <div className="space-y-2">
@@ -180,6 +181,7 @@ export function Sidebar() {
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter your full name"
                 onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+                autoComplete="off"
               />
             </div>
             <div className="space-y-2">
@@ -191,6 +193,7 @@ export function Sidebar() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+                autoComplete="off"
               />
             </div>
 
