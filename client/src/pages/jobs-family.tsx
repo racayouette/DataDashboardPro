@@ -386,8 +386,20 @@ export default function JobsFamily() {
       );
     }
     
-    // Show empty icon only for first 2 rows in unfiltered view when no reviewer assigned and no original reviewer
-    if (isUnfilteredView && actualIndex <= 2 && !entry.reviewer) {
+    // Always show the actual reviewer name as clickable link if it exists
+    if (entry.reviewer && entry.reviewer.trim() !== "") {
+      return (
+        <button
+          onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
+          className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
+        >
+          {entry.reviewer}
+        </button>
+      );
+    }
+    
+    // Show empty icon only for unfiltered view when no reviewer assigned at all
+    if (isUnfilteredView) {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -410,15 +422,8 @@ export default function JobsFamily() {
       );
     }
     
-    // For all other cases, show the actual reviewer name as clickable link
-    return (
-      <button
-        onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
-        className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
-      >
-        {entry.reviewer}
-      </button>
-    );
+    // Fallback - show empty text
+    return <span className="text-sm text-gray-400">Unassigned</span>;
   };
 
   return (
