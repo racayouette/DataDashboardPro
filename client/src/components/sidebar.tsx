@@ -1,4 +1,4 @@
-import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield } from "lucide-react";
+import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState } from "react";
@@ -14,6 +14,7 @@ export function Sidebar() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleAuthentication = () => {
     // Simple authentication check - in real app this would call Windows Auth API
@@ -171,14 +172,28 @@ export function Sidebar() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your Windows password"
-                onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your Windows password"
+                  onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
             <div className="text-sm text-gray-500">
               Demo credentials: username = "admin", password = "password"
