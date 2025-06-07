@@ -110,14 +110,17 @@ export default function JobsFamily() {
       // Check if this part is a job code
       if (/^\d{4,5}$/.test(part)) {
         return (
-          <Link 
+          <span 
             key={index} 
-            href={`/editing?jobCode=${part}`}
-            className="text-blue-600 hover:text-blue-800 underline font-medium"
-            onClick={() => setShowNotifications(false)}
+            className="text-blue-600 hover:text-blue-800 underline font-medium cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowNotifications(false);
+              window.location.href = `/editing?jobCode=${part}`;
+            }}
           >
             {part}
-          </Link>
+          </span>
         );
       }
       return <span key={index}>{part}</span>;
