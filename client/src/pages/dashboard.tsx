@@ -227,6 +227,13 @@ export default function Dashboard() {
         </main>
       ) : (
         <main className="flex-1 p-6">
+        {/* Beta Banner */}
+        <div className="mb-4 bg-orange-100 border border-orange-300 text-orange-800 px-4 py-3 rounded-lg">
+          <div className="flex items-center justify-center">
+            <span className="font-semibold text-sm">⚠️ NOT FOR PRODUCTION - RELEASE BETA 1.0</span>
+          </div>
+        </div>
+
         {/* Top Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
