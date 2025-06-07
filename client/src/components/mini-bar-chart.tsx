@@ -55,15 +55,15 @@ export function MiniBarChart({ data, isLoading }: MiniBarChartProps) {
   const COLORS = ["#f97316", "#a855f7", "#22c55e", "#3b82f6", "#10b981"];
 
   return (
-    <div className="p-4 -mt-6">
+    <div className="p-4 -mt-8">
       <ResponsiveContainer width="100%" height={200}>
         <PieChart>
           <Pie
             data={chartData}
-            cx="40%"
+            cx="35%"
             cy="50%"
             innerRadius={25}
-            outerRadius={65}
+            outerRadius={75}
             paddingAngle={5}
             dataKey="value"
           >
@@ -83,9 +83,14 @@ export function MiniBarChart({ data, isLoading }: MiniBarChartProps) {
             verticalAlign="middle" 
             align="right"
             layout="vertical"
-            iconSize={6}
-            fontSize={10}
-            wrapperStyle={{ paddingLeft: "15px", fontSize: "10px" }}
+            iconSize={8}
+            fontSize={12}
+            wrapperStyle={{ 
+              paddingLeft: "10px", 
+              fontSize: "12px",
+              lineHeight: "1.8",
+              maxWidth: "120px"
+            }}
           />
         </PieChart>
       </ResponsiveContainer>
