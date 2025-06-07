@@ -341,7 +341,7 @@ export default function CompareVersions() {
                       <SelectValue placeholder="Select current..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {jobDescriptions?.map((desc: any) => (
+                      {(jobDescriptions as any)?.map((desc: any) => (
                         <SelectItem key={desc.id} value={desc.id.toString()}>
                           Version {desc.version} - {new Date(desc.lastUpdatedDate).toLocaleDateString()}
                         </SelectItem>
@@ -359,7 +359,7 @@ export default function CompareVersions() {
 
               {selectedOriginalId && selectedCurrentId && comparisonData && (
                 <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">
-                  Successfully loaded comparison between Version {comparisonData.original.version} and Version {comparisonData.current.version}
+                  Successfully loaded comparison between Version {(comparisonData as any)?.original?.version} and Version {(comparisonData as any)?.current?.version}
                 </div>
               )}
             </div>
