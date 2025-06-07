@@ -78,7 +78,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       iconColor: "text-orange-600",
       change: `${notStartedPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Pending",
+      statusText: "",
     },
     {
       title: "In Progress",
@@ -88,7 +88,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       iconColor: "text-green-600",
       change: `${inProgressPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Pending",
+      statusText: "",
     },
     {
       title: "Functional Leader Review Complete",
@@ -98,7 +98,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       iconColor: "text-green-600",
       change: `${reviewedPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Reviewed",
+      statusText: "",
     },
   ];
 
@@ -112,7 +112,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       iconColor: "text-primary",
       change: `${hrReviewPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Completed",
+      statusText: "",
     },
     {
       title: "Completed",
@@ -122,7 +122,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       iconColor: "text-green-600",
       change: `${completedPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Complete",
+      statusText: "",
     },
   ];
 
