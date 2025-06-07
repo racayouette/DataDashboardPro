@@ -60,7 +60,7 @@ export function Sidebar() {
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: false },
     { icon: Users, label: "Jobs Family", path: "/jobs-family", active: true },
     { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
-    { icon: FileText, label: "Job Final Review", path: "/job-final-review", active: false },
+    { icon: FileText, label: "Job Final Review", path: "/job-final-review", active: false, hidden: true },
     { icon: Bell, label: "Notifications", path: "/notifications", active: false },
     { icon: Settings, label: "Settings", path: "/settings", active: false },
   ];
