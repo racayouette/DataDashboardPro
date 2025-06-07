@@ -152,6 +152,12 @@ export default function Notifications() {
         <Header />
         <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
+            {/* Beta Banner */}
+            <div className="mb-4 bg-orange-100 border border-orange-300 text-orange-800 px-4 py-3 rounded-lg">
+              <div className="flex items-center justify-center">
+                <span className="font-semibold text-sm">⚠️ NOT FOR PRODUCTION - RELEASE BETA 1.0</span>
+              </div>
+            </div>
             {/* Filters and Search */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex-1 mr-4">
