@@ -655,7 +655,13 @@ export default function JobsFamily() {
                     <tr key={entry.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
-                          onClick={() => setLocation(`/editing?jobCode=${entry.jobCode}`)}
+                          onClick={() => {
+                            if (entry.status === "Completed") {
+                              setLocation(`/job-final-review?jobCode=${entry.jobCode}`);
+                            } else {
+                              setLocation(`/editing?jobCode=${entry.jobCode}`);
+                            }
+                          }}
                           className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
                         >
                           {entry.jobCode}
@@ -666,20 +672,9 @@ export default function JobsFamily() {
                       <td className="px-6 py-4 whitespace-nowrap">{getReviewerDisplay(entry, index)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.responsible}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {entry.status === "Completed" ? (
-                          <button
-                            onClick={() => setLocation('/job-final-review')}
-                            className="focus:outline-none"
-                          >
-                            <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)} hover:opacity-80 cursor-pointer transition-opacity`}>
-                              {entry.status}
-                            </Badge>
-                          </button>
-                        ) : (
-                          <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
-                            {entry.status}
-                          </Badge>
-                        )}
+                        <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
+                          {entry.status}
+                        </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.lastUpdated}</td>
                     </tr>

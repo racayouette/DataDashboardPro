@@ -40,6 +40,15 @@ export default function JobFinalReview() {
   const [, setLocation] = useLocation();
   const { isAdminMode } = useRole();
   const [jobCode, setJobCode] = useState("");
+
+  // Get job code from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobCodeFromUrl = urlParams.get('jobCode');
+    if (jobCodeFromUrl) {
+      setJobCode(jobCodeFromUrl);
+    }
+  }, []);
   const originalEssentialFunctions = [
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
     { id: 2, text: "Aid With Patient Hygiene And Nutritional Needs", hasEdit: true },
@@ -610,7 +619,7 @@ export default function JobFinalReview() {
               <Edit className="w-6 h-6 text-blue-600" />
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Job Final Review</h1>
-                <p className="text-sm text-gray-600 mt-1">Job Code: 10001</p>
+                <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode || "Loading..."}</p>
               </div>
             </div>
             
