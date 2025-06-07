@@ -1,4 +1,4 @@
-import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText } from "lucide-react";
+import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText, GitCompare } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState } from "react";
@@ -62,6 +62,7 @@ export function Sidebar() {
     { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
     { icon: FileText, label: "Job Final Review", path: "/job-final-review", active: false, hidden: true },
     { icon: Bell, label: "Notifications", path: "/notifications", active: false },
+    { icon: GitCompare, label: "Compare Version", path: "/compare-version", active: false },
     { icon: Settings, label: "Settings", path: "/settings", active: false },
   ];
 
