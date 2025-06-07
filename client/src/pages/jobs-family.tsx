@@ -224,6 +224,11 @@ export default function JobsFamily() {
     : allUniqueStatuses.filter(status => status !== "Submitted to HR");
 
   const filteredEntries = jobEntries.filter(entry => {
+    // Hide "Submitted to HR" rows when not in admin mode
+    if (!isAdminMode && entry.status === "Submitted to HR") {
+      return false;
+    }
+    
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch = searchTerm === "" || 
       entry.jobCode.toLowerCase().includes(searchLower) ||
