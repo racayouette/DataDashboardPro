@@ -1445,9 +1445,9 @@ export default function Editing() {
                     </div>
                   </div>
 
-                  {/* Comments */}
+                  {/* Additional Job Description Content */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Comments</h4>
+                    <h4 className="font-medium text-gray-900 mb-3">Additional Job Description Content</h4>
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm text-gray-500 italic">{originalAdditionalText}</p>
                     </div>
