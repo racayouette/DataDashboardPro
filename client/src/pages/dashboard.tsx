@@ -24,8 +24,10 @@ export default function Dashboard() {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
   
-  // Password protection state
-  const [isPasswordProtected, setIsPasswordProtected] = useState(true);
+  // Password protection state - check sessionStorage for existing authentication
+  const [isPasswordProtected, setIsPasswordProtected] = useState(() => {
+    return !sessionStorage.getItem('dashboardAuthenticated');
+  });
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -61,6 +63,8 @@ export default function Dashboard() {
     if (password === "Welcome123") {
       setIsPasswordProtected(false);
       setPasswordError("");
+      // Store authentication state in sessionStorage
+      sessionStorage.setItem('dashboardAuthenticated', 'true');
     } else {
       setPasswordError("Incorrect password");
       setPassword("");
