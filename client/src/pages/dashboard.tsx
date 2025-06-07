@@ -311,6 +311,11 @@ export default function Dashboard() {
 
         {/* Summary Cards */}
         <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
+        
+        {/* Second Row of Summary Cards */}
+        <div className="mt-6">
+          <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
+        </div>
 
         {/* Data Grids Section */}
         <div className="grid grid-cols-2 gap-8">
