@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GitCompare, ArrowLeft, FileText, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { GitCompare, ArrowLeft, FileText, Eye, EyeOff, RefreshCw, Edit3 } from "lucide-react";
 import { useLocation } from "wouter";
 import { Link } from "wouter";
 
@@ -15,30 +16,22 @@ interface DiffSegment {
 export default function CompareVersions() {
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  // Original and current versions data
-  const originalVersion = {
-    jobSummary: "• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports\n• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.",
-    essentialFunctions: [
-      "Monitor Patient Vitals And Report Abnormalities.",
-      "Assist With Bathing, Feeding, And Toileting.",
-      "Document Daily Care Activities.",
-      "Transport Patients Using Wheelchairs And Stretchers."
-    ],
-    description: "The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment."
-  };
+  // Editable state for real-time comparison
+  const [originalJobSummary, setOriginalJobSummary] = useState("• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports\n• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.");
+  const [currentJobSummary, setCurrentJobSummary] = useState("• Provides Comprehensive Patient Care Under Licensed Supervision. Monitors Patient Condition And Reports\n• Critical Changes To The Medical Team. Maintains Detailed Records And Assists With Patient Mobility And Safety Needs.");
+  
+  const [originalEssentialFunctions, setOriginalEssentialFunctions] = useState("Monitor Patient Vitals And Report Abnormalities.\nAssist With Bathing, Feeding, And Toileting.\nDocument Daily Care Activities.\nTransport Patients Using Wheelchairs And Stretchers.");
+  const [currentEssentialFunctions, setCurrentEssentialFunctions] = useState("Monitor Patient Vitals And Report Abnormalities Immediately.\nAssist With Bathing, Feeding, Toileting, And Personal Hygiene.\nDocument Daily Care Activities And Patient Progress.\nTransport Patients Safely Using Wheelchairs And Stretchers.\nProvide Emotional Support And Comfort To Patients And Families.");
+  
+  const [originalDescription, setOriginalDescription] = useState("The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.");
+  const [currentDescription, setCurrentDescription] = useState("The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff.\n\nPCTs Work Collaboratively With Interdisciplinary Teams To Promote Optimal Patient Outcomes.\n\nUnder The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical, Emotional, And Social Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.\n\nIn Addition To Core Care Responsibilities, PCTs Are Expected To Maintain Strict Adherence To HIPAA Privacy Standards, Infection Control Protocols, And Safety Guidelines. They Must Demonstrate Cultural Sensitivity When Working With Diverse Patient Populations And Show Adaptability In Fast-Paced Healthcare Settings. Continuous Professional Development Through Ongoing Training And Certification Programs Is Required To Stay Current With Best Practices And Emerging Healthcare Technologies.");
 
-  const currentVersion = {
-    jobSummary: "• Provides Comprehensive Patient Care Under Licensed Supervision. Monitors Patient Condition And Reports\n• Critical Changes To The Medical Team. Maintains Detailed Records And Assists With Patient Mobility And Safety Needs.",
-    essentialFunctions: [
-      "Monitor Patient Vitals And Report Abnormalities Immediately.",
-      "Assist With Bathing, Feeding, Toileting, And Personal Hygiene.",
-      "Document Daily Care Activities And Patient Progress.",
-      "Transport Patients Safely Using Wheelchairs And Stretchers.",
-      "Provide Emotional Support And Comfort To Patients And Families."
-    ],
-    description: "The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff.\n\nPCTs Work Collaboratively With Interdisciplinary Teams To Promote Optimal Patient Outcomes.\n\nUnder The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical, Emotional, And Social Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.\n\nIn Addition To Core Care Responsibilities, PCTs Are Expected To Maintain Strict Adherence To HIPAA Privacy Standards, Infection Control Protocols, And Safety Guidelines. They Must Demonstrate Cultural Sensitivity When Working With Diverse Patient Populations And Show Adaptability In Fast-Paced Healthcare Settings. Continuous Professional Development Through Ongoing Training And Certification Programs Is Required To Stay Current With Best Practices And Emerging Healthcare Technologies."
-  };
+  // Real-time diff calculations
+  const [jobSummaryDiff, setJobSummaryDiff] = useState<DiffSegment[]>([]);
+  const [essentialFunctionsDiff, setEssentialFunctionsDiff] = useState<DiffSegment[]>([]);
+  const [descriptionDiff, setDescriptionDiff] = useState<DiffSegment[]>([]);
 
   // Function to create word-level diff
   const createWordDiff = (original: string, current: string): DiffSegment[] => {
@@ -84,6 +77,19 @@ export default function CompareVersions() {
     return lcs(originalWords, currentWords);
   };
 
+  // Real-time diff calculation effect
+  useEffect(() => {
+    setJobSummaryDiff(createWordDiff(originalJobSummary, currentJobSummary));
+  }, [originalJobSummary, currentJobSummary]);
+
+  useEffect(() => {
+    setEssentialFunctionsDiff(createWordDiff(originalEssentialFunctions, currentEssentialFunctions));
+  }, [originalEssentialFunctions, currentEssentialFunctions]);
+
+  useEffect(() => {
+    setDescriptionDiff(createWordDiff(originalDescription, currentDescription));
+  }, [originalDescription, currentDescription]);
+
   // Function to render diff segments
   const renderDiffSegments = (segments: DiffSegment[]) => {
     return segments.map((segment, index) => {
@@ -114,9 +120,17 @@ export default function CompareVersions() {
     });
   };
 
-  // Create diffs for each section
-  const jobSummaryDiff = createWordDiff(originalVersion.jobSummary, currentVersion.jobSummary);
-  const descriptionDiff = createWordDiff(originalVersion.description, currentVersion.description);
+  // Helper function to render essential functions as numbered list
+  const renderEssentialFunctionsList = (text: string, isOriginal: boolean = false) => {
+    if (!text) return null;
+    const functions = text.split('\n').filter(f => f.trim());
+    return functions.map((func, index) => (
+      <div key={index} className="flex items-start space-x-2 mb-2">
+        <span className="text-gray-500 mt-0.5">{index + 1}.</span>
+        <span>{func}</span>
+      </div>
+    ));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -137,6 +151,16 @@ export default function CompareVersions() {
               {/* Comparison Controls */}
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditMode(!isEditMode)}
+                    className="flex items-center space-x-2"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    <span>{isEditMode ? "View Mode" : "Edit Mode"}</span>
+                  </Button>
+                  
                   <Button
                     variant="outline"
                     size="sm"
@@ -197,17 +221,35 @@ export default function CompareVersions() {
               <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed">
-                    {originalVersion.jobSummary}
-                  </div>
+                  {isEditMode ? (
+                    <Textarea
+                      value={originalJobSummary}
+                      onChange={(e) => setOriginalJobSummary(e.target.value)}
+                      className="min-h-[120px] text-sm font-mono"
+                      placeholder="Enter original job summary..."
+                    />
+                  ) : (
+                    <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed whitespace-pre-wrap">
+                      {originalJobSummary}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed">
-                    {renderDiffSegments(jobSummaryDiff)}
-                  </div>
+                  {isEditMode ? (
+                    <Textarea
+                      value={currentJobSummary}
+                      onChange={(e) => setCurrentJobSummary(e.target.value)}
+                      className="min-h-[120px] text-sm font-mono"
+                      placeholder="Enter current job summary..."
+                    />
+                  ) : (
+                    <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed whitespace-pre-wrap">
+                      {renderDiffSegments(jobSummaryDiff)}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -217,35 +259,35 @@ export default function CompareVersions() {
               <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Essential Functions:</h4>
-                  <div className="space-y-2 text-sm">
-                    {originalVersion.essentialFunctions.map((func, index) => (
-                      <div key={index} className="flex items-start space-x-2">
-                        <span className="text-gray-500 mt-0.5">{index + 1}.</span>
-                        <span>{func}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {isEditMode ? (
+                    <Textarea
+                      value={originalEssentialFunctions}
+                      onChange={(e) => setOriginalEssentialFunctions(e.target.value)}
+                      className="min-h-[150px] text-sm font-mono"
+                      placeholder="Enter functions separated by line breaks..."
+                    />
+                  ) : (
+                    <div className="space-y-2 text-sm">
+                      {renderEssentialFunctionsList(originalEssentialFunctions)}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Essential Functions:</h4>
-                  <div className="space-y-2 text-sm">
-                    {currentVersion.essentialFunctions.map((func, index) => (
-                      <div key={index} className="flex items-start space-x-2">
-                        <span className="text-gray-500 mt-0.5">{index + 1}.</span>
-                        <span className={
-                          index >= originalVersion.essentialFunctions.length 
-                            ? "bg-green-100 text-green-800" 
-                            : originalVersion.essentialFunctions[index] !== func 
-                              ? "bg-green-100 text-green-800" 
-                              : ""
-                        }>
-                          {func}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  {isEditMode ? (
+                    <Textarea
+                      value={currentEssentialFunctions}
+                      onChange={(e) => setCurrentEssentialFunctions(e.target.value)}
+                      className="min-h-[150px] text-sm font-mono"
+                      placeholder="Enter functions separated by line breaks..."
+                    />
+                  ) : (
+                    <div className="space-y-2 text-sm">
+                      <div className="whitespace-pre-wrap">{renderDiffSegments(essentialFunctionsDiff)}</div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -255,17 +297,35 @@ export default function CompareVersions() {
               <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Description</h4>
-                  <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4">
-                    {originalVersion.description}
-                  </div>
+                  {isEditMode ? (
+                    <Textarea
+                      value={originalDescription}
+                      onChange={(e) => setOriginalDescription(e.target.value)}
+                      className="min-h-[200px] text-sm font-mono"
+                      placeholder="Enter original description..."
+                    />
+                  ) : (
+                    <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4 whitespace-pre-wrap">
+                      {originalDescription}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Description</h4>
-                  <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4">
-                    {renderDiffSegments(descriptionDiff)}
-                  </div>
+                  {isEditMode ? (
+                    <Textarea
+                      value={currentDescription}
+                      onChange={(e) => setCurrentDescription(e.target.value)}
+                      className="min-h-[200px] text-sm font-mono"
+                      placeholder="Enter current description..."
+                    />
+                  ) : (
+                    <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4 whitespace-pre-wrap">
+                      {renderDiffSegments(descriptionDiff)}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -296,11 +356,11 @@ export default function CompareVersions() {
                     <div className="flex flex-wrap gap-4 text-xs">
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>{currentVersion.essentialFunctions.length - originalVersion.essentialFunctions.length} functions added</span>
+                        <span>Real-time comparison active</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <span>Multiple text improvements</span>
+                        <span>Edit mode available</span>
                       </div>
                     </div>
                   </div>
