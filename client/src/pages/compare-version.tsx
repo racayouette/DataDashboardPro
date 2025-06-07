@@ -431,23 +431,7 @@ export default function CompareVersion() {
             </Card>
           )}
 
-          {/* Empty State */}
-          {!version1 || !version2 || version1 === version2 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <GitCompare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Compare Job Description Versions</h3>
-                <p className="text-gray-500 mb-4">
-                  Select a job and two different versions to see a detailed comparison of changes
-                </p>
-                <div className="text-sm text-gray-400">
-                  • View side-by-side comparisons
-                  • Highlight changed fields
-                  • Track modification history
-                </div>
-              </CardContent>
-            </Card>
-          ) : null}
+
         </div>
       </main>
     </div>
