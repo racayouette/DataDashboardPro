@@ -186,9 +186,7 @@ export default function Notifications() {
                     <SelectContent>
                       <SelectItem value="all">All Types</SelectItem>
                       <SelectItem value="info">Info</SelectItem>
-                      <SelectItem value="warning">Warning</SelectItem>
-                      <SelectItem value="error">Error</SelectItem>
-                      <SelectItem value="success">Success</SelectItem>
+                      <SelectItem value="success">Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
