@@ -12,19 +12,23 @@ export function Sidebar() {
   const { isAdminMode, setIsAdminMode } = useRole();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleAuthentication = () => {
-    // Simple authentication check - in real app this would call Windows Auth API
-    if (username.toLowerCase() === "admin" && password === "password") {
+    // Simple validation - in real app this would register user and call Windows Auth API
+    if (username && fullName && email && password) {
       setIsAuthenticated(true);
       setShowAuthDialog(false);
       setUsername("");
+      setFullName("");
+      setEmail("");
       setPassword("");
     } else {
-      alert("Invalid credentials. Use 'admin' and 'password' for demo.");
+      alert("Please fill in all fields to complete registration.");
     }
   };
 
@@ -155,7 +159,7 @@ export function Sidebar() {
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-blue-600" />
-              <span>Windows Authentication</span>
+              <span>User Registration</span>
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -166,7 +170,29 @@ export function Sidebar() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your Windows username"
+                placeholder="Enter your username"
+                onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter your full name"
+                onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
                 onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
               />
             </div>
@@ -178,7 +204,7 @@ export function Sidebar() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your Windows password"
+                  placeholder="Enter your password"
                   onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
                   className="pr-10"
                 />
@@ -196,7 +222,7 @@ export function Sidebar() {
               </div>
             </div>
             <div className="text-sm text-gray-500">
-              Demo credentials: username = "admin", password = "password"
+              Please fill in all fields to complete registration
             </div>
           </div>
           <div className="flex justify-end space-x-2">
@@ -205,6 +231,8 @@ export function Sidebar() {
               onClick={() => {
                 setShowAuthDialog(false);
                 setUsername("");
+                setFullName("");
+                setEmail("");
                 setPassword("");
               }}
             >
@@ -212,9 +240,9 @@ export function Sidebar() {
             </Button>
             <Button
               onClick={handleAuthentication}
-              disabled={!username || !password}
+              disabled={!username || !fullName || !email || !password}
             >
-              Authenticate
+              Register
             </Button>
           </div>
         </DialogContent>
