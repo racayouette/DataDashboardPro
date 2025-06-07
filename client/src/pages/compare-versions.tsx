@@ -275,18 +275,6 @@ export default function CompareVersions() {
                     <RefreshCw className="w-4 h-4" />
                     <span>Sync Scroll</span>
                   </Button>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setCurrentJobSummary(currentJobSummary + " TEST");
-                      console.log('Test diff triggered');
-                    }}
-                    className="text-xs"
-                  >
-                    Test Diff
-                  </Button>
                 </div>
               </div>
             </div>
