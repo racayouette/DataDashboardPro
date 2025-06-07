@@ -88,6 +88,7 @@ export default function Editing() {
   const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
   const [additionalTextComment, setAdditionalTextComment] = useState("");
   const [isCritical, setIsCritical] = useState(false);
+  const [status, setStatus] = useState("In Progress");
 
   // State for Job Summary popup editor
   const [showJobSummaryPopup, setShowJobSummaryPopup] = useState(false);
@@ -472,7 +473,7 @@ export default function Editing() {
 
   const handleComplete = () => {
     updateLastModifiedDate();
-    // Logic to mark job description as complete
+    setStatus("Complete");
     console.log("Job description marked as complete");
   };
 
@@ -788,7 +789,7 @@ export default function Editing() {
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 <span className="text-sm font-medium text-gray-600">Status</span>
               </div>
-              <Badge className="bg-blue-100 text-blue-800">In Progress</Badge>
+              <Badge className={status === "Complete" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
             </div>
           </div>
 
