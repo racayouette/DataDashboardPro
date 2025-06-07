@@ -87,9 +87,9 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       statusText: "Pending",
     },
     {
-      title: "Jobs Reviewed",
+      title: "Functional Leader Review Complete",
       value: parseFloat(data.revenue).toLocaleString(),
-      icon: Eye,
+      icon: Briefcase,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
       change: `${reviewedPercentage}%`,
