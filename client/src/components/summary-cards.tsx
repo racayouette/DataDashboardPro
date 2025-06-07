@@ -102,7 +102,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
   const secondCards = [
     {
       title: "HR Review Complete",
-      value: data.totalUsers.toLocaleString(),
+      value: "90",
       icon: Shield,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
@@ -112,7 +112,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
     },
     {
       title: "Completed",
-      value: parseFloat(data.growthRate).toString(),
+      value: "147",
       icon: CheckCircle,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
@@ -120,32 +120,12 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       changeColor: "text-green-600",
       statusText: "Complete",
     },
-    {
-      title: "In Progress",
-      value: data.orders.toLocaleString(),
-      icon: TrendingUp,
-      iconBg: "bg-purple-100",
-      iconColor: "text-green-600",
-      change: `${inProgressPercentage}%`,
-      changeColor: "text-green-600",
-      statusText: "Pending",
-    },
-    {
-      title: "Jobs Reviewed",
-      value: parseFloat(data.revenue).toLocaleString(),
-      icon: Eye,
-      iconBg: "bg-green-100",
-      iconColor: "text-green-600",
-      change: `${reviewedPercentage}%`,
-      changeColor: "text-green-600",
-      statusText: "Reviewed",
-    },
   ];
 
   const cards = variant === 'second' ? secondCards : defaultCards;
 
   return (
-    <div className="grid grid-cols-4 gap-6 mb-8">
+    <div className={`grid ${variant === 'second' ? 'grid-cols-2' : 'grid-cols-4'} gap-6 mb-8`}>
       {cards.map((card, index) => {
         const Icon = card.icon;
         return (
