@@ -235,9 +235,61 @@ export default function JobsFamily() {
 
   const hasFilters = searchTerm !== "" || selectedJobFamily !== "" || selectedStatus !== "" || dateRange.from || dateRange.to;
 
-  const totalPages = Math.ceil(filteredEntries.length / 10);
+  // Apply sorting to filtered entries
+  const sortedEntries = [...filteredEntries].sort((a, b) => {
+    if (!sortBy) return 0;
+    
+    let aValue: string | number = '';
+    let bValue: string | number = '';
+    
+    switch (sortBy) {
+      case 'jobCode':
+        aValue = a.jobCode;
+        bValue = b.jobCode;
+        break;
+      case 'jobTitle':
+        aValue = a.jobTitle;
+        bValue = b.jobTitle;
+        break;
+      case 'jobFamily':
+        aValue = a.jobFamily;
+        bValue = b.jobFamily;
+        break;
+      case 'reviewer':
+        aValue = a.reviewer;
+        bValue = b.reviewer;
+        break;
+      case 'responsible':
+        aValue = a.responsible;
+        bValue = b.responsible;
+        break;
+      case 'status':
+        aValue = a.status;
+        bValue = b.status;
+        break;
+      case 'lastUpdated':
+        aValue = new Date(a.lastUpdated).getTime();
+        bValue = new Date(b.lastUpdated).getTime();
+        break;
+      default:
+        return 0;
+    }
+    
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      const comparison = aValue.localeCompare(bValue);
+      return sortOrder === 'asc' ? comparison : -comparison;
+    }
+    
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+    
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sortedEntries.length / 10);
   const startIndex = (currentPage - 1) * 10;
-  const paginatedEntries = filteredEntries.slice(startIndex, startIndex + 10);
+  const paginatedEntries = sortedEntries.slice(startIndex, startIndex + 10);
 
   // Function to handle reviewer assignment
   const handleReviewerAssignment = (entryId: number, userName: string) => {
