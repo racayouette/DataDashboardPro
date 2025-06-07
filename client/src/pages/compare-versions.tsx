@@ -77,21 +77,35 @@ export default function CompareVersions() {
     return lcs(originalWords, currentWords);
   };
 
-  // Real-time diff calculation effect
+  // Initialize diffs on mount and update in real-time
   useEffect(() => {
-    setJobSummaryDiff(createWordDiff(originalJobSummary, currentJobSummary));
-  }, [originalJobSummary, currentJobSummary]);
+    const updateDiffs = () => {
+      try {
+        const jobDiff = createWordDiff(originalJobSummary, currentJobSummary);
+        const functionsDiff = createWordDiff(originalEssentialFunctions, currentEssentialFunctions);
+        const descDiff = createWordDiff(originalDescription, currentDescription);
+        
+        console.log('Job Summary Diff:', jobDiff.length, 'segments');
+        console.log('Functions Diff:', functionsDiff.length, 'segments');
+        console.log('Description Diff:', descDiff.length, 'segments');
+        
+        setJobSummaryDiff(jobDiff);
+        setEssentialFunctionsDiff(functionsDiff);
+        setDescriptionDiff(descDiff);
+      } catch (error) {
+        console.error('Error calculating diffs:', error);
+      }
+    };
 
-  useEffect(() => {
-    setEssentialFunctionsDiff(createWordDiff(originalEssentialFunctions, currentEssentialFunctions));
-  }, [originalEssentialFunctions, currentEssentialFunctions]);
-
-  useEffect(() => {
-    setDescriptionDiff(createWordDiff(originalDescription, currentDescription));
-  }, [originalDescription, currentDescription]);
+    updateDiffs();
+  }, [originalJobSummary, currentJobSummary, originalEssentialFunctions, currentEssentialFunctions, originalDescription, currentDescription]);
 
   // Function to render diff segments
   const renderDiffSegments = (segments: DiffSegment[]) => {
+    if (!segments || segments.length === 0) {
+      return <span>No content to compare</span>;
+    }
+
     return segments.map((segment, index) => {
       if (showDifferencesOnly && segment.type === 'unchanged') {
         return null;
@@ -179,6 +193,18 @@ export default function CompareVersions() {
                   >
                     <RefreshCw className="w-4 h-4" />
                     <span>Sync Scroll</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setCurrentJobSummary(currentJobSummary + " TEST");
+                      console.log('Test diff triggered');
+                    }}
+                    className="text-xs"
+                  >
+                    Test Diff
                   </Button>
                 </div>
               </div>
