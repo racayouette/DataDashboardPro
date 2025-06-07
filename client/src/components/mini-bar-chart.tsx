@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardSummary } from "@shared/schema";
@@ -52,33 +52,43 @@ export function MiniBarChart({ data, isLoading }: MiniBarChartProps) {
     }
   ];
 
+  const COLORS = ["#f97316", "#a855f7", "#22c55e", "#3b82f6", "#10b981"];
+
   return (
     <Card className="p-6">
       <CardHeader className="pb-4">
         <CardTitle className="text-lg font-semibold">Job Status Overview</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <XAxis 
-              dataKey="name" 
-              fontSize={12}
-              angle={-45}
-              textAnchor="end"
-              height={80}
-            />
-            <YAxis fontSize={12} />
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              innerRadius={40}
+              outerRadius={80}
+              paddingAngle={5}
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
             <Tooltip 
               formatter={(value) => [value, "Jobs"]}
-              labelStyle={{ color: "#374151" }}
               contentStyle={{ 
                 backgroundColor: "white", 
                 border: "1px solid #e5e7eb",
                 borderRadius: "6px"
               }}
             />
-            <Bar dataKey="value" radius={[2, 2, 0, 0]} />
-          </BarChart>
+            <Legend 
+              verticalAlign="bottom" 
+              height={36}
+              fontSize={12}
+            />
+          </PieChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
