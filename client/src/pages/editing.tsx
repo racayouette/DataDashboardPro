@@ -337,42 +337,8 @@ export default function Editing() {
   };
 
   const renderTrackedChanges = () => {
-    if (!trackChangesMode) {
-      return <p className="text-sm mb-4">{jobSummary}</p>;
-    }
-
-    const diff = createTextDiff(originalJobSummary, jobSummary);
-    
-    return (
-      <div className="text-sm mb-4 leading-relaxed">
-        {diff.map((change, index) => {
-          if (change.type === 'unchanged') {
-            return <span key={index}>{change.text} </span>;
-          } else if (change.type === 'delete') {
-            return (
-              <span 
-                key={index} 
-                className="bg-red-100 text-red-700 line-through decoration-red-500"
-                title="Deleted text"
-              >
-                {change.text} 
-              </span>
-            );
-          } else if (change.type === 'insert') {
-            return (
-              <span 
-                key={index} 
-                className="bg-green-100 text-green-700 font-medium"
-                title="Added text"
-              >
-                {change.text} 
-              </span>
-            );
-          }
-          return null;
-        })}
-      </div>
-    );
+    // Always show clean text in the main view, regardless of track changes mode
+    return <p className="text-sm mb-4">{jobSummary}</p>;
   };
 
   const handleAddNewFunction = () => {
