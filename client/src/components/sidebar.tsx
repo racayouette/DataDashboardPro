@@ -1,4 +1,4 @@
-import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff } from "lucide-react";
+import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState } from "react";
@@ -15,6 +15,7 @@ export function Sidebar() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
 
   const handleAuthentication = () => {
     // Simple validation - in real app this would register user and call Windows Auth API
@@ -34,6 +35,23 @@ export function Sidebar() {
       setIsAuthenticated(false);
     } else {
       setShowAuthDialog(true);
+    }
+  };
+
+  const handleDialogClose = () => {
+    // Check if form is empty when closing
+    if (!username && !fullName && !email) {
+      setShowAuthDialog(false);
+      setShowAccessDenied(true);
+      // Auto-hide access denied message after 3 seconds
+      setTimeout(() => {
+        setShowAccessDenied(false);
+      }, 3000);
+    } else {
+      setShowAuthDialog(false);
+      setUsername("");
+      setFullName("");
+      setEmail("");
     }
   };
 
@@ -151,7 +169,7 @@ export function Sidebar() {
       </div>
 
       {/* Windows Authentication Dialog */}
-      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+      <Dialog open={showAuthDialog} onOpenChange={handleDialogClose}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
@@ -204,12 +222,7 @@ export function Sidebar() {
           <div className="flex justify-end space-x-2">
             <Button
               variant="outline"
-              onClick={() => {
-                setShowAuthDialog(false);
-                setUsername("");
-                setFullName("");
-                setEmail("");
-              }}
+              onClick={handleDialogClose}
             >
               Cancel
             </Button>
@@ -218,6 +231,31 @@ export function Sidebar() {
               disabled={!username || !fullName || !email}
             >
               Register
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Access Denied Dialog */}
+      <Dialog open={showAccessDenied} onOpenChange={setShowAccessDenied}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2 text-red-600">
+              <AlertTriangle className="w-5 h-5" />
+              <span>Access Denied</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-gray-700">
+              You must complete the registration form to access this feature.
+            </p>
+          </div>
+          <div className="flex justify-end">
+            <Button
+              onClick={() => setShowAccessDenied(false)}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              OK
             </Button>
           </div>
         </DialogContent>
