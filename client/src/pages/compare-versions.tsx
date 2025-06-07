@@ -172,13 +172,13 @@ export default function CompareVersions() {
           <div className="space-y-8">
             {/* Headers */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
-                <div className="p-6 border-b bg-red-50">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
+                <div className="p-6 border-b bg-gray-50">
                   <div className="flex items-center space-x-2">
-                    <FileText className="w-5 h-5 text-red-600" />
-                    <h3 className="text-lg font-semibold text-red-800">Original Job Description</h3>
+                    <FileText className="w-5 h-5 text-gray-600" />
+                    <h3 className="text-lg font-semibold text-gray-800">Original Job Description</h3>
                   </div>
-                  <p className="text-sm text-red-600 mt-2">Last modified: May 15, 2025</p>
+                  <p className="text-sm text-gray-600 mt-2">Last modified: May 15, 2025</p>
                 </div>
               </div>
               <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
@@ -194,11 +194,11 @@ export default function CompareVersions() {
 
             {/* Job Summary Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Job Summary</h4>
                   <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed">
-                    {renderDiffSegments(jobSummaryDiff)}
+                    {originalVersion.jobSummary}
                   </div>
                 </div>
               </div>
@@ -214,16 +214,14 @@ export default function CompareVersions() {
 
             {/* Essential Functions Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Essential Functions:</h4>
                   <div className="space-y-2 text-sm">
                     {originalVersion.essentialFunctions.map((func, index) => (
                       <div key={index} className="flex items-start space-x-2">
                         <span className="text-gray-500 mt-0.5">{index + 1}.</span>
-                        <span className={currentVersion.essentialFunctions[index] !== func ? "bg-red-100 text-red-800" : ""}>
-                          {func}
-                        </span>
+                        <span>{func}</span>
                       </div>
                     ))}
                   </div>
@@ -254,11 +252,11 @@ export default function CompareVersions() {
 
             {/* Description Section - Now Always Aligned */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <h4 className="font-semibold mb-3">Description</h4>
                   <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4">
-                    {renderDiffSegments(descriptionDiff)}
+                    {originalVersion.description}
                   </div>
                 </div>
               </div>
@@ -274,7 +272,7 @@ export default function CompareVersions() {
 
             {/* Footer Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-gray-200">
                 <div className="p-6">
                   <div className="border-t pt-4">
                     <h5 className="text-xs font-semibold text-gray-600 mb-2">Legend:</h5>
