@@ -737,7 +737,10 @@ export default function JobFinalReview() {
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-6 border-b">
                 <div className="flex items-center">
-                  <h3 className="text-lg font-semibold">Updated Job Description</h3>
+                  <div>
+                    <h3 className="text-lg font-semibold">Updated Job Description</h3>
+                    <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode || "Loading..."}</p>
+                  </div>
                 </div>
               </div>
               <div className="p-6">
