@@ -72,7 +72,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
     },
     {
       title: "Not Started",
-      value: parseFloat(data.growthRate).toString(),
+      value: parseFloat(data.growthRate).toLocaleString(),
       icon: XCircle,
       iconBg: "bg-orange-100",
       iconColor: "text-orange-600",
