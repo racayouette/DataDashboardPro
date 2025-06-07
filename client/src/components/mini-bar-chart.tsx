@@ -72,7 +72,7 @@ export function MiniBarChart({ data, isLoading }: MiniBarChartProps) {
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value) => [value, "Jobs"]}
+            formatter={(value, name) => [value, name]}
             contentStyle={{ 
               backgroundColor: "white", 
               border: "1px solid #e5e7eb",
