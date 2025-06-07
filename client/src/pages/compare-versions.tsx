@@ -18,20 +18,20 @@ interface DiffSegment {
 export default function CompareVersions() {
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(true);
   
   // Database selection state
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [selectedOriginalId, setSelectedOriginalId] = useState<number | null>(null);
   const [selectedCurrentId, setSelectedCurrentId] = useState<number | null>(null);
 
-  // Text content state - populated from database
-  const [originalJobSummary, setOriginalJobSummary] = useState("");
-  const [currentJobSummary, setCurrentJobSummary] = useState("");
-  const [originalEssentialFunctions, setOriginalEssentialFunctions] = useState("");
-  const [currentEssentialFunctions, setCurrentEssentialFunctions] = useState("");
-  const [originalDescription, setOriginalDescription] = useState("");
-  const [currentDescription, setCurrentDescription] = useState("");
+  // Text content state - populated with Job Description Review page data
+  const [originalJobSummary, setOriginalJobSummary] = useState("• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports\n• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.");
+  const [currentJobSummary, setCurrentJobSummary] = useState("• Provides Comprehensive Patient Care Under Licensed Supervision. Monitors Patient Condition And Reports\n• Critical Changes To The Medical Team. Maintains Detailed Records And Assists With Patient Mobility And Safety Needs.");
+  const [originalEssentialFunctions, setOriginalEssentialFunctions] = useState("1. Monitor Patient Vitals And Report Abnormalities.\n2. Assist With Bathing, Feeding, And Toileting.\n3. Document Daily Care Activities.\n4. Transport Patients Using Wheelchairs And Stretchers.");
+  const [currentEssentialFunctions, setCurrentEssentialFunctions] = useState("1. Record Vital Signs And Immediately Escalate Critical Values\n2. Aid With Patient Hygiene And Nutritional Needs\n3. Maintain Patient Care Logs And Coordinate With Nursing Staff\n4. Support Safe Patient Transport Within The Facility");
+  const [originalDescription, setOriginalDescription] = useState("The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.");
+  const [currentDescription, setCurrentDescription] = useState("Additional requirements and considerations for this role may include specialized training, certifications, or equipment handling protocols.");
 
   // Real-time diff calculations
   const [jobSummaryDiff, setJobSummaryDiff] = useState<DiffSegment[]>([]);
@@ -70,6 +70,15 @@ export default function CompareVersions() {
       }
     }
   }, [comparisonData]);
+
+  // Automatically switch from Edit Mode to View Mode after page loads
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsEditMode(false);
+    }, 2000); // Switch to View Mode after 2 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Function to create word-level diff
   const createWordDiff = (original: string, current: string): DiffSegment[] => {
