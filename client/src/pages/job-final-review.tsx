@@ -736,13 +736,8 @@ export default function JobFinalReview() {
             {/* Updated Job Description */}
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-6 border-b">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-lg font-semibold">Updated Job Description</h3>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
-                  </div>
+                <div className="flex items-center">
+                  <h3 className="text-lg font-semibold">Updated Job Description</h3>
                 </div>
               </div>
               <div className="p-6">
