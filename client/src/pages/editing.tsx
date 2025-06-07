@@ -1191,12 +1191,14 @@ export default function Editing() {
             >
               Save Draft
             </Button>
-            <Button 
-              className="bg-blue-900 text-white hover:bg-blue-800"
-              onClick={handleSubmitForReview}
-            >
-              Submit For HR Review
-            </Button>
+            {!isAdminMode && (
+              <Button 
+                className="bg-blue-900 text-white hover:bg-blue-800"
+                onClick={handleSubmitForReview}
+              >
+                Submit For HR Review
+              </Button>
+            )}
             {!isAdminMode && (
               <Button 
                 className={(hasChanges || isCritical) ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}
