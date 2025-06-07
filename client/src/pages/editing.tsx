@@ -94,6 +94,7 @@ export default function Editing() {
   const [popupTrackChangesMode, setPopupTrackChangesMode] = useState(true);
   const [popupChanges, setPopupChanges] = useState<Array<{type: 'delete' | 'insert', text: string, position: number}>>([]);
   const [popupHistory, setPopupHistory] = useState<string[]>([]);
+  const [showJobSummaryCloseConfirmation, setShowJobSummaryCloseConfirmation] = useState(false);
   
   // Function to check for changes
   const checkForChanges = () => {
@@ -624,6 +625,16 @@ export default function Editing() {
   const handlePopupCancel = () => {
     setPopupJobSummary(popupOriginalJobSummary);
     setShowJobSummaryPopup(false);
+  };
+
+  // Handle close confirmation
+  const handleConfirmJobSummaryClose = () => {
+    setShowJobSummaryCloseConfirmation(false);
+    handlePopupCancel();
+  };
+
+  const handleCancelJobSummaryClose = () => {
+    setShowJobSummaryCloseConfirmation(false);
   };
 
   const handleCancelAdditionalTextComment = () => {
@@ -1467,10 +1478,8 @@ export default function Editing() {
           // Handle X button click
           const hasChanges = popupJobSummary !== popupOriginalJobSummary;
           if (hasChanges) {
-            // Show warning if changes exist
-            if (window.confirm("You have unsaved changes. Are you sure you want to close? Your changes will be lost.")) {
-              handlePopupCancel();
-            }
+            // Show confirmation dialog instead of alert
+            setShowJobSummaryCloseConfirmation(true);
           } else {
             // No changes, allow closing
             handlePopupCancel();
@@ -1575,6 +1584,26 @@ export default function Editing() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Job Summary Close Confirmation Dialog */}
+      <AlertDialog open={showJobSummaryCloseConfirmation} onOpenChange={setShowJobSummaryCloseConfirmation}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. Are you sure you want to close? Your changes will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelJobSummaryClose}>
+              Continue Editing
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmJobSummaryClose}>
+              Close Without Saving
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
