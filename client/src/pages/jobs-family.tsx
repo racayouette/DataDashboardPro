@@ -363,7 +363,12 @@ export default function JobsFamily() {
   const getReviewerDisplay = (entry: JobEntry, index: number) => {
     const actualIndex = startIndex + index + 1; // Calculate actual row number
     
-    // For first 2 rows, show icon or assigned name
+    // Special case for job code 10001 - always show the actual reviewer data
+    if (entry.jobCode === "10001") {
+      return <span className="text-sm text-gray-900">{entry.reviewer}</span>;
+    }
+    
+    // For first 2 rows (excluding 10001), show icon or assigned name
     if (actualIndex <= 2) {
       const assignedReviewer = reviewerAssignments[actualIndex];
       
