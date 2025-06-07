@@ -43,9 +43,10 @@ export function Sidebar() {
     if (!username && !fullName && !email) {
       setShowAuthDialog(false);
       setShowAccessDenied(true);
-      // Auto-hide access denied message after 3 seconds
+      // Auto-hide access denied message after 3 seconds, then show registration again
       setTimeout(() => {
         setShowAccessDenied(false);
+        setShowAuthDialog(true);
       }, 3000);
     } else {
       setShowAuthDialog(false);
