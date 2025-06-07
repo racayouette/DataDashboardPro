@@ -507,20 +507,14 @@ export default function Editing() {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
 
-  // Handle Job Summary edit with word count check
+  // Handle Job Summary edit - always open popup
   const handleEditJobSummary = () => {
-    const wordCount = countWords(jobSummary);
-    if (wordCount > 30) {
-      // Open popup for large text editing
-      setPopupJobSummary(jobSummary);
-      setPopupOriginalJobSummary(jobSummary);
-      setPopupHistory([jobSummary]);
-      setPopupChanges([]);
-      setShowJobSummaryPopup(true);
-    } else {
-      // Use inline editing for shorter text
-      setIsEditingJobSummary(true);
-    }
+    // Always open popup for text editing
+    setPopupJobSummary(jobSummary);
+    setPopupOriginalJobSummary(jobSummary);
+    setPopupHistory([jobSummary]);
+    setPopupChanges([]);
+    setShowJobSummaryPopup(true);
   };
 
   // Handle popup job summary changes with track changes
