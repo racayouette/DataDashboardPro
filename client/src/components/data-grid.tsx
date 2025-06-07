@@ -38,13 +38,31 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // Function to get reviewers for a specific job family
-  const getReviewersForJobFamily = (jobFamilyName: string) => {
-    if (!reviewersData) return [];
-    return reviewersData
-      .filter(reviewer => reviewer.jobFamily === jobFamilyName)
-      .map(reviewer => reviewer.responsible || reviewer.jobFamily)
-      .filter(name => name && name !== jobFamilyName); // Remove duplicates and empty names
+  // Function to get functional leaders for a specific job family
+  const getFunctionalLeadersForJobFamily = (jobFamilyName: string) => {
+    // Static mapping of job families to their functional leaders
+    const jobFamilyLeaderMap: { [key: string]: string[] } = {
+      "Clinical Support": ["Sarah Mitchell", "Kelly Johnson"],
+      "Nursing": ["Robert Kennedy", "Adam Lambert"],
+      "Finance": ["Jennifer Williams", "Michael Roberts"],
+      "Human Resources": ["Linda Taylor"],
+      "IT Services": ["David Phillips", "Emma Sullivan"],
+      "Pharmacy": ["Chris Harrison"],
+      "Lab Services": ["Robert Taylor"],
+      "Behavioral Health": ["Amanda Wilson"],
+      "Security": ["Nicole Taylor"],
+      "Quality": ["Thomas Anderson"],
+      "Nutrition": ["Brian Wilson"],
+      "Facilities": ["Angela Martinez"],
+      "Patient Access": ["Christine Lee"],
+      "Health Information": ["Daniel Garcia"],
+      "Spiritual Care": ["Daniel Garcia"],
+      "Patient Support": ["Christine Lee"],
+      "Leadership": ["Daniel Garcia"],
+      "Legal": ["David Phillips"]
+    };
+    
+    return jobFamilyLeaderMap[jobFamilyName] || [];
   };
 
   const handleSort = (field: string) => {
@@ -363,7 +381,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                   ))
                 : type === "jobFamilies"
                 ? (sortedData as JobFamily[]).map((jobFamily) => {
-                    const reviewers = getReviewersForJobFamily(jobFamily.jobFamily);
+                    const functionalLeaders = getFunctionalLeadersForJobFamily(jobFamily.jobFamily);
                     return (
                       <tr 
                         key={jobFamily.id} 
@@ -383,16 +401,16 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 max-w-48">
                           <div className="flex flex-wrap gap-1">
-                            {reviewers.length > 0 ? reviewers.map((reviewer, index) => (
+                            {functionalLeaders.length > 0 ? functionalLeaders.map((leader, index) => (
                               <span key={index}>
                                 <a 
-                                  href={`/jobs-family?search=${encodeURIComponent(reviewer)}`}
+                                  href={`/jobs-family?search=${encodeURIComponent(leader)}`}
                                   className="text-blue-600 hover:text-blue-800 underline transition-colors"
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  {reviewer}
+                                  {leader}
                                 </a>
-                                {index < reviewers.length - 1 && <span className="text-gray-400">, </span>}
+                                {index < functionalLeaders.length - 1 && <span className="text-gray-400">, </span>}
                               </span>
                             )) : (
                               <span className="text-gray-400 italic">No functional leaders assigned</span>
