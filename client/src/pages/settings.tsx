@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown, ShieldCheck } from "lucide-react";
+import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown, ShieldCheck, Mail } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 interface NotificationSettings {
@@ -29,6 +29,14 @@ interface SystemSettings {
   autoSave: boolean;
   sessionTimeout: number;
   backupFrequency: 'daily' | 'weekly' | 'monthly';
+}
+
+interface EmailSettings {
+  apiKey: string;
+  apiPassword: string;
+  fromEmail: string;
+  fromName: string;
+  enabled: boolean;
 }
 
 interface User {
@@ -89,6 +97,14 @@ export default function Settings() {
     autoSave: true,
     sessionTimeout: 30,
     backupFrequency: 'daily',
+  });
+
+  const [emailSettings, setEmailSettings] = useState<EmailSettings>({
+    apiKey: '',
+    apiPassword: '',
+    fromEmail: '',
+    fromName: '',
+    enabled: false,
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -227,6 +243,7 @@ export default function Settings() {
     { id: 'users', label: 'Users', icon: User },
     { id: 'reviewers', label: 'Reviewers', icon: UserCheck },
     { id: 'responsible', label: 'Responsible', icon: Shield },
+    { id: 'email', label: 'Email', icon: Mail },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
 
