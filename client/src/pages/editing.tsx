@@ -534,7 +534,7 @@ export default function Editing() {
   const renderPopupTrackedChanges = () => {
     if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
       return (
-        <div className="h-[400px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+        <div className="h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
           <div 
             className="text-sm"
             style={{ 
@@ -579,7 +579,7 @@ export default function Editing() {
     }
 
     return (
-      <div className="h-[400px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+      <div className="h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
         <div 
           className="text-sm"
           style={{ 
@@ -1560,7 +1560,7 @@ export default function Editing() {
                 <Textarea
                   value={popupJobSummary}
                   onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-                  className="h-[400px] text-sm resize-none border border-gray-300"
+                  className="h-[500px] text-sm resize-none border border-gray-300"
                   placeholder="Edit job summary here..."
                   style={{ 
                     lineHeight: '1.5',
