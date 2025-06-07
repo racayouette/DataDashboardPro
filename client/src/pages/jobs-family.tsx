@@ -569,7 +569,7 @@ export default function JobsFamily() {
                         className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
                         onClick={() => handleSort("reviewer")}
                       >
-                        <span>Reviewer</span>
+                        <span>Functional Leader</span>
                         {getSortIcon("reviewer")}
                       </button>
                     </th>
