@@ -1106,7 +1106,7 @@ export default function Editing() {
                 {/* Additional Requirements Section */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold">Comments</h4>
+                    <h4 className="font-semibold">Additional Job Description Content</h4>
                     <div className="flex items-center space-x-3">
                       <div className="flex items-center space-x-2">
                         <input
@@ -1489,11 +1489,11 @@ export default function Editing() {
                     </div>
                   </div>
 
-                  {/* Comments */}
+                  {/* Additional Job Description Content */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Comments</h4>
+                    <h4 className="font-medium text-gray-900 mb-3">Additional Job Description Content</h4>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500 italic">{additionalText || "Add a comment here..."}</p>
+                      <p className="text-sm text-gray-500 italic">{additionalText || "Add additional content here..."}</p>
                     </div>
                   </div>
                 </div>
