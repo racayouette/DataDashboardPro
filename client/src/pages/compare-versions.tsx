@@ -37,7 +37,7 @@ export default function CompareVersions() {
       "Transport Patients Safely Using Wheelchairs And Stretchers.",
       "Provide Emotional Support And Comfort To Patients And Families."
     ],
-    description: "The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical, Emotional, And Social Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment. PCTs Work Collaboratively With Interdisciplinary Teams To Promote Optimal Patient Outcomes."
+    description: "The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical, Emotional, And Social Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment. PCTs Work Collaboratively With Interdisciplinary Teams To Promote Optimal Patient Outcomes.\n\nIn Addition To Core Care Responsibilities, PCTs Are Expected To Maintain Strict Adherence To HIPAA Privacy Standards, Infection Control Protocols, And Safety Guidelines. They Must Demonstrate Cultural Sensitivity When Working With Diverse Patient Populations And Show Adaptability In Fast-Paced Healthcare Settings. Continuous Professional Development Through Ongoing Training And Certification Programs Is Required To Stay Current With Best Practices And Emerging Healthcare Technologies."
   };
 
   // Function to create word-level diff
