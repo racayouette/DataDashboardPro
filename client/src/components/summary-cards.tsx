@@ -62,9 +62,9 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       icon: Users,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
-      change: "12.5%",
+      change: "100%",
       changeColor: "text-green-600",
-      statusText: "Completed",
+      statusText: "",
     },
     {
       title: "Not Started",
