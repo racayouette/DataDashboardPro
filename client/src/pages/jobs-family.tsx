@@ -72,23 +72,27 @@ export default function JobsFamily() {
     const urlParams = new URLSearchParams(window.location.search);
     const reviewerParam = urlParams.get('reviewer');
     const searchParam = urlParams.get('search');
-    console.log('URL params:', { reviewerParam, searchParam }); // Debug log
     if (reviewerParam) {
       const decodedReviewer = decodeURIComponent(reviewerParam);
-      console.log('Setting search term from reviewer:', decodedReviewer); // Debug log
       setSearchTerm(decodedReviewer);
+      // Clear status filter when coming from functional leader click
+      setSelectedStatus("");
     } else if (searchParam) {
       const decodedSearch = decodeURIComponent(searchParam);
-      console.log('Setting search term from search:', decodedSearch); // Debug log
       setSearchTerm(decodedSearch);
+      // Clear status filter when coming from functional leader click
+      setSelectedStatus("");
     }
   }, []);
 
-  // Auto-select Submitted to HR status when in Admin mode
+  // Auto-select Submitted to HR status when in Admin mode (but not when coming from functional leader link)
   useEffect(() => {
-    if (isAdminMode) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasSearchOrReviewerParam = urlParams.get('reviewer') || urlParams.get('search');
+    
+    if (isAdminMode && !hasSearchOrReviewerParam) {
       setSelectedStatus("Submitted to HR");
-    } else {
+    } else if (!isAdminMode && !hasSearchOrReviewerParam) {
       setSelectedStatus("");
     }
   }, [isAdminMode]);
@@ -232,17 +236,6 @@ export default function JobsFamily() {
     : allUniqueStatuses.filter(status => status !== "Submitted to HR");
 
   const filteredEntries = jobEntries.filter(entry => {
-    // Debug logging for Jennifer Williams specifically - before any filtering
-    if (searchTerm.toLowerCase().includes('jennifer williams')) {
-      console.log('Pre-filter check:', {
-        jobTitle: entry.jobTitle,
-        reviewer: entry.reviewer,
-        status: entry.status,
-        isAdminMode,
-        willBeFilteredByStatus: !isAdminMode && entry.status === "Submitted to HR"
-      });
-    }
-    
     // Hide "Submitted to HR" rows when not in admin mode
     if (!isAdminMode && entry.status === "Submitted to HR") {
       return false;
@@ -260,20 +253,6 @@ export default function JobsFamily() {
     
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
     const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
-    
-    // Final debug logging
-    if (searchTerm.toLowerCase().includes('jennifer williams')) {
-      console.log('Final filter result:', {
-        jobTitle: entry.jobTitle,
-        reviewer: entry.reviewer,
-        matchesSearch,
-        matchesJobFamily,
-        matchesStatus,
-        selectedJobFamily,
-        selectedStatus,
-        finalResult: matchesSearch && matchesJobFamily && matchesStatus
-      });
-    }
     
     // Date range filtering
     let matchesDateRange = true;
