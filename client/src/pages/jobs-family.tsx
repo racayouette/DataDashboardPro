@@ -359,13 +359,27 @@ export default function JobsFamily() {
     }));
   };
 
+  // Function to handle functional leader name click
+  const handleFunctionalLeaderClick = (reviewerName: string) => {
+    setSearchTerm(reviewerName);
+    setSelectedStatus(""); // Clear role filter
+    setCurrentPage(1); // Reset to first page
+  };
+
   // Function to get the reviewer display for a given entry
   const getReviewerDisplay = (entry: JobEntry, index: number) => {
     const actualIndex = startIndex + index + 1; // Calculate actual row number
     
-    // Special case for job code 10001 - always show the actual reviewer data
+    // Special case for job code 10001 - always show the actual reviewer data as clickable link
     if (entry.jobCode === "10001") {
-      return <span className="text-sm text-gray-900">{entry.reviewer}</span>;
+      return (
+        <button
+          onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
+          className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
+        >
+          {entry.reviewer}
+        </button>
+      );
     }
     
     // For first 2 rows (excluding 10001), show icon or assigned name
@@ -373,7 +387,14 @@ export default function JobsFamily() {
       const assignedReviewer = reviewerAssignments[actualIndex];
       
       if (assignedReviewer) {
-        return <span className="text-sm text-gray-900">{assignedReviewer}</span>;
+        return (
+          <button
+            onClick={() => handleFunctionalLeaderClick(assignedReviewer)}
+            className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
+          >
+            {assignedReviewer}
+          </button>
+        );
       }
       
       // Show empty person icon dropdown
@@ -399,8 +420,15 @@ export default function JobsFamily() {
       );
     }
     
-    // For other rows, show original reviewer name
-    return <span className="text-sm text-gray-600">{entry.reviewer}</span>;
+    // For other rows, show original reviewer name as clickable link
+    return (
+      <button
+        onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
+        className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
+      >
+        {entry.reviewer}
+      </button>
+    );
   };
 
   return (
