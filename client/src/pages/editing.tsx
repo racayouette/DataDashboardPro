@@ -532,9 +532,9 @@ export default function Editing() {
 
   // Create read-only editor showing changes
   const renderPopupEditorWithChanges = () => {
-    if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
-      // No changes or track changes off - show read-only original text
-      return (
+    // Always show as read-only textarea for proper text wrapping
+    return (
+      <div className="flex-1 flex flex-col">
         <Textarea
           value={popupOriginalJobSummary}
           readOnly
@@ -545,50 +545,11 @@ export default function Editing() {
             fontFamily: 'Arial, sans-serif'
           }}
         />
-      );
-    }
-
-    // Show highlighted changes when track changes is on
-    const diff = createTextDiff(popupOriginalJobSummary, popupJobSummary);
-    
-    return (
-      <div className="flex-1 min-h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
-        <div 
-          className="text-sm break-words"
-          style={{ 
-            lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif',
-            wordWrap: 'break-word',
-            whiteSpace: 'pre-wrap'
-          }}
-        >
-          {diff.map((change, index) => {
-            if (change.type === 'unchanged') {
-              return <span key={index}>{change.text}</span>;
-            } else if (change.type === 'delete') {
-              return (
-                <span 
-                  key={index} 
-                  className="bg-red-100 text-red-700 line-through decoration-red-500"
-                  title="Deleted text"
-                >
-                  {change.text}
-                </span>
-              );
-            } else if (change.type === 'insert') {
-              return (
-                <span 
-                  key={index} 
-                  className="bg-green-100 text-green-700 font-medium"
-                  title="Added text"
-                >
-                  {change.text}
-                </span>
-              );
-            }
-            return null;
-          })}
-        </div>
+        {popupTrackChangesMode && popupJobSummary !== popupOriginalJobSummary && (
+          <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
+            <span className="text-blue-700">Changes detected in editor pane</span>
+          </div>
+        )}
       </div>
     );
   };
