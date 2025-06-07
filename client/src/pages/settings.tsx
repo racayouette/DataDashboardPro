@@ -257,6 +257,15 @@ export default function Settings() {
     console.log('Settings saved successfully');
   };
 
+  const handleSaveEmailSettings = async () => {
+    setIsSaving(true);
+    // Simulate API call to save email settings
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsSaving(false);
+    
+    console.log('Email settings saved successfully');
+  };
+
   // Users management functions
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1567,6 +1576,91 @@ export default function Settings() {
     </div>
   );
 
+  const renderEmailSettings = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-medium text-gray-900">Email Configuration</h3>
+          <p className="text-sm text-gray-500">Configure SendGrid settings for email notifications</p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="apiKey">API Key</Label>
+            <Input
+              id="apiKey"
+              type="password"
+              value={emailSettings.apiKey}
+              onChange={(e) => setEmailSettings({ ...emailSettings, apiKey: e.target.value })}
+              placeholder="Enter SendGrid API Key"
+            />
+          </div>
+          <div>
+            <Label htmlFor="apiPassword">API Password</Label>
+            <Input
+              id="apiPassword"
+              type="password"
+              value={emailSettings.apiPassword}
+              onChange={(e) => setEmailSettings({ ...emailSettings, apiPassword: e.target.value })}
+              placeholder="Enter API Password"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="fromEmail">From Email</Label>
+            <Input
+              id="fromEmail"
+              type="email"
+              value={emailSettings.fromEmail}
+              onChange={(e) => setEmailSettings({ ...emailSettings, fromEmail: e.target.value })}
+              placeholder="noreply@company.com"
+            />
+          </div>
+          <div>
+            <Label htmlFor="fromName">From Name</Label>
+            <Input
+              id="fromName"
+              type="text"
+              value={emailSettings.fromName}
+              onChange={(e) => setEmailSettings({ ...emailSettings, fromName: e.target.value })}
+              placeholder="Your Company Name"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <input
+            id="emailEnabled"
+            type="checkbox"
+            checked={emailSettings.enabled}
+            onChange={(e) => setEmailSettings({ ...emailSettings, enabled: e.target.checked })}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <Label htmlFor="emailEnabled">Enable email notifications</Label>
+        </div>
+
+        <div className="pt-4 border-t">
+          <Button
+            onClick={handleSaveEmailSettings}
+            disabled={isSaving}
+            className="flex items-center space-x-2"
+          >
+            {isSaving ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            <span>{isSaving ? 'Saving...' : 'Save Email Settings'}</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'notifications':
@@ -1577,6 +1671,8 @@ export default function Settings() {
         return renderReviewersSection();
       case 'responsible':
         return renderResponsibleSection();
+      case 'email':
+        return renderEmailSettings();
       case 'monitoring':
         return renderDatabaseHealth();
       default:

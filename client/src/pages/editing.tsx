@@ -786,7 +786,6 @@ export default function Editing() {
                     <h3 className="text-lg font-semibold">AI-Generated Job Description</h3>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">Version 3</span>
                     <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
                   </div>
                 </div>
@@ -1155,6 +1154,26 @@ export default function Editing() {
             </AlertDialogCancel>
             <AlertDialogAction onClick={confirmSubmitForReview}>
               Ok
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Accept Changes Confirmation Dialog */}
+      <AlertDialog open={showAcceptConfirmation} onOpenChange={() => {}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Accept Changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure? Changes cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelAcceptChanges}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmAcceptChanges}>
+              Accept Changes
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
