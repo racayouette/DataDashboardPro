@@ -614,9 +614,9 @@ export default function JobFinalReview() {
               </div>
             </div>
             
-            <Button variant="ghost" asChild className="mb-4 bg-gray-100 text-gray-600 hover:bg-gray-200 border-0">
+            <Button variant="ghost" size="sm" asChild className="mb-4 bg-gray-100 text-gray-600 hover:bg-gray-200 border-0 text-sm">
               <Link href="/jobs-family">
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-3 h-3 mr-1" />
                 Back
               </Link>
             </Button>
