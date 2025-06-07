@@ -929,7 +929,7 @@ export default function Editing() {
               <div className="p-6">
                 <div className="mb-6">
                   <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                  <div className="p-4 mb-4">
                     <p className="text-sm">• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports</p>
                     <p className="text-sm">• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.</p>
                   </div>
