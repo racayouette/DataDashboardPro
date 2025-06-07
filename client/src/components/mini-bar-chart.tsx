@@ -55,42 +55,40 @@ export function MiniBarChart({ data, isLoading }: MiniBarChartProps) {
   const COLORS = ["#f97316", "#a855f7", "#22c55e", "#3b82f6", "#10b981"];
 
   return (
-    <Card className="p-6">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold">Job Status Overview</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={250}>
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={40}
-              outerRadius={80}
-              paddingAngle={5}
-              dataKey="value"
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip 
-              formatter={(value) => [value, "Jobs"]}
-              contentStyle={{ 
-                backgroundColor: "white", 
-                border: "1px solid #e5e7eb",
-                borderRadius: "6px"
-              }}
-            />
-            <Legend 
-              verticalAlign="bottom" 
-              height={36}
-              fontSize={12}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
+    <div className="p-4">
+      <ResponsiveContainer width="100%" height={200}>
+        <PieChart>
+          <Pie
+            data={chartData}
+            cx="40%"
+            cy="50%"
+            innerRadius={25}
+            outerRadius={50}
+            paddingAngle={5}
+            dataKey="value"
+          >
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip 
+            formatter={(value) => [value, "Jobs"]}
+            contentStyle={{ 
+              backgroundColor: "white", 
+              border: "1px solid #e5e7eb",
+              borderRadius: "6px"
+            }}
+          />
+          <Legend 
+            verticalAlign="middle" 
+            align="right"
+            layout="vertical"
+            iconSize={8}
+            fontSize={11}
+            wrapperStyle={{ paddingLeft: "20px" }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
