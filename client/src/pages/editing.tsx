@@ -70,7 +70,7 @@ export default function Editing() {
   const [lastEditedByUsers, setLastEditedByUsers] = useState<string[]>(["Sarah Mitchell"]);
   
   // State for managing reviewers
-  const [reviewers, setReviewers] = useState<string[]>(["Kelly Johnson"]);
+  const [reviewers, setReviewers] = useState<string[]>(["Kelly Johnson", "John Smith"]);
   
   // State for managing responsible users
   const [responsibleUsers, setResponsibleUsers] = useState<string[]>(["Jennifer Collins"]);
