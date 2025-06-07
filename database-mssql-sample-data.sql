@@ -1,200 +1,179 @@
--- =============================================
--- Sample Data for Job Management System
--- Microsoft SQL Server Implementation
--- =============================================
+-- Job Management System - Microsoft SQL Server Sample Data
+-- Created: 2025-06-07
+-- Description: Sample data for development and testing
 
--- Clear existing data (uncomment if needed)
--- DELETE FROM audit_log;
--- DELETE FROM job_description_changes;
--- DELETE FROM essential_functions;
--- DELETE FROM job_descriptions;
--- DELETE FROM jobs;
--- DELETE FROM notifications;
--- DELETE FROM reviewers;
--- DELETE FROM transactions;
--- DELETE FROM dashboard_summary;
--- DELETE FROM job_families;
--- DELETE FROM users;
--- GO
+-- Clear existing data (in reverse dependency order)
+DELETE FROM audit_log;
+DELETE FROM job_description_changes;
+DELETE FROM essential_functions;
+DELETE FROM job_descriptions;
+DELETE FROM jobs;
+DELETE FROM notifications;
+DELETE FROM reviewers;
+DELETE FROM transactions;
+DELETE FROM dashboard_summary;
+DELETE FROM job_families;
+DELETE FROM users;
 
--- =============================================
--- INSERT USERS
--- =============================================
+-- Reset identity seeds
+DBCC CHECKIDENT ('users', RESEED, 0);
+DBCC CHECKIDENT ('job_families', RESEED, 0);
+DBCC CHECKIDENT ('jobs', RESEED, 0);
+DBCC CHECKIDENT ('job_descriptions', RESEED, 0);
+DBCC CHECKIDENT ('essential_functions', RESEED, 0);
+DBCC CHECKIDENT ('notifications', RESEED, 0);
+DBCC CHECKIDENT ('dashboard_summary', RESEED, 0);
+DBCC CHECKIDENT ('transactions', RESEED, 0);
+DBCC CHECKIDENT ('reviewers', RESEED, 0);
+DBCC CHECKIDENT ('job_description_changes', RESEED, 0);
+DBCC CHECKIDENT ('audit_log', RESEED, 0);
+
+-- Insert sample users
 INSERT INTO users (name, email, role, department, status, last_login) VALUES
-('John Smith', 'john.smith@company.com', 'Admin', 'IT', 'Active', '2025-06-04 10:30:00'),
-('Sarah Johnson', 'sarah.johnson@company.com', 'HR Manager', 'Human Resources', 'Active', '2025-06-03 14:15:00'),
-('Michael Brown', 'michael.brown@company.com', 'Reviewer', 'Operations', 'Active', '2025-06-02 09:45:00'),
-('Emily Davis', 'emily.davis@company.com', 'Employee', 'Marketing', 'Inactive', '2025-05-30 16:20:00'),
-('David Wilson', 'david.wilson@company.com', 'Reviewer', 'Quality Assurance', 'Active', '2025-06-01 11:10:00'),
-('John Mark', 'john.mark@company.com', 'Admin', 'Executive', 'Active', '2025-06-05 08:00:00'),
-('Sarah Mitchell', 'sarah.mitchell@company.com', 'Reviewer', 'Clinical Support', 'Active', '2025-06-04 13:30:00'),
-('Kelly Johnson', 'kelly.johnson@company.com', 'Reviewer', 'Revenue Cycle', 'Active', '2025-06-03 15:45:00'),
-('Robert Kennedy', 'robert.kennedy@company.com', 'Reviewer', 'Finance', 'Active', '2025-06-02 12:20:00'),
-('Adam Lambert', 'adam.lambert@company.com', 'Reviewer', 'HR', 'Active', '2025-06-01 17:30:00'),
-('Jennifer Williams', 'jennifer.williams@company.com', 'Reviewer', 'IT Services', 'Active', '2025-05-31 10:15:00'),
-('Michael Roberts', 'michael.roberts@company.com', 'Reviewer', 'Pharmacy', 'Active', '2025-05-30 14:45:00'),
-('Linda Taylor', 'linda.taylor@company.com', 'Reviewer', 'Lab Services', 'Active', '2025-05-29 16:00:00'),
-('David Phillips', 'david.phillips@company.com', 'Reviewer', 'Behavioral Health', 'Active', '2025-05-28 11:30:00'),
-('Emma Sullivan', 'emma.sullivan@company.com', 'Reviewer', 'Security', 'Active', '2025-05-27 09:20:00'),
-('Chris Harrison', 'chris.harrison@company.com', 'Reviewer', 'Quality', 'Active', '2025-05-26 13:10:00');
+(N'John Smith', N'john.smith@company.com', N'Admin', N'Human Resources', N'Active', DATEADD(HOUR, -2, GETDATE())),
+(N'Kelly Johnson', N'kelly.johnson@company.com', N'HR Manager', N'Human Resources', N'Active', DATEADD(DAY, -1, GETDATE())),
+(N'Sarah Mitchell', N'sarah.mitchell@company.com', N'Reviewer', N'Clinical Operations', N'Active', DATEADD(HOUR, -3, GETDATE())),
+(N'Robert Kennedy', N'robert.kennedy@company.com', N'Reviewer', N'Nursing', N'Active', DATEADD(DAY, -1, GETDATE())),
+(N'Adam Lambert', N'adam.lambert@company.com', N'Reviewer', N'Finance', N'Active', DATEADD(DAY, -2, GETDATE())),
+(N'Jennifer Williams', N'jennifer.williams@company.com', N'Reviewer', N'Clinical Support', N'Active', DATEADD(HOUR, -4, GETDATE())),
+(N'Michael Roberts', N'michael.roberts@company.com', N'Reviewer', N'Human Resources', N'Active', DATEADD(DAY, -1, GETDATE())),
+(N'Linda Taylor', N'linda.taylor@company.com', N'Reviewer', N'IT Services', N'Active', DATEADD(HOUR, -6, GETDATE())),
+(N'David Phillips', N'david.phillips@company.com', N'Reviewer', N'IT Services', N'Active', DATEADD(DAY, -3, GETDATE())),
+(N'Emma Sullivan', N'emma.sullivan@company.com', N'Employee', N'IT Services', N'Active', DATEADD(DAY, -1, GETDATE())),
+(N'Chris Harrison', N'chris.harrison@company.com', N'Reviewer', N'Pharmacy', N'Active', DATEADD(DAY, -2, GETDATE())),
+(N'Jennifer Collins', N'jennifer.collins@company.com', N'Employee', N'Clinical Support', N'Active', DATEADD(HOUR, -5, GETDATE())),
+(N'Robert Wilson', N'robert.wilson@company.com', N'Employee', N'Clinical Support', N'Active', DATEADD(DAY, -1, GETDATE())),
+(N'David Thompson', N'david.thompson@company.com', N'Employee', N'Revenue Cycle', N'Active', DATEADD(DAY, -2, GETDATE())),
+(N'Susan Davis', N'susan.davis@company.com', N'Employee', N'Finance', N'Active', DATEADD(HOUR, -3, GETDATE()));
 
--- =============================================
--- INSERT JOB FAMILIES
--- =============================================
+-- Insert job families
 INSERT INTO job_families (job_family, total_jobs, jobs_reviewed, description) VALUES
-('Clinical Support', 185, 145, 'Healthcare and clinical support roles'),
-('Revenue Cycle', 95, 60, 'Revenue cycle and billing positions'),
-('Finance', 120, 85, 'Financial management and accounting positions'),
-('Human Resources', 78, 52, 'HR and talent management roles'),
-('IT Services', 145, 98, 'IT and technology support positions'),
-('Pharmacy', 45, 38, 'Pharmacy and pharmaceutical roles'),
-('Lab Services', 62, 48, 'Laboratory and diagnostic services'),
-('Behavioral Health', 38, 25, 'Mental health and behavioral services'),
-('Security', 25, 20, 'Security and safety positions'),
-('Quality', 42, 35, 'Quality assurance and control roles'),
-('Nutrition', 28, 22, 'Nutrition and dietary services'),
-('Facilities', 55, 42, 'Facilities and maintenance roles'),
-('Patient Access', 35, 28, 'Patient registration and access services'),
-('Health Information', 30, 24, 'Health information management'),
-('Spiritual Care', 15, 12, 'Chaplaincy and spiritual services'),
-('Patient Support', 22, 18, 'Patient transport and support services'),
-('Leadership', 18, 15, 'Executive and management positions'),
-('Legal', 12, 10, 'Legal and compliance roles');
+(N'Clinical Support', 185, 145, N'Healthcare and clinical support roles'),
+(N'Revenue Cycle', 95, 60, N'Revenue cycle and billing positions'),
+(N'Finance', 120, 85, N'Financial management and accounting positions'),
+(N'Human Resources', 78, 52, N'HR and talent management roles'),
+(N'IT Services', 145, 98, N'IT and technology support positions'),
+(N'Pharmacy', 45, 38, N'Pharmacy and pharmaceutical roles'),
+(N'Lab Services', 62, 48, N'Laboratory and diagnostic services'),
+(N'Behavioral Health', 38, 25, N'Mental health and behavioral services'),
+(N'Security', 25, 20, N'Security and safety positions'),
+(N'Quality', 42, 35, N'Quality assurance and control roles'),
+(N'Nutrition', 28, 22, N'Nutrition and dietary services'),
+(N'Facilities', 55, 42, N'Facilities and maintenance roles'),
+(N'Patient Access', 35, 28, N'Patient registration and access services'),
+(N'Health Information', 30, 24, N'Health information management'),
+(N'Spiritual Care', 15, 12, N'Chaplaincy and spiritual services'),
+(N'Patient Support', 22, 18, N'Patient transport and support services'),
+(N'Leadership', 18, 15, N'Executive and management positions'),
+(N'Legal', 12, 10, N'Legal and compliance roles'),
+(N'Nursing', 220, 180, N'Nursing and patient care positions');
 
--- =============================================
--- INSERT JOBS
--- =============================================
+-- Insert sample jobs
 INSERT INTO jobs (job_code, job_title, job_family_id, reviewer_id, responsible_id, status, last_updated) VALUES
-('10001', 'Patient Care Technician', 1, 7, 3, 'In Progress', '2025-06-15 14:30:00'),
-('10002', 'Radiology Tech', 1, 8, 5, 'Not Started', '2025-01-08 10:15:00'),
-('10003', 'Billing Specialist', 2, 9, 2, 'Reviewed', '2025-03-22 16:45:00'),
-('10004', 'Financial Analyst', 3, 10, 4, 'In Progress', '2025-05-10 11:20:00'),
-('10005', 'Nurse Practitioner', 1, 11, 3, 'In Progress', '2025-04-18 13:30:00'),
-('10006', 'HR Generalist', 4, 12, 2, 'Not Started', '2025-02-14 09:45:00'),
-('10007', 'IT Support Technician', 5, 13, 1, 'Completed', '2025-06-03 15:20:00'),
-('10008', 'Pharmacy Tech', 6, 14, 5, 'In Progress', '2025-03-05 12:10:00'),
-('10009', 'Lab Assistant', 7, 15, 4, 'In Progress', '2025-01-30 17:25:00'),
-('10010', 'Social Worker', 8, 16, 3, 'Not Started', '2025-06-28 08:40:00'),
-('10011', 'Medical Assistant', 1, 7, 2, 'In Progress', '2025-05-22 14:15:00'),
-('10012', 'Revenue Cycle Analyst', 2, 8, 1, 'Completed', '2025-04-12 10:30:00'),
-('10013', 'Physical Therapist', 1, 9, 5, 'Not Started', '2025-03-08 16:00:00'),
-('10014', 'Clinical Coordinator', 1, 10, 4, 'In Progress', '2025-06-05 11:45:00'),
-('10015', 'Security Officer', 9, 11, 3, 'Completed', '2025-02-28 13:20:00'),
-('10016', 'Quality Assurance Specialist', 10, 12, 2, 'In Progress', '2025-05-15 09:30:00'),
-('10017', 'Respiratory Therapist', 1, 13, 1, 'Not Started', '2025-01-20 15:45:00'),
-('10018', 'Dietician', 11, 14, 5, 'In Progress', '2025-04-25 12:50:00'),
-('10019', 'Case Manager', 8, 15, 4, 'Completed', '2025-03-18 14:35:00'),
-('10020', 'Maintenance Technician', 12, 16, 3, 'In Progress', '2025-06-10 10:20:00');
+(N'10001', N'Patient Care Technician', 1, 3, 12, N'Submitted to HR', DATEADD(DAY, -2, GETDATE())),
+(N'10002', N'Radiology Tech', 1, 2, 13, N'Submitted to HR', DATEADD(DAY, -5, GETDATE())),
+(N'10003', N'Billing Specialist', 2, 4, 14, N'Reviewed', DATEADD(DAY, -3, GETDATE())),
+(N'10004', N'Financial Analyst', 3, 5, 15, N'In Progress', DATEADD(DAY, -1, GETDATE())),
+(N'10005', N'Nurse Practitioner', 1, 6, 12, N'In Progress', DATEADD(DAY, -4, GETDATE())),
+(N'10006', N'HR Generalist', 4, 7, 13, N'Not Started', DATEADD(DAY, -6, GETDATE())),
+(N'10007', N'IT Support Technician', 5, 8, 10, N'Completed', DATEADD(DAY, -1, GETDATE())),
+(N'10008', N'Pharmacist', 6, 11, 14, N'In Progress', DATEADD(DAY, -2, GETDATE())),
+(N'10009', N'Lab Technician', 7, 4, 15, N'Reviewed', DATEADD(DAY, -3, GETDATE())),
+(N'10010', N'Security Officer', 9, 7, 12, N'Not Started', DATEADD(DAY, -7, GETDATE())),
+(N'10011', N'Quality Coordinator', 10, 5, 13, N'In Progress', DATEADD(DAY, -2, GETDATE())),
+(N'10012', N'Nutritionist', 11, 6, 14, N'Completed', DATEADD(DAY, -5, GETDATE()));
 
--- =============================================
--- INSERT JOB DESCRIPTIONS
--- =============================================
+-- Insert job descriptions
 INSERT INTO job_descriptions (job_id, version, job_summary, original_job_summary, last_edited_by_id, is_active) VALUES
-(1, 1, 'The Patient Care Technician provides direct patient care under the supervision of registered nurses. Responsibilities include vital sign monitoring, patient mobility assistance, and maintaining a safe patient environment.', 
-'The Patient Care Technician provides direct patient care under the supervision of registered nurses. Responsibilities include vital sign monitoring, patient mobility assistance, and maintaining a safe patient environment.', 7, 1),
-(2, 1, 'Radiology Technician operates imaging equipment to produce diagnostic images. Must maintain equipment, ensure patient safety, and follow radiation safety protocols.', 
-'Radiology Technician operates imaging equipment to produce diagnostic images. Must maintain equipment, ensure patient safety, and follow radiation safety protocols.', 8, 1),
-(3, 1, 'Billing Specialist processes medical claims, verifies insurance coverage, and manages patient billing inquiries. Ensures accurate coding and timely claim submission.', 
-'Billing Specialist processes medical claims, verifies insurance coverage, and manages patient billing inquiries. Ensures accurate coding and timely claim submission.', 9, 1),
-(4, 1, 'Financial Analyst analyzes financial data, prepares reports, and supports budgeting processes. Provides insights for strategic financial decision-making.', 
-'Financial Analyst analyzes financial data, prepares reports, and supports budgeting processes. Provides insights for strategic financial decision-making.', 10, 1),
-(5, 1, 'Nurse Practitioner provides advanced nursing care, diagnoses conditions, and prescribes treatments. Works collaboratively with physicians to deliver comprehensive patient care.', 
-'Nurse Practitioner provides advanced nursing care, diagnoses conditions, and prescribes treatments. Works collaboratively with physicians to deliver comprehensive patient care.', 11, 1);
+(1, 1, N'Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.', N'Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.', 3, 1),
+(2, 1, N'Performs diagnostic imaging procedures using specialized equipment to assist in patient diagnosis and treatment.', N'Performs diagnostic imaging procedures using specialized equipment to assist in patient diagnosis and treatment.', 2, 1),
+(3, 1, N'Processes medical billing and insurance claims, ensuring accurate coding and timely submission for reimbursement.', N'Processes medical billing and insurance claims, ensuring accurate coding and timely submission for reimbursement.', 4, 1),
+(4, 1, N'Analyzes financial data and creates reports to support business decision-making and financial planning.', N'Analyzes financial data and creates reports to support business decision-making and financial planning.', 5, 1),
+(5, 1, N'Provides advanced nursing care, conducts assessments, and collaborates with physicians to develop treatment plans.', N'Provides advanced nursing care, conducts assessments, and collaborates with physicians to develop treatment plans.', 6, 1),
+(6, 1, N'Supports HR operations including recruitment, employee relations, and policy implementation.', N'Supports HR operations including recruitment, employee relations, and policy implementation.', 7, 1),
+(7, 1, N'Provides technical support for computer systems, networks, and software applications.', N'Provides technical support for computer systems, networks, and software applications.', 8, 1),
+(8, 1, N'Dispenses medications, provides patient counseling, and ensures compliance with pharmaceutical regulations.', N'Dispenses medications, provides patient counseling, and ensures compliance with pharmaceutical regulations.', 11, 1),
+(9, 1, N'Performs laboratory tests and analyses to support patient diagnosis and treatment monitoring.', N'Performs laboratory tests and analyses to support patient diagnosis and treatment monitoring.', 4, 1),
+(10, 1, N'Maintains facility security and safety through patrols, monitoring, and emergency response.', N'Maintains facility security and safety through patrols, monitoring, and emergency response.', 7, 1),
+(11, 1, N'Coordinates quality improvement initiatives and ensures compliance with regulatory standards.', N'Coordinates quality improvement initiatives and ensures compliance with regulatory standards.', 5, 1),
+(12, 1, N'Develops nutrition plans and provides dietary counseling to support patient health outcomes.', N'Develops nutrition plans and provides dietary counseling to support patient health outcomes.', 6, 1);
 
--- =============================================
--- INSERT ESSENTIAL FUNCTIONS
--- =============================================
+-- Insert essential functions
 INSERT INTO essential_functions (job_description_id, function_text, sort_order, has_edit) VALUES
-(1, 'Monitor and record patient vital signs including blood pressure, temperature, pulse, and respirations', 1, 1),
-(1, 'Assist patients with activities of daily living including bathing, feeding, and mobility', 2, 1),
-(1, 'Maintain accurate documentation of patient care activities and observations', 3, 1),
-(1, 'Ensure patient safety and comfort at all times', 4, 1),
-(1, 'Communicate effectively with nursing staff and other healthcare team members', 5, 1),
-(2, 'Operate radiographic equipment to produce high-quality diagnostic images', 1, 1),
-(2, 'Position patients correctly for various imaging procedures', 2, 1),
-(2, 'Follow radiation safety protocols and maintain ALARA principles', 3, 1),
-(2, 'Maintain and perform quality control on imaging equipment', 4, 1),
-(2, 'Provide patient education and comfort during procedures', 5, 1),
-(3, 'Process and submit medical insurance claims accurately and timely', 1, 1),
-(3, 'Verify patient insurance coverage and benefits', 2, 1),
-(3, 'Resolve billing discrepancies and answer patient billing inquiries', 3, 1),
-(3, 'Maintain knowledge of current CPT and ICD-10 coding standards', 4, 1),
-(3, 'Generate reports on billing metrics and collection activities', 5, 1);
+-- Patient Care Technician functions
+(1, N'Record Vital Signs And Immediately Escalate Critical Values', 1, 1),
+(1, N'Aid With Patient Hygiene And Nutritional Needs', 2, 1),
+(1, N'Maintain Patient Care Logs And Coordinate With Nursing Staff', 3, 1),
+(1, N'Support Safe Patient Transport Within The Facility', 4, 1),
 
--- =============================================
--- INSERT NOTIFICATIONS
--- =============================================
+-- Radiology Tech functions
+(2, N'Operate diagnostic imaging equipment safely and effectively', 1, 1),
+(2, N'Position patients appropriately for optimal image quality', 2, 1),
+(2, N'Maintain equipment calibration and quality control standards', 3, 1),
+(2, N'Ensure radiation safety protocols are followed', 4, 1),
+
+-- Billing Specialist functions
+(3, N'Review and process medical billing claims accurately', 1, 1),
+(3, N'Verify insurance coverage and obtain prior authorizations', 2, 1),
+(3, N'Follow up on denied or rejected claims', 3, 1),
+(3, N'Maintain patient billing records and documentation', 4, 1),
+
+-- Financial Analyst functions
+(4, N'Prepare monthly and quarterly financial reports', 1, 1),
+(4, N'Analyze budget variances and identify trends', 2, 1),
+(4, N'Support annual budgeting and forecasting processes', 3, 1),
+(4, N'Conduct financial modeling and scenario analysis', 4, 1);
+
+-- Insert notifications
 INSERT INTO notifications (user_id, title, message, type, category, priority, is_read) VALUES
-(7, 'Job Review Deadline', 'Patient Care Technician job description review is due in 2 days', 'warning', 'deadline', 'high', 0),
-(8, 'New Job Assignment', 'You have been assigned to review Radiology Tech position', 'info', 'assignment', 'medium', 0),
-(9, 'Review Completed', 'Billing Specialist job description has been approved', 'success', 'completion', 'low', 1),
-(10, 'System Update', 'Job management system will undergo maintenance this weekend', 'info', 'system', 'medium', 0),
-(11, 'Feedback Required', 'Please provide feedback on Nurse Practitioner job requirements', 'warning', 'feedback', 'high', 0),
-(12, 'Status Update', 'HR Generalist position status has been changed to Not Started', 'info', 'status', 'low', 1);
+(1, N'System Maintenance', N'Scheduled system maintenance will occur this weekend', N'info', N'system', N'medium', 0),
+(2, N'Job Submitted for Review', N'Job 10001 has been submitted for your review', N'info', N'job_status', N'high', 0),
+(3, N'Review Deadline Approaching', N'Job 10005 review deadline is in 2 days', N'warning', N'deadline', N'high', 0),
+(4, N'Job Completed', N'Job 10007 has been completed successfully', N'success', N'job_status', N'medium', 1),
+(5, N'New Job Assignment', N'You have been assigned as reviewer for job 10004', N'info', N'assignment', N'medium', 0);
 
--- =============================================
--- INSERT DASHBOARD SUMMARY
--- =============================================
+-- Insert dashboard summary
 INSERT INTO dashboard_summary (total_users, revenue, orders, growth_rate, jobs_reviewed, in_progress, not_started) VALUES
-(9000, 712.00, 132, 56.00, 145, 85, 40);
+(9000, 75000.00, 1250, 12.5, 823, 345, 156);
 
--- =============================================
--- INSERT TRANSACTIONS
--- =============================================
-INSERT INTO transactions (customer_name, customer_email, amount, status, description, date) VALUES
-('Sarah Miller', 'sarah.miller@example.com', 2450.00, 'Completed', 'Clinical support job family review', '2025-03-15 14:30:00'),
-('John Davis', 'john@example.com', 1250.00, 'Pending', 'IT Services job family assessment', '2025-03-14 10:15:00'),
-('Maria Rodriguez', 'maria.rodriguez@example.com', 3200.00, 'Completed', 'Revenue cycle optimization project', '2025-03-13 16:45:00'),
-('David Thompson', 'david.t@example.com', 1800.00, 'Failed', 'Quality assurance consulting', '2025-03-12 11:20:00');
+-- Insert sample transactions
+INSERT INTO transactions (customer_name, customer_email, amount, status, description) VALUES
+(N'Sarah Miller', N'sarah.miller@email.com', 1250.00, N'Completed', N'Monthly service subscription'),
+(N'John Davis', N'john.davis@email.com', 850.50, N'Completed', N'Professional services consultation'),
+(N'Emily Chen', N'emily.chen@email.com', 2100.00, N'Pending', N'Annual maintenance contract'),
+(N'Michael Brown', N'michael.brown@email.com', 750.00, N'Completed', N'Training program enrollment'),
+(N'Lisa Johnson', N'lisa.johnson@email.com', 1500.00, N'Failed', N'Equipment purchase order'),
+(N'David Wilson', N'david.wilson@email.com', 950.00, N'Completed', N'Software licensing renewal'),
+(N'Anna Rodriguez', N'anna.rodriguez@email.com', 1800.00, N'Completed', N'Implementation services'),
+(N'James Thompson', N'james.thompson@email.com', 650.00, N'Pending', N'Support ticket resolution');
 
--- =============================================
--- INSERT REVIEWERS
--- =============================================
-INSERT INTO reviewers (job_family, completed, in_progress, responsible) VALUES
-('Sarah Mitchell', 82, 5, 'James Patterson'),
-('Kelly Johnson', 67, 12, 'Maria Rodriguez'),
-('Robert Kennedy', 45, 8, 'Jennifer Smith'),
-('Adam Lambert', 73, 6, 'Michael Brown'),
-('Jennifer Williams', 91, 3, 'Lisa Anderson'),
-('Michael Roberts', 38, 15, 'Thomas Garcia'),
-('Linda Taylor', 56, 9, 'David Thompson'),
-('David Phillips', 42, 7, 'Susan Davis'),
-('Emma Sullivan', 59, 11, 'Patricia Miller'),
-('Chris Harrison', 74, 4, 'Kevin Garcia'),
-('Robert Taylor', 63, 8, 'Carlos Martinez'),
-('Amanda Wilson', 48, 13, 'Amanda Wilson'),
-('Nicole Taylor', 35, 6, 'Nicole Taylor'),
-('Thomas Anderson', 52, 10, 'Linda Johnson'),
-('Brian Wilson', 67, 5, 'Brian Wilson'),
-('Angela Martinez', 41, 14, 'Angela Martinez'),
-('Christine Lee', 58, 7, 'Christine Lee'),
-('Daniel Garcia', 46, 9, 'Daniel Garcia');
+-- Insert reviewers data
+INSERT INTO reviewers (username, full_name, email, job_family, completed, in_progress, responsible) VALUES
+(N'sarah.mitchell', N'Sarah Mitchell', N'sarah.mitchell@company.com', N'Clinical Support', 45, 8, N'Jennifer Collins'),
+(N'kelly.johnson', N'Kelly Johnson', N'kelly.johnson@company.com', N'Revenue Cycle', 38, 12, N'Robert Wilson'),
+(N'robert.kennedy', N'Robert Kennedy', N'robert.kennedy@company.com', N'Nursing', 52, 6, N'David Thompson'),
+(N'adam.lambert', N'Adam Lambert', N'adam.lambert@company.com', N'Finance', 41, 9, N'Susan Davis'),
+(N'jennifer.williams', N'Jennifer Williams', N'jennifer.williams@company.com', N'Clinical Support', 36, 11, N'Jennifer Collins'),
+(N'michael.roberts', N'Michael Roberts', N'michael.roberts@company.com', N'Human Resources', 29, 7, N'Robert Wilson'),
+(N'linda.taylor', N'Linda Taylor', N'linda.taylor@company.com', N'IT Services', 33, 14, N'Emma Sullivan'),
+(N'david.phillips', N'David Phillips', N'david.phillips@company.com', N'IT Services', 28, 5, N'Emma Sullivan');
 
--- =============================================
--- INSERT SAMPLE AUDIT LOGS
--- =============================================
-INSERT INTO audit_log (user_id, action, entity_type, entity_id, details, ip_address, user_agent) VALUES
-(7, 'CREATE', 'JobDescription', 1, '{"action":"created_job_description","job_id":1}', '192.168.1.100', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'),
-(8, 'UPDATE', 'Job', 2, '{"field":"status","old_value":"Not Started","new_value":"In Progress"}', '192.168.1.101', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'),
-(9, 'APPROVE', 'JobDescription', 3, '{"action":"approved_job_description","job_id":3}', '192.168.1.102', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'),
-(10, 'LOGIN', 'User', 10, '{"login_time":"2025-05-10T11:20:00Z"}', '192.168.1.103', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'),
-(11, 'CREATE', 'EssentialFunction', 1, '{"job_description_id":1,"function_text":"Monitor vital signs"}', '192.168.1.104', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-
--- =============================================
--- INSERT SAMPLE JOB DESCRIPTION CHANGES
--- =============================================
+-- Insert job description changes for tracking
 INSERT INTO job_description_changes (job_description_id, change_type, field_name, old_value, new_value, user_id) VALUES
-(1, 'update', 'job_summary', 'Original summary text...', 'Updated summary with additional requirements...', 7),
-(2, 'insert', 'essential_function', NULL, 'New essential function added', 8),
-(3, 'update', 'job_summary', 'Previous billing specialist description', 'Updated billing specialist with new responsibilities', 9);
+(1, N'update', N'job_summary', N'Original patient care description', N'Provides Patient Care Under Supervision. Assists Patients With Hygiene, Monitoring, And Treatment Goals.', 3),
+(2, N'update', N'job_summary', N'Basic radiology tech role', N'Performs diagnostic imaging procedures using specialized equipment to assist in patient diagnosis and treatment.', 2),
+(4, N'insert', N'essential_function', NULL, N'Conduct financial modeling and scenario analysis', 5);
 
-PRINT 'Sample data inserted successfully!';
-PRINT 'Database is now ready for use with the Job Management System.';
+-- Insert audit log entries
+INSERT INTO audit_log (user_id, action, entity_type, entity_id, details, ip_address, user_agent) VALUES
+(1, N'CREATE', N'job', 1, N'{"job_code":"10001","job_title":"Patient Care Technician"}', N'192.168.1.100', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'),
+(3, N'UPDATE', N'job_description', 1, N'{"version":1}', N'192.168.1.101', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'),
+(2, N'STATUS_CHANGE', N'job', 1, N'{"old_status":"In Progress","new_status":"Submitted to HR"}', N'192.168.1.102', N'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'),
+(5, N'CREATE', N'essential_function', 13, N'{"job_description_id":4,"function_text":"Conduct financial modeling and scenario analysis"}', N'192.168.1.103', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'),
+(7, N'UPDATE', N'job', 6, N'{"status":"Not Started"}', N'192.168.1.104', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
 
--- =============================================
--- VERIFY DATA INSERTION
--- =============================================
-SELECT 'Users' AS TableName, COUNT(*) AS RecordCount FROM users
+-- Verify data insertion
+SELECT 'Users' as table_name, COUNT(*) as record_count FROM users
 UNION ALL
 SELECT 'Job Families', COUNT(*) FROM job_families
 UNION ALL
@@ -210,6 +189,7 @@ SELECT 'Transactions', COUNT(*) FROM transactions
 UNION ALL
 SELECT 'Reviewers', COUNT(*) FROM reviewers
 UNION ALL
-SELECT 'Audit Logs', COUNT(*) FROM audit_log
+SELECT 'Job Description Changes', COUNT(*) FROM job_description_changes
 UNION ALL
-SELECT 'Job Description Changes', COUNT(*) FROM job_description_changes;
+SELECT 'Audit Log', COUNT(*) FROM audit_log
+ORDER BY table_name;
