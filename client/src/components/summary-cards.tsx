@@ -1,4 +1,4 @@
-import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase, Eye, XCircle } from "lucide-react";
+import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase, Eye, XCircle, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardSummary } from "@shared/schema";
@@ -101,9 +101,9 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
   // Second row configuration with same data structure but can be customized independently
   const secondCards = [
     {
-      title: "Total Jobs",
+      title: "HR Review Complete",
       value: data.totalUsers.toLocaleString(),
-      icon: Briefcase,
+      icon: Shield,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
       change: "12.5%",
