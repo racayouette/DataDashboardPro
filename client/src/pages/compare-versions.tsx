@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GitCompare, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -30,6 +31,30 @@ export default function CompareVersions() {
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </Button>
+          </div>
+
+          {/* Comparison Boxes */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Original Job Description */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Original Job Description</CardTitle>
+                <p className="text-sm text-gray-600">Last modified: May 15, 2025</p>
+              </CardHeader>
+              <CardContent>
+                {/* Content will be added here */}
+              </CardContent>
+            </Card>
+
+            {/* Current Version */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Current Version</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Content will be added here */}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
