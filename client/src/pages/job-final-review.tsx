@@ -605,56 +605,21 @@ export default function JobFinalReview() {
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-3">
+          <div className="mb-8">
+            <div className="flex items-center space-x-3 mb-6">
               <Edit className="w-6 h-6 text-blue-600" />
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Job Final Review</h1>
-                {jobCode && (
-                  <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode}</p>
-                )}
+                <p className="text-sm text-gray-600 mt-1">Job Code: 10001</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative" ref={notificationRef}>
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative"
-                >
-                  <Bell className="w-6 h-6 text-gray-600" />
-                  {notifications.length > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">{notifications.length}</span>
-                    </span>
-                  )}
-                </button>
-
-                {/* Notifications Dropdown */}
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-50 max-h-96 overflow-y-auto">
-                    <div className="p-4 border-b">
-                      <h3 className="font-semibold text-gray-900">Notifications</h3>
-                    </div>
-                    <div className="divide-y">
-                      {notifications.map((notification, index) => (
-                        <div key={index} className="p-4 hover:bg-gray-50">
-                          <p className="text-sm text-gray-700">
-                            {renderNotificationWithLinks(notification)}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <Button variant="outline" asChild>
-                <Link href="/jobs-family">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Link>
-              </Button>
-            </div>
+            
+            <Button variant="outline" asChild className="mb-4">
+              <Link href="/jobs-family">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Link>
+            </Button>
           </div>
 
           {/* Job Info Cards */}
