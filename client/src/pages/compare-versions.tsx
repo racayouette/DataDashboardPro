@@ -100,7 +100,7 @@ export default function CompareVersions() {
     updateDiffs();
   }, [originalJobSummary, currentJobSummary, originalEssentialFunctions, currentEssentialFunctions, originalDescription, currentDescription]);
 
-  // Function to render diff segments
+  // Function to render diff segments for current version (right side)
   const renderDiffSegments = (segments: DiffSegment[]) => {
     if (!segments || segments.length === 0) {
       return <span>No content to compare</span>;
@@ -121,6 +121,40 @@ export default function CompareVersions() {
           break;
         case 'modified':
           className = 'bg-yellow-100 text-yellow-800 font-medium';
+          break;
+        default:
+          className = '';
+      }
+
+      return (
+        <span key={index} className={className}>
+          {segment.text}
+        </span>
+      );
+    });
+  };
+
+  // Function to render original text with word-by-word highlighting
+  const renderOriginalWithDiff = (segments: DiffSegment[]) => {
+    if (!segments || segments.length === 0) {
+      return <span>No content to compare</span>;
+    }
+
+    return segments.map((segment, index) => {
+      if (showDifferencesOnly && segment.type === 'unchanged') {
+        return null;
+      }
+
+      let className = '';
+      switch (segment.type) {
+        case 'removed':
+          className = 'bg-red-100 text-red-800 line-through';
+          break;
+        case 'added':
+          // Don't show added text in original, but add spacing
+          return <span key={index} className="text-transparent select-none">{segment.text}</span>;
+        case 'modified':
+          className = 'bg-yellow-100 text-yellow-800';
           break;
         default:
           className = '';
@@ -256,7 +290,7 @@ export default function CompareVersions() {
                     />
                   ) : (
                     <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed whitespace-pre-wrap">
-                      {originalJobSummary}
+                      {renderOriginalWithDiff(jobSummaryDiff)}
                     </div>
                   )}
                 </div>
@@ -293,8 +327,8 @@ export default function CompareVersions() {
                       placeholder="Enter functions separated by line breaks..."
                     />
                   ) : (
-                    <div className="space-y-2 text-sm">
-                      {renderEssentialFunctionsList(originalEssentialFunctions)}
+                    <div className="space-y-2 text-sm whitespace-pre-wrap">
+                      {renderOriginalWithDiff(essentialFunctionsDiff)}
                     </div>
                   )}
                 </div>
@@ -332,7 +366,7 @@ export default function CompareVersions() {
                     />
                   ) : (
                     <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4 whitespace-pre-wrap">
-                      {originalDescription}
+                      {renderOriginalWithDiff(descriptionDiff)}
                     </div>
                   )}
                 </div>
