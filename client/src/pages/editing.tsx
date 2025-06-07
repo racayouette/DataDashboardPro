@@ -86,6 +86,14 @@ export default function Editing() {
   const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
   const [additionalTextComment, setAdditionalTextComment] = useState("");
   const [isCritical, setIsCritical] = useState(false);
+
+  // State for Job Summary popup editor
+  const [showJobSummaryPopup, setShowJobSummaryPopup] = useState(false);
+  const [popupJobSummary, setPopupJobSummary] = useState("");
+  const [popupOriginalJobSummary, setPopupOriginalJobSummary] = useState("");
+  const [popupTrackChangesMode, setPopupTrackChangesMode] = useState(true);
+  const [popupChanges, setPopupChanges] = useState<Array<{type: 'delete' | 'insert', text: string, position: number}>>([]);
+  const [popupHistory, setPopupHistory] = useState<string[]>([]);
   
   // Function to check for changes
   const checkForChanges = () => {
@@ -490,6 +498,61 @@ export default function Editing() {
     setAdditionalTextComment("");
   };
 
+  // Helper function to count words
+  const countWords = (text: string) => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  // Handle Job Summary edit with word count check
+  const handleEditJobSummary = () => {
+    const wordCount = countWords(jobSummary);
+    if (wordCount > 30) {
+      // Open popup for large text editing
+      setPopupJobSummary(jobSummary);
+      setPopupOriginalJobSummary(jobSummary);
+      setPopupHistory([jobSummary]);
+      setPopupChanges([]);
+      setShowJobSummaryPopup(true);
+    } else {
+      // Use inline editing for shorter text
+      setIsEditingJobSummary(true);
+    }
+  };
+
+  // Handle popup job summary changes with track changes
+  const handlePopupJobSummaryChange = (newText: string) => {
+    if (popupTrackChangesMode) {
+      // Add to history before making changes
+      setPopupHistory(prev => [...prev, popupJobSummary]);
+    }
+    
+    setPopupJobSummary(newText);
+  };
+
+  // Handle popup undo
+  const handlePopupUndo = () => {
+    if (popupHistory.length > 1) {
+      const newHistory = [...popupHistory];
+      newHistory.pop(); // Remove current state
+      const previousState = newHistory[newHistory.length - 1];
+      setPopupJobSummary(previousState);
+      setPopupHistory(newHistory);
+    }
+  };
+
+  // Handle popup OK
+  const handlePopupOK = () => {
+    setJobSummary(popupJobSummary);
+    setShowJobSummaryPopup(false);
+    updateLastModifiedDate();
+  };
+
+  // Handle popup Cancel
+  const handlePopupCancel = () => {
+    setPopupJobSummary(popupOriginalJobSummary);
+    setShowJobSummaryPopup(false);
+  };
+
   const handleCancelAdditionalTextComment = () => {
     setAdditionalTextComment("");
     setShowAdditionalTextCommentModal(false);
@@ -813,7 +876,7 @@ export default function Editing() {
                       <Button 
                         size="sm" 
                         variant="ghost"
-                        onClick={() => setIsEditingJobSummary(!isEditingJobSummary)}
+                        onClick={handleEditJobSummary}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -1320,6 +1383,94 @@ export default function Editing() {
           <div className="flex justify-end gap-3 p-6 pt-0 border-t">
             <Button variant="outline" onClick={() => setShowCompareModal(false)}>
               Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Job Summary Popup Editor */}
+      <Dialog open={showJobSummaryPopup} onOpenChange={() => {}}>
+        <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Edit Job Summary</DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex-1 flex flex-col space-y-4">
+            {/* Track Changes Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <input 
+                  type="checkbox"
+                  id="popup-track-changes"
+                  checked={popupTrackChangesMode}
+                  onChange={(e) => setPopupTrackChangesMode(e.target.checked)}
+                  className="h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <label 
+                  htmlFor="popup-track-changes" 
+                  className="text-sm font-medium cursor-pointer"
+                >
+                  Track Changes
+                </label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  onClick={handlePopupUndo}
+                  disabled={popupHistory.length <= 1}
+                  title="Undo last change"
+                >
+                  <Undo className="w-4 h-4" />
+                </Button>
+                <span className="text-xs text-gray-500">
+                  Word Count: {countWords(popupJobSummary)}
+                </span>
+              </div>
+            </div>
+            
+            {/* Text Editor */}
+            <div className="flex-1">
+              <Textarea
+                value={popupJobSummary}
+                onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
+                className="h-full min-h-[400px] text-sm resize-none"
+                placeholder="Enter job summary (35 lines available for editing)..."
+                style={{ 
+                  lineHeight: '1.5',
+                  fontFamily: 'monospace'
+                }}
+              />
+            </div>
+            
+            {/* Track Changes Preview */}
+            {popupTrackChangesMode && popupJobSummary !== popupOriginalJobSummary && (
+              <div className="border-t pt-4">
+                <h4 className="text-sm font-medium mb-2">Changes Preview:</h4>
+                <div className="bg-gray-50 p-3 rounded text-sm">
+                  <div className="space-y-1">
+                    <div><span className="text-red-600">- Original:</span> {popupOriginalJobSummary}</div>
+                    <div><span className="text-green-600">+ Modified:</span> {popupJobSummary}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Footer Buttons */}
+          <div className="flex justify-end space-x-3 pt-4 border-t">
+            <Button
+              variant="outline"
+              onClick={handlePopupCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePopupOK}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              OK
             </Button>
           </div>
         </DialogContent>
