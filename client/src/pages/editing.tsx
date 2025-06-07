@@ -1141,7 +1141,7 @@ export default function Editing() {
                           value={additionalText}
                           onChange={(e) => setAdditionalText(e.target.value)}
                           className="min-h-[120px] resize-none"
-                          placeholder="Add a comment here..."
+                          placeholder="Additional Job Description Content here..."
                           autoFocus
                         />
                         <div className="flex justify-end space-x-2">
@@ -1163,7 +1163,7 @@ export default function Editing() {
                     ) : (
                       <div className="group relative">
                         <p className="text-sm text-gray-500 leading-relaxed italic">
-                          {additionalText || "Add a comment here..."}
+                          {additionalText || "Additional Job Description Content here..."}
                         </p>
                       </div>
                     )}
