@@ -62,7 +62,7 @@ export function Sidebar() {
     { icon: Edit3, label: "Editing", path: "/editing", active: false, hidden: true },
     { icon: FileText, label: "Job Final Review", path: "/job-final-review", active: false, hidden: true },
     { icon: Bell, label: "Notifications", path: "/notifications", active: false },
-    { icon: GitCompare, label: "Compare Version", path: "/compare-version", active: false },
+    { icon: GitCompare, label: "Compare Versions", path: "/compare-versions", active: false },
     { icon: Settings, label: "Settings", path: "/settings", active: false },
   ];
 

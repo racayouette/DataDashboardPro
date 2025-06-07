@@ -13,7 +13,7 @@ import JobFinalReview from "@/pages/job-final-review";
 import Users from "@/pages/users";
 import Notifications from "@/pages/notifications";
 import Downloads from "@/pages/downloads";
-import CompareVersion from "@/pages/compare-version";
+import CompareVersions from "@/pages/compare-versions";
 import Settings from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
@@ -28,7 +28,7 @@ function Router() {
       <Route path="/users" component={Users} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/downloads" component={Downloads} />
-      <Route path="/compare-version" component={CompareVersion} />
+      <Route path="/compare-versions" component={CompareVersions} />
       <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
