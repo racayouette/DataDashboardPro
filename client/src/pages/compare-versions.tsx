@@ -168,26 +168,54 @@ export default function CompareVersions() {
             </Button>
           </div>
 
-          {/* Comparison Boxes */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Original Job Description */}
-            <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
-              <div className="p-6 border-b bg-red-50">
-                <div className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-red-600" />
-                  <h3 className="text-lg font-semibold text-red-800">Original Job Description</h3>
+          {/* Comparison Boxes with Synchronized Sections */}
+          <div className="space-y-8">
+            {/* Headers */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+                <div className="p-6 border-b bg-red-50">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="w-5 h-5 text-red-600" />
+                    <h3 className="text-lg font-semibold text-red-800">Original Job Description</h3>
+                  </div>
+                  <p className="text-sm text-red-600 mt-2">Last modified: May 15, 2025</p>
                 </div>
-                <p className="text-sm text-red-600 mt-2">Last modified: May 15, 2025</p>
               </div>
-              <div className="p-6">
-                <div className="mb-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
+                <div className="p-6 border-b bg-green-50">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="w-5 h-5 text-green-600" />
+                    <h3 className="text-lg font-semibold text-green-800">Current Version</h3>
+                  </div>
+                  <p className="text-sm text-green-600 mt-2">Last modified: June 7, 2025</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Job Summary Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+                <div className="p-6">
                   <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <div className="bg-gray-50 border rounded p-4 mb-4 text-sm leading-relaxed">
+                  <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed">
                     {renderDiffSegments(jobSummaryDiff)}
                   </div>
                 </div>
+              </div>
+              <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
+                <div className="p-6">
+                  <h4 className="font-semibold mb-3">Job Summary</h4>
+                  <div className="bg-gray-50 border rounded p-4 text-sm leading-relaxed">
+                    {renderDiffSegments(jobSummaryDiff)}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                <div className="mb-6">
+            {/* Essential Functions Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+                <div className="p-6">
                   <h4 className="font-semibold mb-3">Essential Functions:</h4>
                   <div className="space-y-2 text-sm">
                     {originalVersion.essentialFunctions.map((func, index) => (
@@ -200,49 +228,9 @@ export default function CompareVersions() {
                     ))}
                   </div>
                 </div>
-
-                <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Description</h4>
-                  <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4">
-                    {renderDiffSegments(descriptionDiff)}
-                  </div>
-                </div>
-
-                {/* Diff Legend */}
-                <div className="border-t pt-4">
-                  <h5 className="text-xs font-semibold text-gray-600 mb-2">Legend:</h5>
-                  <div className="flex flex-wrap gap-4 text-xs">
-                    <div className="flex items-center space-x-1">
-                      <div className="w-3 h-3 bg-red-100 border border-red-200 rounded"></div>
-                      <span>Removed</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-3 h-3 bg-green-100 border border-green-200 rounded"></div>
-                      <span>Added</span>
-                    </div>
-                  </div>
-                </div>
               </div>
-            </div>
-
-            {/* Current Version */}
-            <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
-              <div className="p-6 border-b bg-green-50">
-                <div className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-green-600" />
-                  <h3 className="text-lg font-semibold text-green-800">Current Version</h3>
-                </div>
-                <p className="text-sm text-green-600 mt-2">Last modified: June 7, 2025</p>
-              </div>
-              <div className="p-6">
-                <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <div className="bg-gray-50 border rounded p-4 mb-4 text-sm leading-relaxed">
-                    {renderDiffSegments(jobSummaryDiff)}
-                  </div>
-                </div>
-
-                <div className="mb-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
+                <div className="p-6">
                   <h4 className="font-semibold mb-3">Essential Functions:</h4>
                   <div className="space-y-2 text-sm">
                     {currentVersion.essentialFunctions.map((func, index) => (
@@ -261,25 +249,61 @@ export default function CompareVersions() {
                     ))}
                   </div>
                 </div>
+              </div>
+            </div>
 
-                <div className="mb-6">
+            {/* Description Section - Now Always Aligned */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+                <div className="p-6">
                   <h4 className="font-semibold mb-3">Description</h4>
                   <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4">
                     {renderDiffSegments(descriptionDiff)}
                   </div>
                 </div>
+              </div>
+              <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
+                <div className="p-6">
+                  <h4 className="font-semibold mb-3">Description</h4>
+                  <div className="text-sm text-gray-600 leading-relaxed bg-gray-50 border rounded p-4">
+                    {renderDiffSegments(descriptionDiff)}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                {/* Statistics */}
-                <div className="border-t pt-4">
-                  <h5 className="text-xs font-semibold text-gray-600 mb-2">Changes Summary:</h5>
-                  <div className="flex flex-wrap gap-4 text-xs">
-                    <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>{currentVersion.essentialFunctions.length - originalVersion.essentialFunctions.length} functions added</span>
+            {/* Footer Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow-sm border-2 border-red-200">
+                <div className="p-6">
+                  <div className="border-t pt-4">
+                    <h5 className="text-xs font-semibold text-gray-600 mb-2">Legend:</h5>
+                    <div className="flex flex-wrap gap-4 text-xs">
+                      <div className="flex items-center space-x-1">
+                        <div className="w-3 h-3 bg-red-100 border border-red-200 rounded"></div>
+                        <span>Removed</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <div className="w-3 h-3 bg-green-100 border border-green-200 rounded"></div>
+                        <span>Added</span>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span>Multiple text improvements</span>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-lg shadow-sm border-2 border-green-200">
+                <div className="p-6">
+                  <div className="border-t pt-4">
+                    <h5 className="text-xs font-semibold text-gray-600 mb-2">Changes Summary:</h5>
+                    <div className="flex flex-wrap gap-4 text-xs">
+                      <div className="flex items-center space-x-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>{currentVersion.essentialFunctions.length - originalVersion.essentialFunctions.length} functions added</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span>Multiple text improvements</span>
+                      </div>
                     </div>
                   </div>
                 </div>
