@@ -46,13 +46,17 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
     );
   }
 
-  const totalJobs = data.totalUsers;
-  const jobsReviewed = parseFloat(data.revenue);
-  const inProgress = data.orders;
-  const notStarted = parseFloat(data.growthRate);
+  const totalJobs = data.totalUsers; // 9000
+  const jobsReviewed = parseFloat(data.revenue); // 71
+  const inProgress = data.orders; // 132
+  const notStarted = parseFloat(data.growthRate); // 8560
   const reviewedPercentage = totalJobs > 0 ? ((jobsReviewed / totalJobs) * 100).toFixed(1) : "0.0";
   const inProgressPercentage = totalJobs > 0 ? ((inProgress / totalJobs) * 100).toFixed(1) : "0.0";
   const notStartedPercentage = totalJobs > 0 ? ((notStarted / totalJobs) * 100).toFixed(1) : "0.0";
+  
+  // Calculate percentages for second row using totalJobs as denominator
+  const hrReviewPercentage = totalJobs > 0 ? ((90 / totalJobs) * 100).toFixed(1) : "0.0";
+  const completedPercentage = totalJobs > 0 ? ((147 / totalJobs) * 100).toFixed(1) : "0.0";
 
   // Default row configuration (first row)
   const defaultCards = [
@@ -106,7 +110,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       icon: Shield,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
-      change: "12.5%",
+      change: `${hrReviewPercentage}%`,
       changeColor: "text-green-600",
       statusText: "Completed",
     },
@@ -116,7 +120,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       icon: CheckCircle,
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
-      change: `${notStartedPercentage}%`,
+      change: `${completedPercentage}%`,
       changeColor: "text-green-600",
       statusText: "Complete",
     },
