@@ -1390,9 +1390,12 @@ export default function Editing() {
 
       {/* Job Summary Popup Editor */}
       <Dialog open={showJobSummaryPopup} onOpenChange={() => {}}>
-        <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+        <DialogContent className="max-w-6xl h-[80vh] flex flex-col" aria-describedby="job-summary-editor-description">
           <DialogHeader>
             <DialogTitle>Edit Job Summary</DialogTitle>
+            <div id="job-summary-editor-description" className="sr-only">
+              Edit job summary with track changes and undo functionality
+            </div>
           </DialogHeader>
           
           <div className="flex-1 flex flex-col space-y-4">
@@ -1430,25 +1433,45 @@ export default function Editing() {
               </div>
             </div>
             
-            {/* Text Editor */}
-            <div className="flex-1">
-              <Textarea
-                value={popupJobSummary}
-                onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-                className="h-full min-h-[400px] text-sm resize-none"
-                placeholder="Enter job summary (35 lines available for editing)..."
-                style={{ 
-                  lineHeight: '1.5',
-                  fontFamily: 'monospace'
-                }}
-              />
+            {/* Side by Side Editor and Preview */}
+            <div className="flex-1 flex gap-4">
+              {/* Left Side - Editor */}
+              <div className="flex-1 flex flex-col">
+                <h4 className="text-sm font-medium mb-2">Editor</h4>
+                <Textarea
+                  value={popupJobSummary}
+                  onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
+                  className="flex-1 min-h-[400px] text-sm resize-none border border-gray-300"
+                  placeholder="Enter job summary (35 lines available for editing)..."
+                  style={{ 
+                    lineHeight: '1.5',
+                    fontFamily: 'Arial, sans-serif'
+                  }}
+                />
+              </div>
+              
+              {/* Right Side - Preview */}
+              <div className="flex-1 flex flex-col">
+                <h4 className="text-sm font-medium mb-2">Preview</h4>
+                <div className="flex-1 min-h-[400px] p-3 border border-gray-300 rounded-md bg-gray-50 overflow-y-auto">
+                  <div 
+                    className="text-sm whitespace-pre-wrap"
+                    style={{ 
+                      lineHeight: '1.5',
+                      fontFamily: 'Arial, sans-serif'
+                    }}
+                  >
+                    {popupJobSummary || "Preview will appear here..."}
+                  </div>
+                </div>
+              </div>
             </div>
             
             {/* Track Changes Preview */}
             {popupTrackChangesMode && popupJobSummary !== popupOriginalJobSummary && (
               <div className="border-t pt-4">
-                <h4 className="text-sm font-medium mb-2">Changes Preview:</h4>
-                <div className="bg-gray-50 p-3 rounded text-sm">
+                <h4 className="text-sm font-medium mb-2">Changes Summary:</h4>
+                <div className="bg-gray-50 p-3 rounded text-sm" style={{ fontFamily: 'Arial, sans-serif' }}>
                   <div className="space-y-1">
                     <div><span className="text-red-600">- Original:</span> {popupOriginalJobSummary}</div>
                     <div><span className="text-green-600">+ Modified:</span> {popupJobSummary}</div>
