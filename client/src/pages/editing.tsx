@@ -1404,7 +1404,7 @@ export default function Editing() {
           }
         }
       }}>
-        <DialogContent className="max-w-6xl h-[80vh] flex flex-col" aria-describedby="job-summary-editor-description">
+        <DialogContent className="max-w-6xl h-[90vh] flex flex-col" aria-describedby="job-summary-editor-description">
           <DialogHeader>
             <DialogTitle>Edit Job Summary</DialogTitle>
             <div id="job-summary-editor-description" className="sr-only">
@@ -1455,7 +1455,7 @@ export default function Editing() {
                 <Textarea
                   value={popupJobSummary}
                   onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-                  className="flex-1 min-h-[400px] text-sm resize-none border border-gray-300"
+                  className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300"
                   placeholder="Enter job summary (35 lines available for editing)..."
                   style={{ 
                     lineHeight: '1.5',
@@ -1470,7 +1470,7 @@ export default function Editing() {
                 <Textarea
                   value={popupJobSummary}
                   onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-                  className="flex-1 min-h-[400px] text-sm resize-none border border-gray-300 bg-gray-50"
+                  className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300 bg-gray-50"
                   placeholder="Preview and edit here..."
                   style={{ 
                     lineHeight: '1.5',
