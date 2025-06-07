@@ -217,7 +217,11 @@ export default function JobsFamily() {
 
   // Get unique job families and statuses for dropdowns
   const uniqueJobFamilies = Array.from(new Set(jobEntries.map(entry => entry.jobFamily))).sort();
-  const uniqueStatuses = Array.from(new Set(jobEntries.map(entry => entry.status))).sort();
+  const allUniqueStatuses = Array.from(new Set(jobEntries.map(entry => entry.status))).sort();
+  // Filter out "Submitted to HR" when not in admin mode
+  const uniqueStatuses = isAdminMode 
+    ? allUniqueStatuses 
+    : allUniqueStatuses.filter(status => status !== "Submitted to HR");
 
   const filteredEntries = jobEntries.filter(entry => {
     const searchLower = searchTerm.toLowerCase();
