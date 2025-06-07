@@ -962,9 +962,6 @@ export default function Editing() {
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">AI</span>
-                    </div>
                     <h3 className="text-lg font-semibold">Updated Job Description</h3>
                   </div>
                   <div className="flex items-center space-x-2">
