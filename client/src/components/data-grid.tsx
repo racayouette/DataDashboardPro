@@ -14,7 +14,8 @@ import {
   ChevronRight,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  UserCircle
 } from "lucide-react";
 import type { Transaction, JobFamily, Reviewer } from "@shared/schema";
 
@@ -44,22 +45,22 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
     const jobFamilyLeaderMap: { [key: string]: string[] } = {
       "Clinical Support": ["Sarah Mitchell", "Kelly Johnson"],
       "Nursing": ["Robert Kennedy", "Adam Lambert"],
-      "Finance": ["Jennifer Williams", "Michael Roberts"],
+      "Finance": [], // Empty - will show user icon
       "Human Resources": ["Linda Taylor"],
       "IT Services": ["David Phillips", "Emma Sullivan"],
-      "Pharmacy": ["Chris Harrison"],
+      "Pharmacy": [], // Empty - will show user icon
       "Lab Services": ["Robert Taylor"],
-      "Behavioral Health": ["Amanda Wilson"],
+      "Behavioral Health": [], // Empty - will show user icon
       "Security": ["Nicole Taylor"],
-      "Quality": ["Thomas Anderson"],
+      "Quality": [], // Empty - will show user icon
       "Nutrition": ["Brian Wilson"],
-      "Facilities": ["Angela Martinez"],
+      "Facilities": [], // Empty - will show user icon
       "Patient Access": ["Christine Lee"],
-      "Health Information": ["Daniel Garcia"],
+      "Health Information": [], // Empty - will show user icon
       "Spiritual Care": ["Daniel Garcia"],
-      "Patient Support": ["Christine Lee"],
+      "Patient Support": [], // Empty - will show user icon
       "Leadership": ["Daniel Garcia"],
-      "Legal": ["David Phillips"]
+      "Legal": [] // Empty - will show user icon
     };
     
     return jobFamilyLeaderMap[jobFamilyName] || [];
@@ -407,7 +408,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                                 {index < functionalLeaders.length - 1 && <span className="text-gray-400">, </span>}
                               </span>
                             )) : (
-                              <span className="text-gray-400 italic">No functional leaders assigned</span>
+                              <UserCircle className="w-5 h-5 text-gray-400" />
                             )}
                           </div>
                         </td>
