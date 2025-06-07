@@ -1,8 +1,10 @@
 import { Users, Settings, LayoutDashboard, Edit3, Bell } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
 
 export function Sidebar() {
   const [location] = useLocation();
+  const [isAdminMode, setIsAdminMode] = useState(true);
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: false },
@@ -46,8 +48,36 @@ export function Sidebar() {
         })}
       </nav>
       
+      {/* Role Toggle - positioned above user profile */}
+      <div className="mt-auto mb-6">
+        <div className="bg-blue-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-blue-200 text-sm font-medium">Role</span>
+            <div className="relative">
+              <button
+                onClick={() => setIsAdminMode(!isAdminMode)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
+                  isAdminMode ? 'bg-blue-600' : 'bg-blue-700'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isAdminMode ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+          <div className="text-center">
+            <span className="text-white text-sm font-medium">
+              {isAdminMode ? 'Admin' : 'Reviewer'}
+            </span>
+          </div>
+        </div>
+      </div>
+      
       {/* User Profile - positioned at bottom */}
-      <div className="mt-auto mb-4">
+      <div className="mb-4">
         <Link href="/users">
           <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors cursor-pointer">
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
