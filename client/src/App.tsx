@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WindowsAuth } from "@/components/windows-auth";
+import { RoleProvider } from "@/contexts/RoleContext";
 import { useState } from "react";
 import Dashboard from "@/pages/dashboard";
 import JobsFamily from "@/pages/jobs-family";
@@ -53,8 +54,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <RoleProvider>
+          <Toaster />
+          <Router />
+        </RoleProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
+import { useRole } from "@/contexts/RoleContext";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
 import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle } from "lucide-react";

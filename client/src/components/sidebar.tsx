@@ -1,10 +1,10 @@
 import { Users, Settings, LayoutDashboard, Edit3, Bell } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { useState } from "react";
+import { useRole } from "@/contexts/RoleContext";
 
 export function Sidebar() {
   const [location] = useLocation();
-  const [isAdminMode, setIsAdminMode] = useState(true);
+  const { isAdminMode, setIsAdminMode } = useRole();
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", active: false },
