@@ -150,12 +150,6 @@ export default function Notifications() {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        {/* Beta Banner */}
-        <div className="bg-orange-100 border border-orange-300 text-orange-800 px-4 py-3">
-          <div className="flex items-center justify-center">
-            <span className="font-semibold text-sm">⚠️ NOT FOR PRODUCTION - RELEASE BETA 1.0</span>
-          </div>
-        </div>
         <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
             {/* Filters and Search */}
