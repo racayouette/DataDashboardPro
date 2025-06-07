@@ -95,6 +95,10 @@ export default function Dashboard() {
   } = useQuery<{ jobFamilies: JobFamily[], total: number, totalPages: number, currentPage: number }>({
     queryKey: ["/api/job-families", jobFamiliesPage],
     queryFn: () => fetch(`/api/job-families?page=${jobFamiliesPage}&limit=4`).then(res => res.json()),
+    select: (data) => ({
+      ...data,
+      jobFamilies: data.jobFamilies.sort((a, b) => a.jobFamily.localeCompare(b.jobFamily))
+    })
   });
 
   const {
@@ -104,6 +108,10 @@ export default function Dashboard() {
   } = useQuery<{ reviewers: Reviewer[], total: number, totalPages: number, currentPage: number }>({
     queryKey: ["/api/reviewers", reviewersPage],
     queryFn: () => fetch(`/api/reviewers?page=${reviewersPage}&limit=4`).then(res => res.json()),
+    select: (data) => ({
+      ...data,
+      reviewers: data.reviewers.sort((a, b) => b.completed - a.completed)
+    })
   });
 
   const handleJobFamilyClick = (jobFamily: JobFamily) => {
