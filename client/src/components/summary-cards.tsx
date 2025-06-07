@@ -59,7 +59,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
     {
       title: "Total Jobs",
       value: data.totalUsers.toLocaleString(),
-      icon: Briefcase,
+      icon: Users,
       iconBg: "bg-blue-100",
       iconColor: "text-primary",
       change: "12.5%",
