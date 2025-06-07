@@ -31,7 +31,8 @@ import {
   Trash2,
   UserPlus,
   X,
-  UserCheck
+  UserCheck,
+  FileCheck
 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
@@ -616,7 +617,7 @@ export default function JobFinalReview() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center space-x-3 mb-6">
-              <Edit className="w-6 h-6 text-blue-600" />
+              <FileCheck className="w-6 h-6 text-blue-600" />
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Job Final Review</h1>
                 <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode || "Loading..."}</p>
