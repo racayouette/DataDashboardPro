@@ -72,10 +72,15 @@ export default function JobsFamily() {
     const urlParams = new URLSearchParams(window.location.search);
     const reviewerParam = urlParams.get('reviewer');
     const searchParam = urlParams.get('search');
+    console.log('URL params:', { reviewerParam, searchParam }); // Debug log
     if (reviewerParam) {
-      setSearchTerm(reviewerParam);
+      const decodedReviewer = decodeURIComponent(reviewerParam);
+      console.log('Setting search term from reviewer:', decodedReviewer); // Debug log
+      setSearchTerm(decodedReviewer);
     } else if (searchParam) {
-      setSearchTerm(searchParam);
+      const decodedSearch = decodeURIComponent(searchParam);
+      console.log('Setting search term from search:', decodedSearch); // Debug log
+      setSearchTerm(decodedSearch);
     }
   }, []);
 
@@ -241,6 +246,18 @@ export default function JobsFamily() {
       entry.responsible.toLowerCase().includes(searchLower) ||
       entry.status.toLowerCase().includes(searchLower) ||
       entry.lastUpdated.toLowerCase().includes(searchLower);
+    
+    // Debug logging for Jennifer Williams specifically
+    if (searchTerm.toLowerCase().includes('jennifer williams')) {
+      console.log('Checking entry:', {
+        jobTitle: entry.jobTitle,
+        reviewer: entry.reviewer,
+        searchTerm,
+        searchLower,
+        reviewerMatch: entry.reviewer.toLowerCase().includes(searchLower),
+        matchesSearch
+      });
+    }
     
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
     const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
