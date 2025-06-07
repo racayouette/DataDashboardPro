@@ -6,9 +6,10 @@ import type { DashboardSummary } from "@shared/schema";
 interface SummaryCardsProps {
   data?: DashboardSummary;
   isLoading: boolean;
+  variant?: 'default' | 'second';
 }
 
-export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
+export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCardsProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-4 gap-6 mb-8">
@@ -53,7 +54,8 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
   const inProgressPercentage = totalJobs > 0 ? ((inProgress / totalJobs) * 100).toFixed(1) : "0.0";
   const notStartedPercentage = totalJobs > 0 ? ((notStarted / totalJobs) * 100).toFixed(1) : "0.0";
 
-  const cards = [
+  // Default row configuration (first row)
+  const defaultCards = [
     {
       title: "Total Jobs",
       value: data.totalUsers.toLocaleString(),
@@ -95,6 +97,52 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       statusText: "Reviewed",
     },
   ];
+
+  // Second row configuration with same data structure but can be customized independently
+  const secondCards = [
+    {
+      title: "Total Jobs",
+      value: data.totalUsers.toLocaleString(),
+      icon: Briefcase,
+      iconBg: "bg-blue-100",
+      iconColor: "text-primary",
+      change: "12.5%",
+      changeColor: "text-green-600",
+      statusText: "Completed",
+    },
+    {
+      title: "Not Started",
+      value: parseFloat(data.growthRate).toString(),
+      icon: XCircle,
+      iconBg: "bg-orange-100",
+      iconColor: "text-orange-600",
+      change: `${notStartedPercentage}%`,
+      changeColor: "text-green-600",
+      statusText: "Pending",
+    },
+    {
+      title: "In Progress",
+      value: data.orders.toLocaleString(),
+      icon: TrendingUp,
+      iconBg: "bg-purple-100",
+      iconColor: "text-green-600",
+      change: `${inProgressPercentage}%`,
+      changeColor: "text-green-600",
+      statusText: "Pending",
+    },
+    {
+      title: "Jobs Reviewed",
+      value: parseFloat(data.revenue).toLocaleString(),
+      icon: Eye,
+      iconBg: "bg-green-100",
+      iconColor: "text-green-600",
+      change: `${reviewedPercentage}%`,
+      changeColor: "text-green-600",
+      statusText: "Reviewed",
+    },
+  ];
+
+  const cards = variant === 'second' ? secondCards : defaultCards;
 
   return (
     <div className="grid grid-cols-4 gap-6 mb-8">

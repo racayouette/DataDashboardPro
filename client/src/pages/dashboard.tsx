@@ -310,11 +310,11 @@ export default function Dashboard() {
         )}
 
         {/* Summary Cards */}
-        <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
+        <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="default" />
         
         {/* Second Row of Summary Cards */}
         <div className="mt-6">
-          <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} />
+          <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="second" />
         </div>
 
         {/* Data Grids Section */}
