@@ -727,7 +727,7 @@ export default function JobFinalReview() {
                 <Clock className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-medium text-gray-600">Last Updated</span>
               </div>
-              <p className="text-blue-600 font-semibold">May 30, 2025</p>
+              <p className="text-blue-600 font-semibold">June 7, 2025</p>
             </div>
           </div>
 
