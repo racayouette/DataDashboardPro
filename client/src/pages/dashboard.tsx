@@ -7,6 +7,7 @@ import { RefreshCw, Search, Bell, X, Trash2, LayoutDashboard, Lock, Eye, EyeOff 
 import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
+import { MiniBarChart } from "@/components/mini-bar-chart";
 
 import { useToast } from "@/hooks/use-toast";
 import { Link, useLocation } from "wouter";
@@ -312,9 +313,14 @@ export default function Dashboard() {
         {/* Summary Cards */}
         <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="default" />
         
-        {/* Second Row of Summary Cards */}
-        <div className="mt-6">
-          <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="second" />
+        {/* Second Row of Summary Cards with Mini Chart */}
+        <div className="mt-6 flex items-start gap-8">
+          <div className="flex-1">
+            <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="second" />
+          </div>
+          <div className="w-80">
+            <MiniBarChart data={getFilteredSummary()} isLoading={summaryLoading} />
+          </div>
         </div>
 
         {/* Data Grids Section */}
