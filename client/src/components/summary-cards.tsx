@@ -1,4 +1,4 @@
-import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase, Eye, XCircle, Shield } from "lucide-react";
+import { Users, DollarSign, ShoppingCart, TrendingUp, Briefcase, Eye, XCircle, Shield, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardSummary } from "@shared/schema";
@@ -111,14 +111,14 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       statusText: "Completed",
     },
     {
-      title: "Not Started",
+      title: "Completed",
       value: parseFloat(data.growthRate).toString(),
-      icon: XCircle,
-      iconBg: "bg-orange-100",
-      iconColor: "text-orange-600",
+      icon: CheckCircle,
+      iconBg: "bg-green-100",
+      iconColor: "text-green-600",
       change: `${notStartedPercentage}%`,
       changeColor: "text-green-600",
-      statusText: "Pending",
+      statusText: "Complete",
     },
     {
       title: "In Progress",
