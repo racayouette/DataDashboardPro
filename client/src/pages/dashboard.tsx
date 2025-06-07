@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { RefreshCw, Search, Bell, X, Trash2, LayoutDashboard, Lock } from "lucide-react";
+import { RefreshCw, Search, Bell, X, Trash2, LayoutDashboard, Lock, Eye, EyeOff } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { SummaryCards } from "@/components/summary-cards";
 import { DataGrid } from "@/components/data-grid";
@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [isPasswordProtected, setIsPasswordProtected] = useState(true);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // Sample notifications
   const [notifications, setNotifications] = useState([
@@ -179,14 +180,27 @@ export default function Dashboard() {
               </DialogHeader>
               <form onSubmit={handlePasswordSubmit} className="space-y-4">
                 <div>
-                  <Input
-                    type="password"
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={passwordError ? "border-red-500" : ""}
-                    autoFocus
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`pr-10 ${passwordError ? "border-red-500" : ""}`}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {passwordError && (
                     <p className="text-red-500 text-sm mt-1">{passwordError}</p>
                   )}
