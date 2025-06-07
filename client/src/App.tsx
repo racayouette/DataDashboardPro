@@ -9,6 +9,7 @@ import { useState } from "react";
 import Dashboard from "@/pages/dashboard";
 import JobsFamily from "@/pages/jobs-family";
 import Editing from "@/pages/editing";
+import JobFinalReview from "@/pages/job-final-review";
 import Users from "@/pages/users";
 import Notifications from "@/pages/notifications";
 import Downloads from "@/pages/downloads";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/jobs-family" component={JobsFamily} />
       <Route path="/editing" component={Editing} />
+      <Route path="/job-final-review" component={JobFinalReview} />
       <Route path="/users" component={Users} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/downloads" component={Downloads} />

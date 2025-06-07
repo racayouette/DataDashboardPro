@@ -29,14 +29,14 @@ import {
   Edit,
   GripVertical,
   Trash2,
-  X,
   UserPlus,
+  X,
   UserCheck
 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 
-export default function Editing() {
+export default function JobFinalReview() {
   const [, setLocation] = useLocation();
   const { isAdminMode } = useRole();
   const [jobCode, setJobCode] = useState("");
@@ -151,187 +151,138 @@ export default function Editing() {
   // Function to render notification text with job code links
   const renderNotificationWithLinks = (text: string) => {
     // Regex to match job codes (4-5 digit numbers)
-    const jobCodeRegex = /\b(\d{4,5})\b/g;
+    const jobCodeRegex = /(\d{4,5})/g;
     const parts = text.split(jobCodeRegex);
     
     return parts.map((part, index) => {
-      // Check if this part is a job code
-      if (/^\d{4,5}$/.test(part)) {
+      if (jobCodeRegex.test(part)) {
         return (
-          <span 
+          <Link 
             key={index} 
-            className="text-blue-600 hover:text-blue-800 underline font-medium cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
-              setShowNotifications(false);
-              window.location.href = `/editing?jobCode=${part}`;
-            }}
+            href={`/editing?job=${part}`}
+            className="text-blue-600 hover:text-blue-800 underline"
+            onClick={() => setJobCode(part)}
           >
             {part}
-          </span>
+          </Link>
         );
       }
-      return <span key={index}>{part}</span>;
+      return part;
     });
   };
 
-  // Close notifications dropdown when clicking outside
+  // Effect to extract job code from URL
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobParam = urlParams.get('job');
+    if (jobParam) {
+      setJobCode(jobParam);
+    }
+  }, []);
+
+  // Effect to check for changes whenever essential functions or job summary change
+  useEffect(() => {
+    checkForChanges();
+  }, [essentialFunctions, jobSummary]);
+
+  // Effect to close notifications when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
-  // Check for changes whenever relevant data changes
-  useEffect(() => {
-    checkForChanges();
-  }, [jobSummary, essentialFunctions]);
-
-  // Get job code from URL parameter
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const jobCodeParam = urlParams.get('jobCode');
-    if (jobCodeParam) {
-      setJobCode(jobCodeParam);
-    }
-  }, []);
-
-  // Functions for managing last edited by users
-  const addUserToLastEditedBy = (userName: string) => {
-    if (!lastEditedByUsers.includes(userName)) {
-      setLastEditedByUsers(prev => [...prev, userName]);
-    }
-  };
-
-  const removeUserFromLastEditedBy = (userName: string) => {
-    setLastEditedByUsers(prev => prev.filter(user => user !== userName));
-  };
-
-  // Get available users that aren't already added to last edited by
-  const getAvailableUsersForSelection = () => {
-    return availableUsers.filter(user => !lastEditedByUsers.includes(user));
-  };
-
-  // Functions for managing reviewers
-  const addReviewer = (userName: string) => {
-    if (!reviewers.includes(userName)) {
-      setReviewers(prev => [...prev, userName]);
-    }
-  };
-
-  const removeReviewer = (userName: string) => {
-    setReviewers(prev => prev.filter(user => user !== userName));
-  };
-
-  // Get available users that aren't already added to reviewers
-  const getAvailableReviewers = () => {
-    return availableUsers.filter(user => !reviewers.includes(user));
-  };
-
-  // Functions for managing responsible users
-  const addResponsibleUser = (userName: string) => {
-    if (!responsibleUsers.includes(userName)) {
-      setResponsibleUsers(prev => [...prev, userName]);
-    }
-  };
-
-  const removeResponsibleUser = (userName: string) => {
-    setResponsibleUsers(prev => prev.filter(user => user !== userName));
-  };
-
-  // Get available users that aren't already added to responsible
-  const getAvailableResponsibleUsers = () => {
-    return availableUsers.filter(user => !responsibleUsers.includes(user));
-  };
-
+  // Functions for drag and drop
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedItem(index);
-    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.effectAllowed = "move";
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = "move";
   };
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
+    
     if (draggedItem === null) return;
-    
-    // Save current state to history before making changes
-    setFunctionsHistory(prev => [...prev, [...essentialFunctions]]);
-    
-    const draggedFunction = essentialFunctions[draggedItem];
+
     const newFunctions = [...essentialFunctions];
+    const draggedFunction = newFunctions[draggedItem];
     
-    // Remove dragged item
+    // Remove the dragged item
     newFunctions.splice(draggedItem, 1);
     
     // Insert at new position
     newFunctions.splice(dropIndex, 0, draggedFunction);
     
+    // Save current state to history before making changes
+    setFunctionsHistory(prev => [...prev, essentialFunctions]);
+    
     setEssentialFunctions(newFunctions);
     setDraggedItem(null);
+    updateLastModifiedDate();
   };
 
-  // Function to create diff between original and current text
+  // Function to create text diff for change tracking
   const createTextDiff = (original: string, current: string) => {
-    const originalWords = original.split(' ');
-    const currentWords = current.split(' ');
+    // Simple diff implementation
+    const originalWords = original.split(/(\s+)/);
+    const currentWords = current.split(/(\s+)/);
     const result = [];
     let originalIndex = 0;
     let currentIndex = 0;
 
     while (originalIndex < originalWords.length || currentIndex < currentWords.length) {
       if (originalIndex >= originalWords.length) {
-        // Remaining words are additions
-        result.push({ type: 'insert', text: currentWords.slice(currentIndex).join(' ') });
-        break;
+        // Rest are insertions
+        while (currentIndex < currentWords.length) {
+          if (currentWords[currentIndex].trim()) {
+            result.push({ type: 'insert', text: currentWords[currentIndex] });
+          } else {
+            result.push({ type: 'unchanged', text: currentWords[currentIndex] });
+          }
+          currentIndex++;
+        }
       } else if (currentIndex >= currentWords.length) {
-        // Remaining words are deletions
-        result.push({ type: 'delete', text: originalWords.slice(originalIndex).join(' ') });
-        break;
+        // Rest are deletions
+        while (originalIndex < originalWords.length) {
+          if (originalWords[originalIndex].trim()) {
+            result.push({ type: 'delete', text: originalWords[originalIndex] });
+          } else {
+            result.push({ type: 'unchanged', text: originalWords[originalIndex] });
+          }
+          originalIndex++;
+        }
       } else if (originalWords[originalIndex] === currentWords[currentIndex]) {
-        // Words match
+        // Same word
         result.push({ type: 'unchanged', text: originalWords[originalIndex] });
         originalIndex++;
         currentIndex++;
       } else {
-        // Find next matching word
-        let found = false;
-        for (let i = currentIndex + 1; i < currentWords.length; i++) {
-          if (originalWords[originalIndex] === currentWords[i]) {
-            // Words between currentIndex and i are insertions
-            result.push({ type: 'insert', text: currentWords.slice(currentIndex, i).join(' ') });
-            currentIndex = i;
-            found = true;
-            break;
-          }
+        // Different words - mark as delete and insert
+        if (originalWords[originalIndex].trim()) {
+          result.push({ type: 'delete', text: originalWords[originalIndex] });
+        } else {
+          result.push({ type: 'unchanged', text: originalWords[originalIndex] });
         }
-        if (!found) {
-          // Check if original word was deleted
-          let foundInOriginal = false;
-          for (let i = originalIndex + 1; i < originalWords.length; i++) {
-            if (originalWords[i] === currentWords[currentIndex]) {
-              // Words between originalIndex and i are deletions
-              result.push({ type: 'delete', text: originalWords.slice(originalIndex, i).join(' ') });
-              originalIndex = i;
-              foundInOriginal = true;
-              break;
-            }
-          }
-          if (!foundInOriginal) {
-            // Replace: delete original, insert current
-            result.push({ type: 'delete', text: originalWords[originalIndex] });
+        originalIndex++;
+        
+        if (currentIndex < currentWords.length) {
+          if (currentWords[currentIndex].trim()) {
             result.push({ type: 'insert', text: currentWords[currentIndex] });
-            originalIndex++;
-            currentIndex++;
+          } else {
+            result.push({ type: 'unchanged', text: currentWords[currentIndex] });
           }
+          currentIndex++;
         }
       }
     }
@@ -347,13 +298,18 @@ export default function Editing() {
   const handleAddNewFunction = () => {
     if (newFunctionText.trim()) {
       const newFunction = {
-        id: essentialFunctions.length + 1,
+        id: Math.max(...essentialFunctions.map(f => f.id), 0) + 1,
         text: newFunctionText.trim(),
-        hasEdit: true
+        hasEdit: false
       };
-      setEssentialFunctions([...essentialFunctions, newFunction]);
+      
+      // Save current state to history
+      setFunctionsHistory(prev => [...prev, essentialFunctions]);
+      
+      setEssentialFunctions(prev => [...prev, newFunction]);
       setNewFunctionText("");
       setShowAddFunctionModal(false);
+      updateLastModifiedDate();
     }
   };
 
@@ -367,19 +323,19 @@ export default function Editing() {
       const previousState = functionsHistory[functionsHistory.length - 1];
       setEssentialFunctions(previousState);
       setFunctionsHistory(prev => prev.slice(0, -1));
+      updateLastModifiedDate();
     }
   };
 
   const handleResetFunctions = () => {
-    // Reset to original database state
-    setEssentialFunctions([...originalEssentialFunctions]);
+    setEssentialFunctions(originalEssentialFunctions);
     setFunctionsHistory([]);
+    updateLastModifiedDate();
   };
 
   const handleResetJobSummary = () => {
-    // Reset job summary to original database state
     setJobSummary(originalJobSummary);
-    setIsEditingJobSummary(false);
+    updateLastModifiedDate();
   };
 
   const handleEditFunction = (functionId: number, currentText: string) => {
@@ -389,48 +345,48 @@ export default function Editing() {
   };
 
   const handleSaveEditFunction = () => {
-    if (editingFunctionId !== null && editingFunctionText.trim()) {
-      const updatedFunctions = essentialFunctions.map(func => 
-        func.id === editingFunctionId 
-          ? { ...func, text: editingFunctionText.trim() }
-          : func
+    if (editingFunctionId !== null) {
+      // Save current state to history
+      setFunctionsHistory(prev => [...prev, essentialFunctions]);
+      
+      setEssentialFunctions(prev => 
+        prev.map(func => 
+          func.id === editingFunctionId 
+            ? { ...func, text: editingFunctionText, hasEdit: true }
+            : func
+        )
       );
-      setEssentialFunctions(updatedFunctions);
       setEditingFunctionId(null);
       setEditingFunctionText("");
+      setOriginalEditingText("");
+      updateLastModifiedDate();
     }
   };
 
   const handleCancelEditFunction = () => {
     setEditingFunctionId(null);
-    setEditingFunctionText("");
+    setEditingFunctionText(originalEditingText);
     setOriginalEditingText("");
-    setShowCloseConfirmation(false);
   };
 
-  const handleCloseEditModal = () => {
-    const hasChanges = editingFunctionText !== originalEditingText;
-    if (hasChanges) {
-      setShowCloseConfirmation(true);
-    } else {
-      handleCancelEditFunction();
-    }
+  const handleDeleteFunction = (functionId: number) => {
+    // Save current state to history
+    setFunctionsHistory(prev => [...prev, essentialFunctions]);
+    
+    setEssentialFunctions(prev => prev.filter(func => func.id !== functionId));
+    updateLastModifiedDate();
   };
 
-  const confirmCloseEditModal = () => {
-    handleCancelEditFunction();
-  };
-
-  const updateLastModifiedDate = () => {
-    const today = new Date();
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"];
-    const formattedDate = `${monthNames[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
-    setLastUpdatedDate(formattedDate);
+  const handleEditJobSummary = () => {
+    setPopupJobSummary(jobSummary);
+    setPopupOriginalJobSummary(jobSummary);
+    setPopupHistory([jobSummary]);
+    setShowJobSummaryPopup(true);
   };
 
   const handleSaveDraft = () => {
     updateLastModifiedDate();
+    console.log("Draft saved");
   };
 
   const handleSubmitForReview = () => {
@@ -502,112 +458,116 @@ export default function Editing() {
     setAdditionalTextComment("");
   };
 
+  const handleCancelAdditionalTextComment = () => {
+    setShowAdditionalTextCommentModal(false);
+    setAdditionalTextComment("");
+  };
+
+  // Function to update last modified date
+  const updateLastModifiedDate = () => {
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    setLastUpdatedDate(formattedDate);
+  };
+
   // Helper function to count words
   const countWords = (text: string) => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
 
-  // Handle Job Summary edit with word count check
-  const handleEditJobSummary = () => {
-    const wordCount = countWords(jobSummary);
-    if (wordCount > 30) {
-      // Open popup for large text editing
-      setPopupJobSummary(jobSummary);
-      setPopupOriginalJobSummary(jobSummary);
-      setPopupHistory([jobSummary]);
-      setPopupChanges([]);
-      setShowJobSummaryPopup(true);
-    } else {
-      // Use inline editing for shorter text
-      setIsEditingJobSummary(true);
+  // Helper functions for user management
+  const getAvailableReviewers = () => {
+    return availableUsers.filter(user => !reviewers.includes(user));
+  };
+
+  const getAvailableResponsibleUsers = () => {
+    return availableUsers.filter(user => !responsibleUsers.includes(user));
+  };
+
+  const addReviewer = (user: string) => {
+    setReviewers(prev => [...prev, user]);
+  };
+
+  const removeReviewer = (user: string) => {
+    if (reviewers.length > 1) {
+      setReviewers(prev => prev.filter(r => r !== user));
     }
   };
 
-  // Handle popup job summary changes with track changes
+  const addResponsibleUser = (user: string) => {
+    setResponsibleUsers(prev => [...prev, user]);
+  };
+
+  const removeResponsibleUser = (user: string) => {
+    if (responsibleUsers.length > 1) {
+      setResponsibleUsers(prev => prev.filter(r => r !== user));
+    }
+  };
+
+  // Popup editor functions
   const handlePopupJobSummaryChange = (newText: string) => {
     if (popupTrackChangesMode) {
-      // Add to history before making changes
-      setPopupHistory(prev => [...prev, popupJobSummary]);
+      // Add to history if text changed
+      if (newText !== popupHistory[popupHistory.length - 1]) {
+        setPopupHistory(prev => [...prev, newText]);
+      }
     }
-    
     setPopupJobSummary(newText);
   };
 
-  // Create highlighted diff display for popup left pane
+  const handlePopupUndo = () => {
+    if (popupHistory.length > 1) {
+      const newHistory = popupHistory.slice(0, -1);
+      setPopupHistory(newHistory);
+      setPopupJobSummary(newHistory[newHistory.length - 1]);
+    }
+  };
+
+  const handlePopupOK = () => {
+    setJobSummary(popupJobSummary);
+    setShowJobSummaryPopup(false);
+    updateLastModifiedDate();
+  };
+
+  const handlePopupCancel = () => {
+    const hasChanges = popupJobSummary !== popupOriginalJobSummary;
+    if (hasChanges) {
+      setShowJobSummaryCloseConfirmation(true);
+    } else {
+      setPopupJobSummary(popupOriginalJobSummary);
+      setShowJobSummaryPopup(false);
+    }
+  };
+
+  const handleConfirmJobSummaryClose = () => {
+    setPopupJobSummary(popupOriginalJobSummary);
+    setShowJobSummaryPopup(false);
+    setShowJobSummaryCloseConfirmation(false);
+  };
+
+  const handleCancelJobSummaryClose = () => {
+    setShowJobSummaryCloseConfirmation(false);
+  };
+
   const renderPopupTrackedChanges = () => {
-    if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
+    if (!popupTrackChangesMode) {
       return (
-        <div className="h-[640px] max-h-[calc(100vh-300px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
-          <div 
-            className="text-sm"
-            style={{ 
-              lineHeight: '1.5',
-              fontFamily: 'Arial, sans-serif',
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word'
-            }}
-          >
-            {popupOriginalJobSummary}
-          </div>
+        <div className="flex-1 p-4 border border-gray-300 rounded-lg bg-gray-50 overflow-y-auto">
+          <p className="text-sm text-gray-500 italic">Track changes is disabled</p>
         </div>
       );
     }
 
-    // Create sophisticated word-level diff using LCS algorithm
-    const originalWords = popupOriginalJobSummary.split(/(\s+)/);
-    const currentWords = popupJobSummary.split(/(\s+)/);
+    const diff = createTextDiff(popupOriginalJobSummary, popupJobSummary);
     
-    // Longest Common Subsequence algorithm for better diff detection
-    const lcs = (arr1: string[], arr2: string[]) => {
-      const m = arr1.length;
-      const n = arr2.length;
-      const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-      
-      for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-          if (arr1[i - 1] === arr2[j - 1]) {
-            dp[i][j] = dp[i - 1][j - 1] + 1;
-          } else {
-            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-          }
-        }
-      }
-      
-      // Backtrack to find the actual changes
-      const changes = [];
-      let i = m, j = n;
-      
-      while (i > 0 || j > 0) {
-        if (i > 0 && j > 0 && arr1[i - 1] === arr2[j - 1]) {
-          changes.unshift({ type: 'unchanged', text: arr1[i - 1] });
-          i--;
-          j--;
-        } else if (i > 0 && (j === 0 || dp[i - 1][j] >= dp[i][j - 1])) {
-          changes.unshift({ type: 'delete', text: arr1[i - 1] });
-          i--;
-        } else {
-          changes.unshift({ type: 'insert', text: arr2[j - 1] });
-          j--;
-        }
-      }
-      
-      return changes;
-    };
-    
-    const changes = lcs(originalWords, currentWords);
-
     return (
-      <div className="h-[640px] max-h-[calc(100vh-300px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
-        <div 
-          className="text-sm"
-          style={{ 
-            lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif',
-            whiteSpace: 'pre-wrap',
-            wordWrap: 'break-word'
-          }}
-        >
-          {changes.map((change, index) => {
+      <div className="flex-1 p-4 border border-gray-300 rounded-lg bg-white overflow-y-auto">
+        <div className="text-sm leading-relaxed">
+          {diff.map((change, index) => {
             if (change.type === 'unchanged') {
               return <span key={index}>{change.text}</span>;
             } else if (change.type === 'delete') {
@@ -638,45 +598,6 @@ export default function Editing() {
     );
   };
 
-  // Handle popup undo
-  const handlePopupUndo = () => {
-    if (popupHistory.length > 1) {
-      const newHistory = [...popupHistory];
-      newHistory.pop(); // Remove current state
-      const previousState = newHistory[newHistory.length - 1];
-      setPopupJobSummary(previousState);
-      setPopupHistory(newHistory);
-    }
-  };
-
-  // Handle popup OK
-  const handlePopupOK = () => {
-    setJobSummary(popupJobSummary);
-    setShowJobSummaryPopup(false);
-    updateLastModifiedDate();
-  };
-
-  // Handle popup Cancel
-  const handlePopupCancel = () => {
-    setPopupJobSummary(popupOriginalJobSummary);
-    setShowJobSummaryPopup(false);
-  };
-
-  // Handle close confirmation
-  const handleConfirmJobSummaryClose = () => {
-    setShowJobSummaryCloseConfirmation(false);
-    handlePopupCancel();
-  };
-
-  const handleCancelJobSummaryClose = () => {
-    setShowJobSummaryCloseConfirmation(false);
-  };
-
-  const handleCancelAdditionalTextComment = () => {
-    setAdditionalTextComment("");
-    setShowAdditionalTextCommentModal(false);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
@@ -688,7 +609,7 @@ export default function Editing() {
             <div className="flex items-center space-x-3">
               <Edit className="w-6 h-6 text-blue-600" />
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Job Description Review</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Job Final Review</h1>
                 {jobCode && (
                   <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode}</p>
                 )}
@@ -708,66 +629,36 @@ export default function Editing() {
                   )}
                 </button>
 
-                {/* Notification Dropdown */}
+                {/* Notifications Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                    <div className="p-3 border-b border-gray-100">
-                      <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border z-50 max-h-96 overflow-y-auto">
+                    <div className="p-4 border-b">
+                      <h3 className="font-semibold text-gray-900">Notifications</h3>
                     </div>
-                    <div className="max-h-64 overflow-y-auto">
+                    <div className="divide-y">
                       {notifications.map((notification, index) => (
-                        <div
-                          key={index}
-                          className="p-3 hover:bg-gray-50 border-b border-gray-50 last:border-b-0 transition-colors"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1 cursor-pointer">
-                              <p className="text-sm text-gray-700">{renderNotificationWithLinks(notification)}</p>
-                              <p className="text-xs text-gray-400 mt-1">Just now</p>
-                            </div>
-                            <button
-                              className="ml-2 p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-red-500 transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setNotifications(prev => prev.filter((_, i) => i !== index));
-                              }}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
+                        <div key={index} className="p-4 hover:bg-gray-50">
+                          <p className="text-sm text-gray-700">
+                            {renderNotificationWithLinks(notification)}
+                          </p>
                         </div>
                       ))}
-                    </div>
-                    <div className="p-3 border-t border-gray-100">
-                      <Link 
-                        href="/notifications"
-                        className="text-xs text-blue-600 hover:text-blue-700 font-medium underline"
-                        onClick={() => setShowNotifications(false)}
-                      >
-                        View all notifications
-                      </Link>
                     </div>
                   </div>
                 )}
               </div>
+              
+              <Button variant="outline" asChild>
+                <Link href="/dashboard">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Link>
+              </Button>
             </div>
           </div>
 
-          {/* Back Button */}
-          <div className="mb-6">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-gray-600 hover:text-gray-900"
-              onClick={() => setLocation("/jobs-family")}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-          </div>
-
-          {/* Job Information Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+          {/* Job Info Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="flex items-center space-x-2 mb-2">
                 <FileText className="w-4 h-4 text-blue-600" />
@@ -790,6 +681,14 @@ export default function Editing() {
                 <span className="text-sm font-medium text-gray-600">Status</span>
               </div>
               <Badge className={status === "Complete" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 mb-2">
+                <Clock className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-medium text-gray-600">Last Updated</span>
+              </div>
+              <p className="text-blue-600 font-semibold">May 30, 2025</p>
             </div>
           </div>
 
@@ -942,17 +841,26 @@ export default function Editing() {
                 </div>
 
                 <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Essential Functions:</h4>
-                  <div className="space-y-2 text-sm">
-                    <p>1. Monitor Patient Vitals And Report Abnormalities.</p>
-                    <p>2. Assist With Bathing, Feeding, And Toileting.</p>
-                    <p>3. Document Daily Care Activities.</p>
-                    <p>4. Transport Patients Using Wheelchairs And Stretchers.</p>
+                  <h4 className="font-semibold mb-3">Essential Functions</h4>
+                  <div className="space-y-3">
+                    {originalEssentialFunctions.map((func, index) => (
+                      <div key={func.id} className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                        <div className="flex items-start gap-3">
+                          <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
+                            {index + 1}
+                          </span>
+                          <p className="text-sm flex-1">{func.text}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="text-sm text-gray-600 leading-relaxed">
-                  <p>The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.</p>
+                <div>
+                  <h4 className="font-semibold mb-3">Additional Requirements</h4>
+                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                    <p className="text-sm italic">{originalAdditionalText}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -965,7 +873,7 @@ export default function Editing() {
                     <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
                       <span className="text-white text-xs font-bold">AI</span>
                     </div>
-                    <h3 className="text-lg font-semibold">Updated Job Description</h3>
+                    <h3 className="text-lg font-semibold">AI-Generated Job Description</h3>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
@@ -1067,127 +975,139 @@ export default function Editing() {
                       >
                         <RotateCcw className="w-4 h-4" />
                       </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => setShowAddFunctionModal(true)}
+                        title="Add new function"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
-                  
                   <div className="space-y-3">
                     {essentialFunctions.map((func, index) => (
                       <div 
                         key={func.id}
-                        className="flex items-start space-x-3 p-2 bg-gray-50 rounded cursor-move hover:bg-gray-100 transition-colors"
                         draggable
                         onDragStart={(e) => handleDragStart(e, index)}
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDrop(e, index)}
+                        className="bg-blue-50 border-l-4 border-blue-500 p-4 cursor-move hover:bg-blue-100 transition-colors"
                       >
-                        <GripVertical className="w-4 h-4 text-gray-400 mt-0.5" />
-                        <div className="flex-1 flex items-start justify-between">
-                          <p className={`text-sm ${func.hasEdit ? 'font-medium' : ''} flex-1 pr-2`}>{func.text}</p>
-                          {func.hasEdit && (
-                            <Button 
-                              size="sm" 
-                              variant="ghost" 
-                              className="p-1 h-auto min-w-0"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditFunction(func.id, func.text);
-                              }}
-                            >
-                              <Pencil className="w-3 h-3" />
-                            </Button>
-                          )}
+                        <div className="flex items-start gap-3">
+                          <GripVertical className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
+                          <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
+                            {index + 1}
+                          </span>
+                          <div className="flex-1">
+                            {editingFunctionId === func.id ? (
+                              <div className="space-y-2">
+                                <Textarea
+                                  value={editingFunctionText}
+                                  onChange={(e) => setEditingFunctionText(e.target.value)}
+                                  className="text-sm"
+                                  autoFocus
+                                />
+                                <div className="flex space-x-2">
+                                  <Button size="sm" onClick={handleSaveEditFunction}>
+                                    Save
+                                  </Button>
+                                  <Button size="sm" variant="outline" onClick={handleCancelEditFunction}>
+                                    Cancel
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <p className="text-sm">{func.text}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            {func.hasEdit && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full" title="Modified"></div>
+                            )}
+                            {editingFunctionId !== func.id && (
+                              <>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => handleEditFunction(func.id, func.text)}
+                                  title="Edit function"
+                                >
+                                  <Pencil className="w-3 h-3 text-blue-600 hover:text-blue-800" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0"
+                                  onClick={() => handleDeleteFunction(func.id)}
+                                  title="Delete function"
+                                >
+                                  <Trash2 className="w-3 h-3 text-red-500 hover:text-red-700" />
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
-
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-3"
-                      onClick={() => setShowAddFunctionModal(true)}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add New Function
-                    </Button>
                   </div>
                 </div>
 
-                {/* Additional Requirements Section */}
-                <div className="mb-6">
+                <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold">Comments</h4>
-                    <div className="flex items-center space-x-3">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="critical-checkbox"
-                          checked={isCritical}
-                          onChange={(e) => setIsCritical(e.target.checked)}
-                          className="h-4 w-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
-                        />
-                        <label 
-                          htmlFor="critical-checkbox" 
-                          className="text-sm font-medium cursor-pointer text-red-600"
-                        >
-                          Critical
-                        </label>
-                      </div>
+                    <h4 className="font-semibold">Additional Requirements</h4>
+                    <div className="flex items-center space-x-2">
                       <Button 
                         size="sm" 
                         variant="ghost"
                         onClick={handleEditAdditionalText}
-                        title="Edit additional requirements"
+                        disabled={isEditingAdditionalText}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={handleAdditionalTextComment}
+                        title="Add comment"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
-                  
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    {isEditingAdditionalText ? (
-                      <div className="space-y-3">
-                        <Textarea
-                          value={additionalText}
-                          onChange={(e) => setAdditionalText(e.target.value)}
-                          className="min-h-[120px] resize-none"
-                          placeholder="Add a comment here..."
-                          autoFocus
-                        />
-                        <div className="flex justify-end space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={handleCancelAdditionalText}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={handleSaveAdditionalText}
-                          >
-                            Save
-                          </Button>
-                        </div>
+                  {isEditingAdditionalText ? (
+                    <div className="space-y-2">
+                      <Textarea
+                        value={additionalText}
+                        onChange={(e) => setAdditionalText(e.target.value)}
+                        className="text-sm min-h-[80px]"
+                        placeholder="Enter additional requirements..."
+                      />
+                      <div className="flex space-x-2">
+                        <Button size="sm" onClick={handleSaveAdditionalText}>
+                          Save
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={handleCancelAdditionalText}>
+                          Cancel
+                        </Button>
                       </div>
-                    ) : (
-                      <div className="group relative">
-                        <p className="text-sm text-gray-500 leading-relaxed italic">
-                          {additionalText || "Add a comment here..."}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                      <p className="text-sm italic">{additionalText || originalAdditionalText}</p>
+                    </div>
+                  )}
                 </div>
-
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-center space-x-4 mt-8">
+          <div className="flex justify-end space-x-4 mb-8">
             <Button 
-              variant="outline" 
-              className="bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+              variant="outline"
               onClick={handleSaveDraft}
             >
               Save Draft
@@ -1265,119 +1185,14 @@ export default function Editing() {
               onClick={handleAddNewFunction}
               disabled={!newFunctionText.trim()}
             >
-              Save
+              Add Function
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Edit Function Modal */}
-      <Dialog open={editingFunctionId !== null} onOpenChange={(open) => {
-        if (!open) {
-          handleCloseEditModal();
-        }
-      }}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Essential Function</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label htmlFor="edit-function-text" className="text-sm font-medium">
-                Function Description
-              </label>
-              <Textarea
-                id="edit-function-text"
-                value={editingFunctionText}
-                onChange={(e) => setEditingFunctionText(e.target.value)}
-                placeholder="Enter the function description..."
-                className="min-h-[100px]"
-                autoFocus
-              />
-            </div>
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={handleCancelEditFunction}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveEditFunction}
-              disabled={!editingFunctionText.trim()}
-            >
-              Save
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Close Confirmation Dialog */}
-      <AlertDialog open={showCloseConfirmation} onOpenChange={setShowCloseConfirmation}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to lose your changes?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowCloseConfirmation(false)}>
-              Keep Editing
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={confirmCloseEditModal}>
-              Discard Changes
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Submit For Review Confirmation Dialog */}
-      <AlertDialog open={showSubmitConfirmation} onOpenChange={() => {}}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Submit For HR Review</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to submit this job description for HR review? This will notify the HR team for approval.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={cancelSubmitForReview}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={confirmSubmitForReview}>
-              Ok
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Accept Changes Confirmation Dialog */}
-      <AlertDialog open={showAcceptConfirmation} onOpenChange={() => {}}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Accept Changes</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure? Changes cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleCancelAcceptChanges}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmAcceptChanges}>
-              Accept Changes
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Additional Text Comment Modal */}
-      <Dialog open={showAdditionalTextCommentModal} onOpenChange={() => {
-        // Prevent closing unless explicitly cancelled or saved
-        return;
-      }}>
+      <Dialog open={showAdditionalTextCommentModal} onOpenChange={setShowAdditionalTextCommentModal}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Add Comment for Additional Requirements</DialogTitle>
@@ -1618,6 +1433,46 @@ export default function Editing() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Submit For Review Confirmation Dialog */}
+      <AlertDialog open={showSubmitConfirmation} onOpenChange={() => {}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Submit For HR Review</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to submit this job description for HR review? This will notify the HR team for approval.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelSubmitForReview}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmSubmitForReview}>
+              Ok
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Accept Changes Confirmation Dialog */}
+      <AlertDialog open={showAcceptConfirmation} onOpenChange={setShowAcceptConfirmation}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Accept Changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to accept all changes? This will finalize the job description and cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelAcceptChanges}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmAcceptChanges}>
+              Accept Changes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Job Summary Close Confirmation Dialog */}
       <AlertDialog open={showJobSummaryCloseConfirmation} onOpenChange={setShowJobSummaryCloseConfirmation}>
