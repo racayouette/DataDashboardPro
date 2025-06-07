@@ -31,11 +31,21 @@ interface DataGridProps {
     onPageChange: (page: number) => void;
   };
   onJobFamilyClick?: (jobFamily: JobFamily) => void;
+  reviewersData?: Reviewer[];
 }
 
-export function DataGrid({ title, subtitle, data, isLoading, type, pagination, onJobFamilyClick }: DataGridProps) {
+export function DataGrid({ title, subtitle, data, isLoading, type, pagination, onJobFamilyClick, reviewersData }: DataGridProps) {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  // Function to get reviewers for a specific job family
+  const getReviewersForJobFamily = (jobFamilyName: string) => {
+    if (!reviewersData) return [];
+    return reviewersData
+      .filter(reviewer => reviewer.jobFamily === jobFamilyName)
+      .map(reviewer => reviewer.responsible || reviewer.jobFamily)
+      .filter(name => name && name !== jobFamilyName); // Remove duplicates and empty names
+  };
 
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -279,6 +289,9 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                         {getSortIcon("jobsReviewed")}
                       </button>
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <span>Functional Leader</span>
+                    </th>
                   </>
                 ) : (
                   <>
@@ -349,25 +362,46 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                     </tr>
                   ))
                 : type === "jobFamilies"
-                ? (sortedData as JobFamily[]).map((jobFamily) => (
-                    <tr 
-                      key={jobFamily.id} 
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
-                      onClick={() => onJobFamilyClick?.(jobFamily)}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <span className="text-blue-600 hover:text-blue-800 underline transition-colors">
-                          {jobFamily.jobFamily}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {jobFamily.totalJobs}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {jobFamily.jobsReviewed}
-                      </td>
-                    </tr>
-                  ))
+                ? (sortedData as JobFamily[]).map((jobFamily) => {
+                    const reviewers = getReviewersForJobFamily(jobFamily.jobFamily);
+                    return (
+                      <tr 
+                        key={jobFamily.id} 
+                        className="hover:bg-gray-50 transition-colors cursor-pointer"
+                        onClick={() => onJobFamilyClick?.(jobFamily)}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <span className="text-blue-600 hover:text-blue-800 underline transition-colors">
+                            {jobFamily.jobFamily}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {jobFamily.totalJobs}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {jobFamily.jobsReviewed}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900 max-w-48">
+                          <div className="flex flex-wrap gap-1">
+                            {reviewers.length > 0 ? reviewers.map((reviewer, index) => (
+                              <span key={index}>
+                                <a 
+                                  href={`/jobs-family?search=${encodeURIComponent(reviewer)}`}
+                                  className="text-blue-600 hover:text-blue-800 underline transition-colors"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {reviewer}
+                                </a>
+                                {index < reviewers.length - 1 && <span className="text-gray-400">, </span>}
+                              </span>
+                            )) : (
+                              <span className="text-gray-400 italic">No functional leaders assigned</span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 : (sortedData as Reviewer[]).map((reviewer) => (
                     <tr key={reviewer.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

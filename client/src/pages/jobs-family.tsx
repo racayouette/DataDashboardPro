@@ -67,12 +67,15 @@ export default function JobsFamily() {
     "Chris Harrison"
   ];
 
-  // Check for reviewer parameter in URL
+  // Check for reviewer or search parameter in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const reviewerParam = urlParams.get('reviewer');
+    const searchParam = urlParams.get('search');
     if (reviewerParam) {
       setSearchTerm(reviewerParam);
+    } else if (searchParam) {
+      setSearchTerm(searchParam);
     }
   }, []);
 

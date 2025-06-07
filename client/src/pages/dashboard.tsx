@@ -336,6 +336,7 @@ export default function Dashboard() {
             isLoading={jobFamiliesLoading}
             type="jobFamilies"
             onJobFamilyClick={handleJobFamilyClick}
+            reviewersData={reviewersData?.reviewers}
             pagination={jobFamiliesData ? {
               currentPage: jobFamiliesData.currentPage,
               totalPages: jobFamiliesData.totalPages,
