@@ -161,13 +161,13 @@ export function Sidebar() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">User Name</Label>
               <Input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your username"
+                placeholder="Enter your user name"
                 onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
               />
             </div>
