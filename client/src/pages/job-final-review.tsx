@@ -97,7 +97,7 @@ export default function JobFinalReview() {
   const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
   const [additionalTextComment, setAdditionalTextComment] = useState("");
   const [isCritical, setIsCritical] = useState(false);
-  const [status, setStatus] = useState("Complete");
+  const [status, setStatus] = useState("Completed");
 
   // State for Job Summary popup editor
   const [showJobSummaryPopup, setShowJobSummaryPopup] = useState(false);
@@ -654,7 +654,7 @@ export default function JobFinalReview() {
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 <span className="text-sm font-medium text-gray-600">Status</span>
               </div>
-              <Badge className={status === "Complete" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
+              <Badge className={status === "Completed" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
             </div>
           </div>
 
