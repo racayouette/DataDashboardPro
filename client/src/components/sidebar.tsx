@@ -14,19 +14,16 @@ export function Sidebar() {
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleAuthentication = () => {
     // Simple validation - in real app this would register user and call Windows Auth API
-    if (username && fullName && email && password) {
+    if (username && fullName && email) {
       setIsAuthenticated(true);
       setShowAuthDialog(false);
       setUsername("");
       setFullName("");
       setEmail("");
-      setPassword("");
     } else {
       alert("Please fill in all fields to complete registration.");
     }
@@ -196,31 +193,7 @@ export function Sidebar() {
                 onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            </div>
+
             <div className="text-sm text-gray-500">
               Please fill in all fields to complete registration
             </div>
@@ -233,14 +206,13 @@ export function Sidebar() {
                 setUsername("");
                 setFullName("");
                 setEmail("");
-                setPassword("");
               }}
             >
               Cancel
             </Button>
             <Button
               onClick={handleAuthentication}
-              disabled={!username || !fullName || !email || !password}
+              disabled={!username || !fullName || !email}
             >
               Register
             </Button>
