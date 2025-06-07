@@ -649,7 +649,7 @@ export default function JobFinalReview() {
               </div>
               
               <Button variant="outline" asChild>
-                <Link href="/dashboard">
+                <Link href="/jobs-family">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Link>
