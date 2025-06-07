@@ -452,6 +452,13 @@ export default function JobsFamily() {
       
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto">
+          {/* Beta Banner */}
+          <div className="mb-4 bg-orange-100 border border-orange-300 text-orange-800 px-4 py-3 rounded-lg">
+            <div className="flex items-center justify-center">
+              <span className="font-semibold text-sm">⚠️ NOT FOR PRODUCTION - RELEASE BETA 1.0</span>
+            </div>
+          </div>
+
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
