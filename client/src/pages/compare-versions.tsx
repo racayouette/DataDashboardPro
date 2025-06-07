@@ -285,7 +285,7 @@ export default function CompareVersions() {
 
 
             <Button variant="ghost" asChild className="mb-4 bg-gray-100 text-gray-600 hover:bg-gray-200 border-0 text-xs px-2 py-1 h-7">
-              <Link href="/jobs-family">
+              <Link href="/editing">
                 <ArrowLeft className="w-3 h-3 mr-1" />
                 Back
               </Link>
