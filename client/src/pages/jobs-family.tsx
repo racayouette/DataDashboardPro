@@ -232,6 +232,17 @@ export default function JobsFamily() {
     : allUniqueStatuses.filter(status => status !== "Submitted to HR");
 
   const filteredEntries = jobEntries.filter(entry => {
+    // Debug logging for Jennifer Williams specifically - before any filtering
+    if (searchTerm.toLowerCase().includes('jennifer williams')) {
+      console.log('Pre-filter check:', {
+        jobTitle: entry.jobTitle,
+        reviewer: entry.reviewer,
+        status: entry.status,
+        isAdminMode,
+        willBeFilteredByStatus: !isAdminMode && entry.status === "Submitted to HR"
+      });
+    }
+    
     // Hide "Submitted to HR" rows when not in admin mode
     if (!isAdminMode && entry.status === "Submitted to HR") {
       return false;
@@ -247,20 +258,22 @@ export default function JobsFamily() {
       entry.status.toLowerCase().includes(searchLower) ||
       entry.lastUpdated.toLowerCase().includes(searchLower);
     
-    // Debug logging for Jennifer Williams specifically
-    if (searchTerm.toLowerCase().includes('jennifer williams')) {
-      console.log('Checking entry:', {
-        jobTitle: entry.jobTitle,
-        reviewer: entry.reviewer,
-        searchTerm,
-        searchLower,
-        reviewerMatch: entry.reviewer.toLowerCase().includes(searchLower),
-        matchesSearch
-      });
-    }
-    
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
     const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
+    
+    // Final debug logging
+    if (searchTerm.toLowerCase().includes('jennifer williams')) {
+      console.log('Final filter result:', {
+        jobTitle: entry.jobTitle,
+        reviewer: entry.reviewer,
+        matchesSearch,
+        matchesJobFamily,
+        matchesStatus,
+        selectedJobFamily,
+        selectedStatus,
+        finalResult: matchesSearch && matchesJobFamily && matchesStatus
+      });
+    }
     
     // Date range filtering
     let matchesDateRange = true;
