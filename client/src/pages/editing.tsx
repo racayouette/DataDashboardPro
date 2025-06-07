@@ -78,8 +78,7 @@ export default function Editing() {
   // State to track if any changes have been made
   const [hasChanges, setHasChanges] = useState(false);
   
-  // State for Compare Versions modal
-  const [showCompareModal, setShowCompareModal] = useState(false);
+
   
   // State for additional text section
   const [additionalText, setAdditionalText] = useState("");
@@ -468,7 +467,7 @@ export default function Editing() {
   };
 
   const handleCompareVersions = () => {
-    setShowCompareModal(true);
+    setLocation("/compare-versions");
   };
 
   const handleComplete = () => {
@@ -1405,110 +1404,7 @@ export default function Editing() {
         </DialogContent>
       </Dialog>
 
-      {/* Compare Versions Modal */}
-      <Dialog open={showCompareModal} onOpenChange={setShowCompareModal}>
-        <DialogContent className="max-w-7xl w-[95vw] h-[90vh] p-0">
-          <DialogHeader className="p-6 pb-4 border-b">
-            <DialogTitle className="text-xl font-semibold">Compare Versions</DialogTitle>
-          </DialogHeader>
-          <div className="flex h-full p-6 pt-0 gap-6">
-            {/* Original Job Description Box */}
-            <div className="flex-1 flex flex-col">
-              <div className="mb-4">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Original Job Description</h3>
-                <p className="text-sm text-gray-500">Last modified: May 15, 2025</p>
-              </div>
-              <div className="flex-1 bg-white border border-gray-200 rounded-lg p-6 overflow-y-auto">
-                <div className="space-y-6">
-                  {/* Job Summary */}
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Job Summary</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-700">{originalJobSummary}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Essential Functions */}
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Essential Functions</h4>
-                    <div className="space-y-3">
-                      {originalEssentialFunctions.map((func, index) => (
-                        <div key={func.id} className="bg-gray-50 p-4 rounded-lg">
-                          <div className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
-                              {index + 1}
-                            </span>
-                            <p className="text-sm text-gray-700 flex-1">{func.text}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
-                  {/* Additional Job Description Content */}
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Additional Job Description Content</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500 italic">{originalAdditionalText}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Current Version Box */}
-            <div className="flex-1 flex flex-col">
-              <div className="mb-4">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Current Version</h3>
-                <p className="text-sm text-gray-500">Last modified: {lastUpdatedDate}</p>
-              </div>
-              <div className="flex-1 bg-white border border-gray-200 rounded-lg p-6 overflow-y-auto">
-                <div className="space-y-6">
-                  {/* Job Summary */}
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Job Summary</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-700">{jobSummary}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Essential Functions */}
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Essential Functions</h4>
-                    <div className="space-y-3">
-                      {essentialFunctions.map((func, index) => (
-                        <div key={func.id} className="bg-gray-50 p-4 rounded-lg">
-                          <div className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
-                              {index + 1}
-                            </span>
-                            <p className="text-sm text-gray-700 flex-1">{func.text}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Additional Job Description Content */}
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Additional Job Description Content</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500 italic">{additionalText || "Add additional content here..."}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Modal Footer */}
-          <div className="flex justify-end gap-3 p-6 pt-0 border-t">
-            <Button variant="outline" onClick={() => setShowCompareModal(false)}>
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Job Summary Popup Editor */}
       <Dialog open={showJobSummaryPopup} onOpenChange={(open) => {
