@@ -534,7 +534,7 @@ export default function Editing() {
   const renderPopupTrackedChanges = () => {
     if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
       return (
-        <div className="h-[640px] max-h-[calc(100vh-220px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+        <div className="h-[640px] max-h-[calc(100vh-300px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
           <div 
             className="text-sm"
             style={{ 
@@ -579,7 +579,7 @@ export default function Editing() {
     }
 
     return (
-      <div className="h-[640px] max-h-[calc(100vh-220px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+      <div className="h-[640px] max-h-[calc(100vh-300px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
         <div 
           className="text-sm"
           style={{ 
@@ -1503,7 +1503,7 @@ export default function Editing() {
           }
         }
       }}>
-        <DialogContent className="max-w-6xl h-[95vh] flex flex-col" aria-describedby="job-summary-editor-description">
+        <DialogContent className="max-w-6xl max-h-[95vh] h-[95vh] flex flex-col overflow-hidden" aria-describedby="job-summary-editor-description">
           <DialogHeader>
             <DialogTitle>Edit Job Summary</DialogTitle>
             <div id="job-summary-editor-description" className="sr-only">
@@ -1560,7 +1560,7 @@ export default function Editing() {
                 <Textarea
                   value={popupJobSummary}
                   onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-                  className="h-[640px] max-h-[calc(100vh-220px)] text-sm resize-none border border-gray-300"
+                  className="h-[640px] max-h-[calc(100vh-300px)] text-sm resize-none border border-gray-300"
                   placeholder="Edit job summary here..."
                   style={{ 
                     lineHeight: '1.5',
