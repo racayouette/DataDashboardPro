@@ -550,33 +550,48 @@ export default function Editing() {
       );
     }
 
-    // Create simple word-level diff
+    // Create sophisticated word-level diff using LCS algorithm
     const originalWords = popupOriginalJobSummary.split(/(\s+)/);
     const currentWords = popupJobSummary.split(/(\s+)/);
     
-    const maxLength = Math.max(originalWords.length, currentWords.length);
-    const changes = [];
-    
-    for (let i = 0; i < maxLength; i++) {
-      const originalWord = originalWords[i] || '';
-      const currentWord = currentWords[i] || '';
+    // Longest Common Subsequence algorithm for better diff detection
+    const lcs = (arr1: string[], arr2: string[]) => {
+      const m = arr1.length;
+      const n = arr2.length;
+      const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
       
-      if (originalWord === currentWord) {
-        if (originalWord) {
-          changes.push({ type: 'unchanged', text: originalWord });
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          if (arr1[i - 1] === arr2[j - 1]) {
+            dp[i][j] = dp[i - 1][j - 1] + 1;
+          } else {
+            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+          }
         }
-      } else if (!currentWord) {
-        // Word was deleted
-        changes.push({ type: 'delete', text: originalWord });
-      } else if (!originalWord) {
-        // Word was added
-        changes.push({ type: 'insert', text: currentWord });
-      } else {
-        // Word was changed - show both
-        changes.push({ type: 'delete', text: originalWord });
-        changes.push({ type: 'insert', text: currentWord });
       }
-    }
+      
+      // Backtrack to find the actual changes
+      const changes = [];
+      let i = m, j = n;
+      
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && arr1[i - 1] === arr2[j - 1]) {
+          changes.unshift({ type: 'unchanged', text: arr1[i - 1] });
+          i--;
+          j--;
+        } else if (i > 0 && (j === 0 || dp[i - 1][j] >= dp[i][j - 1])) {
+          changes.unshift({ type: 'delete', text: arr1[i - 1] });
+          i--;
+        } else {
+          changes.unshift({ type: 'insert', text: arr2[j - 1] });
+          j--;
+        }
+      }
+      
+      return changes;
+    };
+    
+    const changes = lcs(originalWords, currentWords);
 
     return (
       <div className="h-[640px] max-h-[calc(100vh-300px)] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
