@@ -138,11 +138,36 @@ export default function Editing() {
 
   // Sample notifications matching dashboard
   const [notifications, setNotifications] = useState([
+    "10001 was reviewed and needs your approval",
     "Review deadline approaching",
-    "New job submitted", 
-    "Status update required",
+    "New job submitted 10002", 
+    "Status update required for 10003",
     "Feedback pending approval"
   ]);
+
+  // Function to render notification text with job code links
+  const renderNotificationWithLinks = (text: string) => {
+    // Regex to match job codes (4-5 digit numbers)
+    const jobCodeRegex = /\b(\d{4,5})\b/g;
+    const parts = text.split(jobCodeRegex);
+    
+    return parts.map((part, index) => {
+      // Check if this part is a job code
+      if (/^\d{4,5}$/.test(part)) {
+        return (
+          <Link 
+            key={index} 
+            href={`/editing?jobCode=${part}`}
+            className="text-blue-600 hover:text-blue-800 underline font-medium"
+            onClick={() => setShowNotifications(false)}
+          >
+            {part}
+          </Link>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
 
   // Close notifications dropdown when clicking outside
   useEffect(() => {
@@ -719,7 +744,7 @@ export default function Editing() {
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1 cursor-pointer">
-                              <p className="text-sm text-gray-700">{notification}</p>
+                              <p className="text-sm text-gray-700">{renderNotificationWithLinks(notification)}</p>
                               <p className="text-xs text-gray-400 mt-1">Just now</p>
                             </div>
                             <button
