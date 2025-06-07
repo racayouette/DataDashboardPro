@@ -530,26 +530,92 @@ export default function Editing() {
     setPopupJobSummary(newText);
   };
 
-  // Create read-only editor showing changes
-  const renderPopupEditorWithChanges = () => {
-    // Always show as read-only textarea for proper text wrapping
+  // Create highlighted diff display for popup left pane
+  const renderPopupTrackedChanges = () => {
+    if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
+      return (
+        <div className="flex-1 min-h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+          <div 
+            className="text-sm"
+            style={{ 
+              lineHeight: '1.5',
+              fontFamily: 'Arial, sans-serif',
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word'
+            }}
+          >
+            {popupOriginalJobSummary}
+          </div>
+        </div>
+      );
+    }
+
+    // Create simple word-level diff
+    const originalWords = popupOriginalJobSummary.split(/(\s+)/);
+    const currentWords = popupJobSummary.split(/(\s+)/);
+    
+    const maxLength = Math.max(originalWords.length, currentWords.length);
+    const changes = [];
+    
+    for (let i = 0; i < maxLength; i++) {
+      const originalWord = originalWords[i] || '';
+      const currentWord = currentWords[i] || '';
+      
+      if (originalWord === currentWord) {
+        if (originalWord) {
+          changes.push({ type: 'unchanged', text: originalWord });
+        }
+      } else if (!currentWord) {
+        // Word was deleted
+        changes.push({ type: 'delete', text: originalWord });
+      } else if (!originalWord) {
+        // Word was added
+        changes.push({ type: 'insert', text: currentWord });
+      } else {
+        // Word was changed - show both
+        changes.push({ type: 'delete', text: originalWord });
+        changes.push({ type: 'insert', text: currentWord });
+      }
+    }
+
     return (
-      <div className="flex-1 flex flex-col">
-        <Textarea
-          value={popupOriginalJobSummary}
-          readOnly
-          className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300 bg-gray-50"
-          placeholder="Original job summary will appear here..."
+      <div className="flex-1 min-h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+        <div 
+          className="text-sm"
           style={{ 
             lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif'
+            fontFamily: 'Arial, sans-serif',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
           }}
-        />
-        {popupTrackChangesMode && popupJobSummary !== popupOriginalJobSummary && (
-          <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
-            <span className="text-blue-700">Changes detected in editor pane</span>
-          </div>
-        )}
+        >
+          {changes.map((change, index) => {
+            if (change.type === 'unchanged') {
+              return <span key={index}>{change.text}</span>;
+            } else if (change.type === 'delete') {
+              return (
+                <span 
+                  key={index} 
+                  className="bg-red-100 text-red-700 line-through decoration-red-500"
+                  title="Deleted text"
+                >
+                  {change.text}
+                </span>
+              );
+            } else if (change.type === 'insert') {
+              return (
+                <span 
+                  key={index} 
+                  className="bg-green-100 text-green-700 font-medium"
+                  title="Added text"
+                >
+                  {change.text}
+                </span>
+              );
+            }
+            return null;
+          })}
+        </div>
       </div>
     );
   };
@@ -1485,7 +1551,7 @@ export default function Editing() {
               {/* Left Side - Read-only with Change Tracking */}
               <div className="flex-1 flex flex-col">
                 <h4 className="text-sm font-medium mb-2">Original (with Changes)</h4>
-                {renderPopupEditorWithChanges()}
+                {renderPopupTrackedChanges()}
               </div>
               
               {/* Right Side - Editable */}
