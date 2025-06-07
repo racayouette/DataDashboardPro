@@ -1552,19 +1552,6 @@ export default function Editing() {
                 />
               </div>
             </div>
-            
-            {/* Track Changes Preview */}
-            {popupTrackChangesMode && popupJobSummary !== popupOriginalJobSummary && (
-              <div className="border-t pt-4">
-                <h4 className="text-sm font-medium mb-2">Changes Summary:</h4>
-                <div className="bg-gray-50 p-3 rounded text-sm" style={{ fontFamily: 'Arial, sans-serif' }}>
-                  <div className="space-y-1">
-                    <div><span className="text-red-600">- Original:</span> {popupOriginalJobSummary}</div>
-                    <div><span className="text-green-600">+ Modified:</span> {popupJobSummary}</div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
           
           {/* Footer Buttons */}
