@@ -290,6 +290,9 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                       </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      <span>Functional Leader</span>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       <button 
                         className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
                         onClick={() => handleSort("totalJobs")}
@@ -306,9 +309,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                         <span>Jobs Reviewed</span>
                         {getSortIcon("jobsReviewed")}
                       </button>
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <span>Functional Leader</span>
                     </th>
                   </>
                 ) : (
@@ -393,12 +393,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                             {jobFamily.jobFamily}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {jobFamily.totalJobs}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {jobFamily.jobsReviewed}
-                        </td>
                         <td className="px-6 py-4 text-sm text-gray-900 max-w-48">
                           <div className="flex flex-wrap gap-1">
                             {functionalLeaders.length > 0 ? functionalLeaders.map((leader, index) => (
@@ -416,6 +410,12 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                               <span className="text-gray-400 italic">No functional leaders assigned</span>
                             )}
                           </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {jobFamily.totalJobs}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {jobFamily.jobsReviewed}
                         </td>
                       </tr>
                     );
