@@ -75,16 +75,6 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       statusText: "Pending",
     },
     {
-      title: "Jobs Reviewed",
-      value: parseFloat(data.revenue).toLocaleString(),
-      icon: Eye,
-      iconBg: "bg-green-100",
-      iconColor: "text-green-600",
-      change: `${reviewedPercentage}%`,
-      changeColor: "text-green-600",
-      statusText: "Reviewed",
-    },
-    {
       title: "In Progress",
       value: data.orders.toLocaleString(),
       icon: TrendingUp,
@@ -93,6 +83,16 @@ export function SummaryCards({ data, isLoading }: SummaryCardsProps) {
       change: `${inProgressPercentage}%`,
       changeColor: "text-green-600",
       statusText: "Pending",
+    },
+    {
+      title: "Jobs Reviewed",
+      value: parseFloat(data.revenue).toLocaleString(),
+      icon: Eye,
+      iconBg: "bg-green-100",
+      iconColor: "text-green-600",
+      change: `${reviewedPercentage}%`,
+      changeColor: "text-green-600",
+      statusText: "Reviewed",
     },
   ];
 
