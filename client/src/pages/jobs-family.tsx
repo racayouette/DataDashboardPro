@@ -666,9 +666,20 @@ export default function JobsFamily() {
                       <td className="px-6 py-4 whitespace-nowrap">{getReviewerDisplay(entry, index)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.responsible}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
-                          {entry.status}
-                        </Badge>
+                        {entry.status === "Completed" ? (
+                          <button
+                            onClick={() => setLocation('/job-final-review')}
+                            className="focus:outline-none"
+                          >
+                            <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)} hover:opacity-80 cursor-pointer transition-opacity`}>
+                              {entry.status}
+                            </Badge>
+                          </button>
+                        ) : (
+                          <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
+                            {entry.status}
+                          </Badge>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.lastUpdated}</td>
                     </tr>
