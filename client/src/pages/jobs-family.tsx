@@ -370,11 +370,12 @@ export default function JobsFamily() {
   const getReviewerDisplay = (entry: JobEntry, index: number) => {
     const actualIndex = startIndex + index + 1; // Calculate actual row number
     
-    // Check if this is an assigned reviewer from dropdown (only for unfiltered view)
+    // Check if this is an assigned reviewer from dropdown (only for unfiltered view and specific original positions)
     const isUnfilteredView = searchTerm === "" && selectedStatus === "" && selectedJobFamily === "";
-    const assignedReviewer = isUnfilteredView ? reviewerAssignments[actualIndex] : null;
+    const isOriginalPosition = isUnfilteredView && entry.id === actualIndex; // Only for original positions
+    const assignedReviewer = isOriginalPosition ? reviewerAssignments[actualIndex] : null;
     
-    // If there's an assigned reviewer from dropdown, show it
+    // If there's an assigned reviewer from dropdown, show it (only for original unfiltered positions)
     if (assignedReviewer) {
       return (
         <button
@@ -398,8 +399,8 @@ export default function JobsFamily() {
       );
     }
     
-    // Show empty icon only for unfiltered view when no reviewer assigned at all
-    if (isUnfilteredView) {
+    // Show empty icon only for unfiltered view, original positions 1-2, when no reviewer assigned
+    if (isUnfilteredView && actualIndex <= 2 && entry.id === actualIndex) {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
