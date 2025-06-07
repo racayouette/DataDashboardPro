@@ -26,16 +26,6 @@ export default function Notifications() {
   // Sample notifications data
   const [notifications, setNotifications] = useState<Notification[]>([
     {
-      id: 1,
-      title: "Review Deadline Approaching",
-      message: "Job description for Patient Care Technician (10001) review deadline is in 2 days",
-      type: "warning",
-      timestamp: "2025-06-04 14:30",
-      read: false,
-      priority: "high",
-      category: "Deadlines"
-    },
-    {
       id: 2,
       title: "New Job Submitted",
       message: "Radiology Tech position (10002) has been submitted for review by Michael Chen",
@@ -44,16 +34,6 @@ export default function Notifications() {
       read: false,
       priority: "medium",
       category: "Job Submissions"
-    },
-    {
-      id: 3,
-      title: "Status Update Required",
-      message: "Billing Specialist role (10003) requires status update from responsible person",
-      type: "warning",
-      timestamp: "2025-06-04 10:45",
-      read: true,
-      priority: "medium",
-      category: "Status Updates"
     },
     {
       id: 4,
@@ -76,16 +56,6 @@ export default function Notifications() {
       category: "Completions"
     },
     {
-      id: 6,
-      title: "System Maintenance Alert",
-      message: "Scheduled system maintenance will occur tonight from 2:00 AM to 4:00 AM EST",
-      type: "warning",
-      timestamp: "2025-06-03 15:00",
-      read: false,
-      priority: "high",
-      category: "System"
-    },
-    {
       id: 7,
       title: "Reviewer Assignment",
       message: "You have been assigned as reviewer for Pharmacy Tech position (10008)",
@@ -94,16 +64,6 @@ export default function Notifications() {
       read: true,
       priority: "medium",
       category: "Assignments"
-    },
-    {
-      id: 8,
-      title: "Validation Error",
-      message: "Social Worker job description (10010) contains validation errors that need correction",
-      type: "error",
-      timestamp: "2025-06-03 09:15",
-      read: false,
-      priority: "high",
-      category: "Errors"
     }
   ]);
 
