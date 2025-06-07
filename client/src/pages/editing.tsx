@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { useRole } from "@/contexts/RoleContext";
 import { 
   ArrowLeft, 
   Search, 
@@ -37,6 +38,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Editing() {
   const [, setLocation] = useLocation();
+  const { isAdminMode } = useRole();
   const [jobCode, setJobCode] = useState("");
   const originalEssentialFunctions = [
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
@@ -1195,19 +1197,23 @@ export default function Editing() {
             >
               Submit For HR Review
             </Button>
-            <Button 
-              className={(hasChanges || isCritical) ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}
-              onClick={handleAcceptChanges}
-              disabled={hasChanges || isCritical}
-            >
-              Accept Changes
-            </Button>
-            <Button 
-              className="bg-green-500 text-white hover:bg-green-600"
-              onClick={handleComplete}
-            >
-              Complete
-            </Button>
+            {!isAdminMode && (
+              <Button 
+                className={(hasChanges || isCritical) ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"}
+                onClick={handleAcceptChanges}
+                disabled={hasChanges || isCritical}
+              >
+                Accept Changes
+              </Button>
+            )}
+            {isAdminMode && (
+              <Button 
+                className="bg-green-500 text-white hover:bg-green-600"
+                onClick={handleComplete}
+              >
+                Complete
+              </Button>
+            )}
             <Button 
               variant="outline"
               className="bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200"
