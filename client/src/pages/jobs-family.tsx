@@ -370,34 +370,24 @@ export default function JobsFamily() {
   const getReviewerDisplay = (entry: JobEntry, index: number) => {
     const actualIndex = startIndex + index + 1; // Calculate actual row number
     
-    // Special case for job code 10001 - always show the actual reviewer data as clickable link
-    if (entry.jobCode === "10001") {
+    // Check if this is an assigned reviewer from dropdown (only for unfiltered view)
+    const isUnfilteredView = searchTerm === "" && selectedStatus === "" && selectedJobFamily === "";
+    const assignedReviewer = isUnfilteredView ? reviewerAssignments[actualIndex] : null;
+    
+    // If there's an assigned reviewer from dropdown, show it
+    if (assignedReviewer) {
       return (
         <button
-          onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
+          onClick={() => handleFunctionalLeaderClick(assignedReviewer)}
           className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
         >
-          {entry.reviewer}
+          {assignedReviewer}
         </button>
       );
     }
     
-    // For first 2 rows (excluding 10001), show icon or assigned name
-    if (actualIndex <= 2) {
-      const assignedReviewer = reviewerAssignments[actualIndex];
-      
-      if (assignedReviewer) {
-        return (
-          <button
-            onClick={() => handleFunctionalLeaderClick(assignedReviewer)}
-            className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer text-left"
-          >
-            {assignedReviewer}
-          </button>
-        );
-      }
-      
-      // Show empty person icon dropdown
+    // Show empty icon only for first 2 rows in unfiltered view when no reviewer assigned and no original reviewer
+    if (isUnfilteredView && actualIndex <= 2 && !entry.reviewer) {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -420,7 +410,7 @@ export default function JobsFamily() {
       );
     }
     
-    // For other rows, show original reviewer name as clickable link
+    // For all other cases, show the actual reviewer name as clickable link
     return (
       <button
         onClick={() => handleFunctionalLeaderClick(entry.reviewer)}
