@@ -62,7 +62,7 @@ export default function JobFinalReview() {
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
   const [showAcceptConfirmation, setShowAcceptConfirmation] = useState(false);
-  const [lastUpdatedDate, setLastUpdatedDate] = useState("May 30, 2025");
+  const [lastUpdatedDate, setLastUpdatedDate] = useState("June 7, 2025");
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
   
@@ -88,7 +88,7 @@ export default function JobFinalReview() {
   const [showAdditionalTextCommentModal, setShowAdditionalTextCommentModal] = useState(false);
   const [additionalTextComment, setAdditionalTextComment] = useState("");
   const [isCritical, setIsCritical] = useState(false);
-  const [status, setStatus] = useState("In Progress");
+  const [status, setStatus] = useState("Complete");
 
   // State for Job Summary popup editor
   const [showJobSummaryPopup, setShowJobSummaryPopup] = useState(false);
@@ -623,7 +623,7 @@ export default function JobFinalReview() {
           </div>
 
           {/* Job Info Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="flex items-center space-x-2 mb-2">
                 <FileText className="w-4 h-4 text-blue-600" />
@@ -647,14 +647,6 @@ export default function JobFinalReview() {
               </div>
               <Badge className={status === "Complete" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
             </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex items-center space-x-2 mb-2">
-                <Clock className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-gray-600">Last Updated</span>
-              </div>
-              <p className="text-blue-600 font-semibold">May 30, 2025</p>
-            </div>
           </div>
 
           {/* Additional Info Cards */}
@@ -673,34 +665,6 @@ export default function JobFinalReview() {
                   <Users className="w-4 h-4 text-green-600" />
                   <span className="text-sm font-medium text-gray-600">Reviewers</span>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost" 
-                      size="sm"
-                      className="h-6 w-6 p-0 hover:bg-green-50"
-                      disabled={getAvailableReviewers().length === 0}
-                    >
-                      <UserPlus className="w-3 h-3 text-green-600" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    {getAvailableReviewers().map((user) => (
-                      <DropdownMenuItem
-                        key={user}
-                        onClick={() => addReviewer(user)}
-                        className="cursor-pointer"
-                      >
-                        {user}
-                      </DropdownMenuItem>
-                    ))}
-                    {getAvailableReviewers().length === 0 && (
-                      <DropdownMenuItem disabled>
-                        All users added
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
               <div className="space-y-2">
                 {reviewers.map((user, index) => (
@@ -728,34 +692,6 @@ export default function JobFinalReview() {
                   <UserCheck className="w-4 h-4 text-purple-600" />
                   <span className="text-sm font-medium text-gray-600">Responsible</span>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost" 
-                      size="sm"
-                      className="h-6 w-6 p-0 hover:bg-purple-50"
-                      disabled={getAvailableResponsibleUsers().length === 0}
-                    >
-                      <UserPlus className="w-3 h-3 text-purple-600" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    {getAvailableResponsibleUsers().map((user) => (
-                      <DropdownMenuItem
-                        key={user}
-                        onClick={() => addResponsibleUser(user)}
-                        className="cursor-pointer"
-                      >
-                        {user}
-                      </DropdownMenuItem>
-                    ))}
-                    {getAvailableResponsibleUsers().length === 0 && (
-                      <DropdownMenuItem disabled>
-                        All users added
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
               <div className="space-y-2">
                 {responsibleUsers.map((user, index) => (
@@ -787,58 +723,13 @@ export default function JobFinalReview() {
           </div>
 
           {/* Main Content Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Original Job Description */}
-            <div className="bg-white rounded-lg shadow-sm">
-              <div className="p-6 border-b">
-                <div className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-gray-600" />
-                  <h3 className="text-lg font-semibold">Original Job Description</h3>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Job Summary</h4>
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-                    <p className="text-sm">• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports</p>
-                    <p className="text-sm">• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.</p>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h4 className="font-semibold mb-3">Essential Functions</h4>
-                  <div className="space-y-3">
-                    {originalEssentialFunctions.map((func, index) => (
-                      <div key={func.id} className="bg-blue-50 border-l-4 border-blue-500 p-4">
-                        <div className="flex items-start gap-3">
-                          <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
-                            {index + 1}
-                          </span>
-                          <p className="text-sm flex-1">{func.text}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold mb-3">Additional Requirements</h4>
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
-                    <p className="text-sm italic">{originalAdditionalText}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* AI-Generated Job Description */}
+          <div className="max-w-4xl mx-auto mb-8">
+            {/* Updated Job Description */}
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-6 border-b">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">AI</span>
-                    </div>
-                    <h3 className="text-lg font-semibold">AI-Generated Job Description</h3>
+                    <h3 className="text-lg font-semibold">Updated Job Description</h3>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-gray-500">Last Updated {lastUpdatedDate}</span>
@@ -849,38 +740,6 @@ export default function JobFinalReview() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Job Summary</h4>
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-2">
-                        <input 
-                          type="checkbox"
-                          id="track-changes"
-                          checked={trackChangesMode}
-                          onChange={(e) => setTrackChangesMode(e.target.checked)}
-                          className="h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                        />
-                        <label 
-                          htmlFor="track-changes" 
-                          className="text-xs font-medium cursor-pointer"
-                        >
-                          Track Changes
-                        </label>
-                      </div>
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={handleEditJobSummary}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={handleResetJobSummary}
-                        title="Reset to original job summary"
-                      >
-                        <RotateCcw className="w-4 h-4" />
-                      </Button>
-                    </div>
                   </div>
                   {isEditingJobSummary ? (
                     <div className="space-y-2">
