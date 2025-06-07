@@ -238,12 +238,19 @@ export default function Settings() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Switch away from email tab when email notifications are disabled
+  useEffect(() => {
+    if (!notificationSettings.emailNotifications && activeTab === 'email') {
+      setActiveTab('notifications');
+    }
+  }, [notificationSettings.emailNotifications, activeTab]);
+
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
     { id: 'reviewers', label: 'Reviewers', icon: UserCheck },
     { id: 'responsible', label: 'Responsible', icon: Shield },
-    { id: 'email', label: 'Email', icon: Mail },
+    { id: 'email', label: 'Email', icon: Mail, disabled: !notificationSettings.emailNotifications },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
 
@@ -1702,12 +1709,20 @@ export default function Settings() {
               <nav className="space-y-1">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
+                  const isDisabled = tab.disabled;
                   return (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => {
+                        if (!isDisabled) {
+                          setActiveTab(tab.id);
+                        }
+                      }}
+                      disabled={isDisabled}
                       className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-colors ${
-                        activeTab === tab.id
+                        isDisabled
+                          ? 'text-gray-300 cursor-not-allowed bg-gray-50'
+                          : activeTab === tab.id
                           ? 'bg-blue-100 text-blue-700 border border-blue-200'
                           : 'text-gray-600 hover:bg-gray-100'
                       }`}
