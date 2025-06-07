@@ -532,74 +532,18 @@ export default function Editing() {
 
   // Create highlighted text for editor showing changes
   const renderPopupEditorWithChanges = () => {
-    if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
-      return (
-        <Textarea
-          value={popupJobSummary}
-          onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-          className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300"
-          placeholder="Enter job summary (35 lines available for editing)..."
-          style={{ 
-            lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif'
-          }}
-        />
-      );
-    }
-
-    // When changes exist and track changes is on, show highlighted version
-    const diff = createTextDiff(popupOriginalJobSummary, popupJobSummary);
-    
+    // Always show normal textarea - the overlay approach was causing display issues
     return (
-      <div className="flex-1 min-h-[500px] border border-gray-300 rounded-md relative">
-        {/* Hidden textarea for actual editing */}
-        <Textarea
-          value={popupJobSummary}
-          onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-          className="absolute inset-0 w-full h-full text-sm resize-none bg-transparent z-10 text-transparent caret-black"
-          placeholder="Enter job summary (35 lines available for editing)..."
-          style={{ 
-            lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif'
-          }}
-        />
-        
-        {/* Highlighted overlay */}
-        <div 
-          className="absolute inset-0 p-3 text-sm pointer-events-none z-0 whitespace-pre-wrap"
-          style={{ 
-            lineHeight: '1.5',
-            fontFamily: 'Arial, sans-serif'
-          }}
-        >
-          {diff.map((change, index) => {
-            if (change.type === 'unchanged') {
-              return <span key={index}>{change.text}</span>;
-            } else if (change.type === 'delete') {
-              return (
-                <span 
-                  key={index} 
-                  className="bg-red-100 text-red-700 line-through decoration-red-500"
-                  title="Deleted text"
-                >
-                  {change.text}
-                </span>
-              );
-            } else if (change.type === 'insert') {
-              return (
-                <span 
-                  key={index} 
-                  className="bg-green-100 text-green-700 font-medium"
-                  title="Added text"
-                >
-                  {change.text}
-                </span>
-              );
-            }
-            return null;
-          })}
-        </div>
-      </div>
+      <Textarea
+        value={popupJobSummary}
+        onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
+        className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300"
+        placeholder="Enter job summary (35 lines available for editing)..."
+        style={{ 
+          lineHeight: '1.5',
+          fontFamily: 'Arial, sans-serif'
+        }}
+      />
     );
   };
 
