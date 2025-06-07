@@ -530,20 +530,64 @@ export default function Editing() {
     setPopupJobSummary(newText);
   };
 
-  // Create highlighted text for editor showing changes
+  // Create read-only editor showing changes
   const renderPopupEditorWithChanges = () => {
-    // Always show normal textarea - the overlay approach was causing display issues
+    if (!popupTrackChangesMode || popupJobSummary === popupOriginalJobSummary) {
+      // No changes or track changes off - show read-only original text
+      return (
+        <Textarea
+          value={popupOriginalJobSummary}
+          readOnly
+          className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300 bg-gray-50"
+          placeholder="Original job summary will appear here..."
+          style={{ 
+            lineHeight: '1.5',
+            fontFamily: 'Arial, sans-serif'
+          }}
+        />
+      );
+    }
+
+    // Show highlighted changes when track changes is on
+    const diff = createTextDiff(popupOriginalJobSummary, popupJobSummary);
+    
     return (
-      <Textarea
-        value={popupJobSummary}
-        onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-        className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300"
-        placeholder="Enter job summary (35 lines available for editing)..."
-        style={{ 
-          lineHeight: '1.5',
-          fontFamily: 'Arial, sans-serif'
-        }}
-      />
+      <div className="flex-1 min-h-[500px] border border-gray-300 rounded-md bg-gray-50 p-3 overflow-y-auto">
+        <div 
+          className="text-sm whitespace-pre-wrap"
+          style={{ 
+            lineHeight: '1.5',
+            fontFamily: 'Arial, sans-serif'
+          }}
+        >
+          {diff.map((change, index) => {
+            if (change.type === 'unchanged') {
+              return <span key={index}>{change.text}</span>;
+            } else if (change.type === 'delete') {
+              return (
+                <span 
+                  key={index} 
+                  className="bg-red-100 text-red-700 line-through decoration-red-500"
+                  title="Deleted text"
+                >
+                  {change.text}
+                </span>
+              );
+            } else if (change.type === 'insert') {
+              return (
+                <span 
+                  key={index} 
+                  className="bg-green-100 text-green-700 font-medium"
+                  title="Added text"
+                >
+                  {change.text}
+                </span>
+              );
+            }
+            return null;
+          })}
+        </div>
+      </div>
     );
   };
 
@@ -1475,20 +1519,20 @@ export default function Editing() {
             
             {/* Side by Side Editor and Preview */}
             <div className="flex-1 flex gap-4">
-              {/* Left Side - Editor with Change Tracking */}
+              {/* Left Side - Read-only with Change Tracking */}
               <div className="flex-1 flex flex-col">
-                <h4 className="text-sm font-medium mb-2">Editor</h4>
+                <h4 className="text-sm font-medium mb-2">Original (with Changes)</h4>
                 {renderPopupEditorWithChanges()}
               </div>
               
-              {/* Right Side - Editable Preview */}
+              {/* Right Side - Editable */}
               <div className="flex-1 flex flex-col">
-                <h4 className="text-sm font-medium mb-2">Preview (Editable)</h4>
+                <h4 className="text-sm font-medium mb-2">Editor</h4>
                 <Textarea
                   value={popupJobSummary}
                   onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
-                  className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300 bg-gray-50"
-                  placeholder="Preview and edit here..."
+                  className="flex-1 min-h-[500px] text-sm resize-none border border-gray-300"
+                  placeholder="Edit job summary here..."
                   style={{ 
                     lineHeight: '1.5',
                     fontFamily: 'Arial, sans-serif'
