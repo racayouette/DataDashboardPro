@@ -502,6 +502,12 @@ export default function Editing() {
     setShowCompareModal(true);
   };
 
+  const handleComplete = () => {
+    updateLastModifiedDate();
+    // Logic to mark job description as complete
+    console.log("Job description marked as complete");
+  };
+
   const handleEditAdditionalText = () => {
     setIsEditingAdditionalText(true);
   };
@@ -1229,6 +1235,12 @@ export default function Editing() {
               disabled={hasChanges || isCritical}
             >
               Accept Changes
+            </Button>
+            <Button 
+              className="bg-green-500 text-white hover:bg-green-600"
+              onClick={handleComplete}
+            >
+              Complete
             </Button>
             <Button 
               variant="outline"
