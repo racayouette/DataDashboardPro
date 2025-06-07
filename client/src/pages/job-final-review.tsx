@@ -672,7 +672,7 @@ export default function JobFinalReview() {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-gray-600">Reviewers</span>
+                  <span className="text-sm font-medium text-gray-600">Functional Leaders</span>
                 </div>
               </div>
               <div className="space-y-2">
