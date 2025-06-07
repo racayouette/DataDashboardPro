@@ -1464,20 +1464,19 @@ export default function Editing() {
                 />
               </div>
               
-              {/* Right Side - Preview */}
+              {/* Right Side - Editable Preview */}
               <div className="flex-1 flex flex-col">
-                <h4 className="text-sm font-medium mb-2">Preview</h4>
-                <div className="flex-1 min-h-[400px] p-3 border border-gray-300 rounded-md bg-gray-50 overflow-y-auto">
-                  <div 
-                    className="text-sm whitespace-pre-wrap"
-                    style={{ 
-                      lineHeight: '1.5',
-                      fontFamily: 'Arial, sans-serif'
-                    }}
-                  >
-                    {popupJobSummary || "Preview will appear here..."}
-                  </div>
-                </div>
+                <h4 className="text-sm font-medium mb-2">Preview (Editable)</h4>
+                <Textarea
+                  value={popupJobSummary}
+                  onChange={(e) => handlePopupJobSummaryChange(e.target.value)}
+                  className="flex-1 min-h-[400px] text-sm resize-none border border-gray-300 bg-gray-50"
+                  placeholder="Preview and edit here..."
+                  style={{ 
+                    lineHeight: '1.5',
+                    fontFamily: 'Arial, sans-serif'
+                  }}
+                />
               </div>
             </div>
             
