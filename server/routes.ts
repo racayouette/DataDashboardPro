@@ -245,6 +245,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(exportFiles);
   });
 
+  // Job descriptions endpoints for version comparison
+  app.get("/api/jobs/:jobId/descriptions", async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.jobId);
+      const descriptions = await storage.getJobDescriptions(jobId);
+      res.json(descriptions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch job descriptions" });
+    }
+  });
+
+  app.get("/api/job-descriptions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const description = await storage.getJobDescriptionById(id);
+      if (!description) {
+        return res.status(404).json({ message: "Job description not found" });
+      }
+      res.json(description);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch job description" });
+    }
+  });
+
+  app.get("/api/jobs/:jobId/descriptions/active", async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.jobId);
+      const description = await storage.getActiveJobDescription(jobId);
+      if (!description) {
+        return res.status(404).json({ message: "No active job description found" });
+      }
+      res.json(description);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active job description" });
+    }
+  });
+
+  app.get("/api/job-descriptions/:id/essential-functions", async (req, res) => {
+    try {
+      const jobDescriptionId = parseInt(req.params.id);
+      const functions = await storage.getEssentialFunctions(jobDescriptionId);
+      res.json(functions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch essential functions" });
+    }
+  });
+
+  // Version comparison endpoint
+  app.get("/api/job-descriptions/:originalId/compare/:currentId", async (req, res) => {
+    try {
+      const originalId = parseInt(req.params.originalId);
+      const currentId = parseInt(req.params.currentId);
+      
+      const [original, current, originalFunctions, currentFunctions] = await Promise.all([
+        storage.getJobDescriptionById(originalId),
+        storage.getJobDescriptionById(currentId),
+        storage.getEssentialFunctions(originalId),
+        storage.getEssentialFunctions(currentId)
+      ]);
+
+      if (!original || !current) {
+        return res.status(404).json({ message: "One or both job descriptions not found" });
+      }
+
+      // Format essential functions as numbered list
+      const formatFunctions = (functions: any[]) => 
+        functions.map((f, i) => `${i + 1}. ${f.description}`).join('\n');
+
+      const comparison = {
+        original: {
+          id: original.id,
+          jobSummary: original.jobSummary || '',
+          description: original.originalJobSummary || '',
+          essentialFunctions: formatFunctions(originalFunctions),
+          version: original.version,
+          status: original.isActive ? 'active' : 'inactive',
+          lastModified: original.lastUpdatedDate
+        },
+        current: {
+          id: current.id,
+          jobSummary: current.jobSummary || '',
+          description: current.originalJobSummary || '',
+          essentialFunctions: formatFunctions(currentFunctions),
+          version: current.version,
+          status: current.isActive ? 'active' : 'inactive',
+          lastModified: current.lastUpdatedDate
+        }
+      };
+
+      res.json(comparison);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to perform version comparison" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time database health monitoring

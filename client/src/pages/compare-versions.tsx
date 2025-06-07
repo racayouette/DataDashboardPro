@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Sidebar } from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { GitCompare, ArrowLeft, FileText, Eye, EyeOff, RefreshCw, Edit3 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { GitCompare, ArrowLeft, FileText, Eye, EyeOff, RefreshCw, Edit3, Database } from "lucide-react";
 import { useLocation } from "wouter";
 import { Link } from "wouter";
 
@@ -17,21 +19,54 @@ export default function CompareVersions() {
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
+  
+  // Database selection state
+  const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  const [selectedOriginalId, setSelectedOriginalId] = useState<number | null>(null);
+  const [selectedCurrentId, setSelectedCurrentId] = useState<number | null>(null);
 
-  // Editable state for real-time comparison
-  const [originalJobSummary, setOriginalJobSummary] = useState("• Provides Direct Patient Care Under Supervision. Monitors Patient Condition And Reports\n• Changes To The Medical Team. Maintains Accurate Records And Assists With Mobility Needs.");
-  const [currentJobSummary, setCurrentJobSummary] = useState("• Provides Comprehensive Patient Care Under Licensed Supervision. Monitors Patient Condition And Reports\n• Critical Changes To The Medical Team. Maintains Detailed Records And Assists With Patient Mobility And Safety Needs.");
-  
-  const [originalEssentialFunctions, setOriginalEssentialFunctions] = useState("Monitor Patient Vitals And Report Abnormalities.\nAssist With Bathing, Feeding, And Toileting.\nDocument Daily Care Activities.\nTransport Patients Using Wheelchairs And Stretchers.");
-  const [currentEssentialFunctions, setCurrentEssentialFunctions] = useState("Monitor Patient Vitals And Report Abnormalities Immediately.\nAssist With Bathing, Feeding, Toileting, And Personal Hygiene.\nDocument Daily Care Activities And Patient Progress.\nTransport Patients Safely Using Wheelchairs And Stretchers.\nProvide Emotional Support And Comfort To Patients And Families.");
-  
-  const [originalDescription, setOriginalDescription] = useState("The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.");
-  const [currentDescription, setCurrentDescription] = useState("The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff.\n\nPCTs Work Collaboratively With Interdisciplinary Teams To Promote Optimal Patient Outcomes.\n\nUnder The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical, Emotional, And Social Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.\n\nIn Addition To Core Care Responsibilities, PCTs Are Expected To Maintain Strict Adherence To HIPAA Privacy Standards, Infection Control Protocols, And Safety Guidelines. They Must Demonstrate Cultural Sensitivity When Working With Diverse Patient Populations And Show Adaptability In Fast-Paced Healthcare Settings. Continuous Professional Development Through Ongoing Training And Certification Programs Is Required To Stay Current With Best Practices And Emerging Healthcare Technologies.");
+  // Text content state - populated from database
+  const [originalJobSummary, setOriginalJobSummary] = useState("");
+  const [currentJobSummary, setCurrentJobSummary] = useState("");
+  const [originalEssentialFunctions, setOriginalEssentialFunctions] = useState("");
+  const [currentEssentialFunctions, setCurrentEssentialFunctions] = useState("");
+  const [originalDescription, setOriginalDescription] = useState("");
+  const [currentDescription, setCurrentDescription] = useState("");
 
   // Real-time diff calculations
   const [jobSummaryDiff, setJobSummaryDiff] = useState<DiffSegment[]>([]);
   const [essentialFunctionsDiff, setEssentialFunctionsDiff] = useState<DiffSegment[]>([]);
   const [descriptionDiff, setDescriptionDiff] = useState<DiffSegment[]>([]);
+
+  // Fetch jobs list for selection
+  const { data: jobs } = useQuery({
+    queryKey: ['/api/jobs'],
+    enabled: true
+  });
+
+  // Fetch job descriptions for selected job
+  const { data: jobDescriptions } = useQuery({
+    queryKey: ['/api/jobs', selectedJobId, 'descriptions'],
+    enabled: !!selectedJobId
+  });
+
+  // Fetch comparison data when both versions are selected
+  const { data: comparisonData, isLoading: isLoadingComparison } = useQuery({
+    queryKey: ['/api/job-descriptions', selectedOriginalId, 'compare', selectedCurrentId],
+    enabled: !!selectedOriginalId && !!selectedCurrentId
+  });
+
+  // Update text content when comparison data loads
+  useEffect(() => {
+    if (comparisonData) {
+      setOriginalJobSummary(comparisonData.original.jobSummary);
+      setCurrentJobSummary(comparisonData.current.jobSummary);
+      setOriginalEssentialFunctions(comparisonData.original.essentialFunctions);
+      setCurrentEssentialFunctions(comparisonData.current.essentialFunctions);
+      setOriginalDescription(comparisonData.original.description);
+      setCurrentDescription(comparisonData.current.description);
+    }
+  }, [comparisonData]);
 
   // Function to create word-level diff
   const createWordDiff = (original: string, current: string): DiffSegment[] => {
