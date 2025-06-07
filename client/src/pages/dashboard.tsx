@@ -314,11 +314,11 @@ export default function Dashboard() {
         <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="default" />
         
         {/* Second Row of Summary Cards with Mini Chart */}
-        <div className="mt-6 flex items-start gap-8">
-          <div className="flex-1">
+        <div className="mt-6 flex items-start gap-4">
+          <div className="flex-none">
             <SummaryCards data={getFilteredSummary()} isLoading={summaryLoading} variant="second" />
           </div>
-          <div className="w-80">
+          <div className="w-80 ml-4">
             <MiniBarChart data={getFilteredSummary()} isLoading={summaryLoading} />
           </div>
         </div>

@@ -102,7 +102,7 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
     },
   ];
 
-  // Second row configuration with same data structure but can be customized independently
+  // Second row configuration - only showing 2 cards but in 4-column grid
   const secondCards = [
     {
       title: "HR Review Complete",
@@ -124,41 +124,14 @@ export function SummaryCards({ data, isLoading, variant = 'default' }: SummaryCa
       changeColor: "text-green-600",
       statusText: "",
     },
-    {
-      title: "",
-      value: "",
-      icon: null,
-      iconBg: "",
-      iconColor: "",
-      change: "",
-      changeColor: "",
-      statusText: "",
-      isEmpty: true,
-    },
-    {
-      title: "",
-      value: "",
-      icon: null,
-      iconBg: "",
-      iconColor: "",
-      change: "",
-      changeColor: "",
-      statusText: "",
-      isEmpty: true,
-    },
   ];
 
   const cards = variant === 'second' ? secondCards : defaultCards;
 
   return (
-    <div className={`grid ${variant === 'second' ? 'grid-cols-4' : 'grid-cols-4'} gap-6 mb-8`}>
+    <div className={`grid ${variant === 'second' ? 'grid-cols-2' : 'grid-cols-4'} gap-6 mb-8`}>
       {cards.map((card, index) => {
         const Icon = card.icon;
-        
-        // Handle empty cards for layout spacing
-        if ((card as any).isEmpty) {
-          return <div key={index} className="invisible"></div>;
-        }
         
         return (
           <Card key={index} className="p-6 hover:shadow-md transition-shadow">
