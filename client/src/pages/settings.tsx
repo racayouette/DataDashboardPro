@@ -395,21 +395,7 @@ export default function Settings() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Push Notifications</label>
-                      <p className="text-xs text-gray-500">Receive instant notifications in your browser</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={notificationSettings.pushNotifications}
-                      onChange={(e) => setNotificationSettings({
-                        ...notificationSettings,
-                        pushNotifications: e.target.checked
-                      })}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                  </div>
+
 
                   <div className="flex items-center justify-between">
                     <div>
@@ -427,21 +413,7 @@ export default function Settings() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">System Alerts</label>
-                      <p className="text-xs text-gray-500">Important system maintenance and security notifications</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={notificationSettings.systemAlerts}
-                      onChange={(e) => setNotificationSettings({
-                        ...notificationSettings,
-                        systemAlerts: e.target.checked
-                      })}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                  </div>
+
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-gray-200">
