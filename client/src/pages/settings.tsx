@@ -846,12 +846,34 @@ export default function Settings() {
                   type="text"
                   value=""
                   onChange={() => {}}
-                  placeholder="Enter new password"
+                  placeholder="Enter password"
                   autoComplete="off"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Password must be at least 8 characters with uppercase, lowercase, number, and special character
-                </p>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-700 mb-2">Password Requirements:</p>
+                  <div className="space-y-1 text-xs text-gray-500">
+                    <div className="flex items-center">
+                      <span className="mr-2 text-gray-400">✓</span>
+                      <span>At least 8 characters</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="mr-2 text-gray-400">✓</span>
+                      <span>One uppercase letter</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="mr-2 text-gray-400">✓</span>
+                      <span>One lowercase letter</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="mr-2 text-gray-400">✓</span>
+                      <span>One number</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="mr-2 text-gray-400">✓</span>
+                      <span>One special character</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div>
                 <Label htmlFor="editRole">Role</Label>
