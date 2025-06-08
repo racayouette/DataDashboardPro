@@ -48,8 +48,8 @@ export function Sidebar() {
     }
 
     const emailPrefix = signInEmail.split('@')[0];
-    const users = usersData?.users || [];
-    const foundUser = users.find(user => {
+    const users = (usersData as any)?.users || [];
+    const foundUser = users.find((user: any) => {
       const userEmailPrefix = user.email.split('@')[0];
       return userEmailPrefix === emailPrefix;
     });
@@ -72,8 +72,8 @@ export function Sidebar() {
     }
 
     const emailPrefix = signUpEmail.split('@')[0];
-    const users = usersData?.users || [];
-    const existingUser = users.find(user => {
+    const users = (usersData as any)?.users || [];
+    const existingUser = users.find((user: any) => {
       const userEmailPrefix = user.email.split('@')[0];
       return userEmailPrefix === emailPrefix;
     });
@@ -216,73 +216,7 @@ export function Sidebar() {
         </Link>
       </div>
 
-      {/* Windows Authentication Dialog */}
-      <Dialog open={showAuthDialog} onOpenChange={handleDialogClose}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-blue-600" />
-              <span>User Registration</span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">User Name</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your user name"
-                onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
-                autoComplete="off"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Enter your full name"
-                onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
-                autoComplete="off"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                onKeyPress={(e) => e.key === 'Enter' && handleAuthentication()}
-                autoComplete="off"
-              />
-            </div>
 
-            <div className="text-sm text-gray-500">
-              Please fill in all fields to complete registration
-            </div>
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={handleDialogClose}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAuthentication}
-              disabled={!username || !fullName || !email}
-            >
-              Register
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Test User Login Dialog */}
       <Dialog open={showLoginDialog} onOpenChange={() => {}}>
