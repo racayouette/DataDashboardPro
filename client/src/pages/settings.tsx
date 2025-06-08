@@ -727,6 +727,7 @@ export default function Settings() {
                 value={newUser.department || ""}
                 onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
                 placeholder="Enter department"
+                autoComplete="off"
               />
             </div>
             <div>
@@ -763,6 +764,7 @@ export default function Settings() {
                   id="editName"
                   value={editingUser.name}
                   onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                  autoComplete="off"
                 />
               </div>
               <div>
@@ -810,6 +812,7 @@ export default function Settings() {
                   id="editDepartment"
                   value={editingUser.department}
                   onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
+                  autoComplete="off"
                 />
               </div>
               <div>
