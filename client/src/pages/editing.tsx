@@ -810,7 +810,7 @@ export default function Editing() {
                       variant="ghost" 
                       size="sm"
                       className="h-6 w-6 p-0 hover:bg-green-50"
-                      disabled={getAvailableReviewers().length === 0}
+                      disabled={getAvailableReviewers().length === 0 || isCompleted}
                     >
                       <UserPlus className="w-3 h-3 text-green-600" />
                     </Button>
@@ -865,7 +865,7 @@ export default function Editing() {
                       variant="ghost" 
                       size="sm"
                       className="h-6 w-6 p-0 hover:bg-purple-50"
-                      disabled={getAvailableResponsibleUsers().length === 0}
+                      disabled={getAvailableResponsibleUsers().length === 0 || isCompleted}
                     >
                       <UserPlus className="w-3 h-3 text-purple-600" />
                     </Button>
