@@ -99,17 +99,22 @@ export default function Editing() {
   const [popupHistory, setPopupHistory] = useState<string[]>([]);
   const [showJobSummaryCloseConfirmation, setShowJobSummaryCloseConfirmation] = useState(false);
   
-  // Initialize and persist job code
+  // Initialize job code from localStorage or URL parameters
   useEffect(() => {
-    // Try to get job code from localStorage first
-    const storedJobCode = localStorage.getItem('currentJobCode');
-    if (storedJobCode) {
-      setJobCode(storedJobCode);
+    // Try to get job code from URL parameters first
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobCodeFromUrl = urlParams.get('jobCode');
+    
+    if (jobCodeFromUrl) {
+      const decodedJobCode = decodeURIComponent(jobCodeFromUrl);
+      setJobCode(decodedJobCode);
+      localStorage.setItem('currentJobCode', decodedJobCode);
     } else {
-      // Set default job code and store it
-      const defaultJobCode = "JD-2025-001";
-      setJobCode(defaultJobCode);
-      localStorage.setItem('currentJobCode', defaultJobCode);
+      // Try to get from localStorage
+      const storedJobCode = localStorage.getItem('currentJobCode');
+      if (storedJobCode) {
+        setJobCode(storedJobCode);
+      }
     }
   }, []);
 
