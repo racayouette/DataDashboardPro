@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRole } from "@/contexts/RoleContext";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
-import { Search, Filter, Bell, FilterX, ChevronDown, Calendar, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,14 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { format } from "date-fns";
 
 interface JobEntry {
   id: number;
@@ -97,10 +90,7 @@ export default function JobsFamily() {
       setSelectedStatus("");
     }
   }, [isAdminMode]);
-  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
-    from: undefined,
-    to: undefined,
-  });
+
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -255,19 +245,7 @@ export default function JobsFamily() {
     const matchesJobFamily = selectedJobFamily === "" || entry.jobFamily === selectedJobFamily;
     const matchesStatus = selectedStatus === "" || entry.status === selectedStatus;
     
-    // Date range filtering
-    let matchesDateRange = true;
-    if (dateRange.from || dateRange.to) {
-      const entryDate = parseDate(entry.lastUpdated);
-      if (dateRange.from && entryDate < dateRange.from) {
-        matchesDateRange = false;
-      }
-      if (dateRange.to && entryDate > dateRange.to) {
-        matchesDateRange = false;
-      }
-    }
-    
-    return matchesSearch && matchesJobFamily && matchesStatus && matchesDateRange;
+    return matchesSearch && matchesJobFamily && matchesStatus;
   });
 
   const handleSort = (column: string) => {
@@ -288,13 +266,12 @@ export default function JobsFamily() {
     setSearchTerm("");
     setSelectedJobFamily("");
     setSelectedStatus("");
-    setDateRange({ from: undefined, to: undefined });
     setSortBy("");
     setSortOrder("asc");
     setCurrentPage(1);
   };
 
-  const hasFilters = searchTerm !== "" || selectedJobFamily !== "" || selectedStatus !== "" || dateRange.from || dateRange.to;
+  const hasFilters = searchTerm !== "" || selectedJobFamily !== "" || selectedStatus !== "";
 
   // Apply sorting to filtered entries
   const sortedEntries = [...filteredEntries].sort((a, b) => {
@@ -603,59 +580,7 @@ export default function JobsFamily() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {dateRange.from || dateRange.to ? (
-                        <>
-                          {dateRange.from ? format(dateRange.from, "MMM dd") : "Start"} - {dateRange.to ? format(dateRange.to, "MMM dd") : "End"}
-                        </>
-                      ) : (
-                        "Last Updated"
-                      )}
-                      <ChevronDown className="w-4 h-4 ml-2" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2" align="start">
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <label className="text-xs font-medium text-gray-600">From</label>
-                          <CalendarComponent
-                            mode="single"
-                            selected={dateRange.from}
-                            onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
-                            disabled={(date: Date) => 
-                              date > new Date() || Boolean(dateRange.to && date > dateRange.to)
-                            }
-                            className="scale-75 origin-top-left"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-xs font-medium text-gray-600">To</label>
-                          <CalendarComponent
-                            mode="single"
-                            selected={dateRange.to}
-                            onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
-                            disabled={(date: Date) => 
-                              date > new Date() || Boolean(dateRange.from && date < dateRange.from)
-                            }
-                            className="scale-75 origin-top-left"
-                          />
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDateRange({ from: undefined, to: undefined })}
-                        className="w-full text-xs"
-                      >
-                        Clear Dates
-                      </Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+
               </div>
             </div>
 
