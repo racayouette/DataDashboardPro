@@ -90,7 +90,7 @@ export default function CompareVersions() {
     
     const timer = setTimeout(() => {
       setIsEditMode(false);
-      // Don't set hasManuallyViewedMode here - keep buttons visible for auto-transition
+      setHasManuallyViewedMode(true); // Hide buttons after auto-transition
     }, 2000); // Switch to View Mode after 2 seconds
 
     return () => clearTimeout(timer);
