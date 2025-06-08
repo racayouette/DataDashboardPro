@@ -94,8 +94,12 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
     
     if (type === "jobFamilies") {
       const jobFamily = item as JobFamily;
+      const functionalLeaders = getFunctionalLeadersForJobFamily(jobFamily.jobFamily);
+      const leadersText = functionalLeaders.join(" ").toLowerCase();
+      
       return jobFamily.jobFamily.toLowerCase().includes(searchValue.toLowerCase()) ||
-             (jobFamily.description && jobFamily.description.toLowerCase().includes(searchValue.toLowerCase()));
+             (jobFamily.description && jobFamily.description.toLowerCase().includes(searchValue.toLowerCase())) ||
+             leadersText.includes(searchValue.toLowerCase());
     } else if (type === "reviewers") {
       const reviewer = item as Reviewer;
       return (reviewer.fullName && reviewer.fullName.toLowerCase().includes(searchValue.toLowerCase())) ||
