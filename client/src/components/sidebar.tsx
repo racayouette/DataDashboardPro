@@ -1,5 +1,5 @@
 import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText, X, LogIn } from "lucide-react";
-import { Link, useLocation, useRouter } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -10,8 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function Sidebar() {
-  const [location] = useLocation();
-  const router = useRouter();
+  const [location, setLocation] = useLocation();
   const { isAdminMode, setIsAdminMode } = useRole();
   const [testLoginMode, setTestLoginMode] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
@@ -95,7 +94,7 @@ export function Sidebar() {
   const handleLoginCancel = () => {
     setShowLoginDialog(false);
     setTestLoginMode(false);
-    router.navigate('/access-denied');
+    setLocation('/access-denied');
   };
 
   const menuItems = [
