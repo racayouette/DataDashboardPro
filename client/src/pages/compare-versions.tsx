@@ -90,6 +90,7 @@ export default function CompareVersions() {
     
     const timer = setTimeout(() => {
       setIsEditMode(false);
+      // Don't set hasManuallyViewedMode here - keep buttons visible for auto-transition
     }, 2000); // Switch to View Mode after 2 seconds
 
     return () => clearTimeout(timer);
@@ -267,9 +268,7 @@ export default function CompareVersions() {
                       size="sm"
                       onClick={() => {
                         setIsEditMode(!isEditMode);
-                        if (isEditMode) {
-                          setHasManuallyViewedMode(true);
-                        }
+                        setHasManuallyViewedMode(true); // Hide buttons after any manual click
                       }}
                       className="flex items-center space-x-2"
                     >
