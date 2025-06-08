@@ -138,6 +138,11 @@ export function Sidebar() {
       {/* Logo Section */}
       <div className="mb-8">
         <div className="bg-blue-800 rounded-lg p-4 mb-6">
+          <img 
+            src="/attached_assets/advent-health250_1749395626405.png" 
+            alt="AdventHealth Logo" 
+            className="w-24 h-auto mx-auto mb-3"
+          />
           <h1 className="text-xl font-bold">Advent AI</h1>
           <p className="text-blue-200 text-sm">HR Review System</p>
         </div>
