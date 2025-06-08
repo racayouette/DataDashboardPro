@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail } from "lucide-react";
+import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail, ThumbsUp } from "lucide-react";
 
 interface NotificationSettings {
   emailNotifications: boolean;
@@ -710,7 +710,12 @@ export default function Settings() {
               />
             </div>
             <div>
-              <Label htmlFor="newPassword">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="newPassword">Password</Label>
+                {validatePassword(newUser.password || "") && (
+                  <ThumbsUp className="w-5 h-5 text-green-500" />
+                )}
+              </div>
               <Input
                 id="newPassword"
                 type="text"
