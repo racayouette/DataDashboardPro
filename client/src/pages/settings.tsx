@@ -92,6 +92,7 @@ export default function Settings() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editPassword, setEditPassword] = useState("");
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -326,13 +327,20 @@ export default function Settings() {
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
+    setEditPassword("");
     setShowEditModal(true);
   };
 
   const handleUpdateUser = () => {
     if (editingUser) {
+      if (editPassword && !validatePassword(editPassword)) {
+        alert("Password does not meet all requirements. Please ensure it has at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.");
+        return;
+      }
+      
       setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
       setEditingUser(null);
+      setEditPassword("");
       setShowEditModal(false);
     }
   };
