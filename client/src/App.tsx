@@ -15,6 +15,7 @@ import Notifications from "@/pages/notifications";
 import Downloads from "@/pages/downloads";
 import CompareVersions from "@/pages/compare-versions";
 import Settings from "@/pages/settings";
+import AccessDenied from "@/pages/access-denied";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/downloads" component={Downloads} />
       <Route path="/compare-versions" component={CompareVersions} />
       <Route path="/settings" component={Settings} />
+      <Route path="/access-denied" component={AccessDenied} />
       <Route component={NotFound} />
     </Switch>
   );

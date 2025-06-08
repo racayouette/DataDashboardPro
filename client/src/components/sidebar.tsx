@@ -15,7 +15,6 @@ export function Sidebar() {
   const [testLoginMode, setTestLoginMode] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAccessDenied, setShowAccessDenied] = useState(false);
   const [loginError, setLoginError] = useState("");
   
   // Form states
@@ -95,10 +94,7 @@ export function Sidebar() {
   const handleLoginCancel = () => {
     setShowLoginDialog(false);
     setTestLoginMode(false);
-    setShowAccessDenied(true);
-    setTimeout(() => {
-      setShowAccessDenied(false);
-    }, 3000);
+    window.location.href = '/access-denied';
   };
 
   const menuItems = [
@@ -220,7 +216,7 @@ export function Sidebar() {
 
       {/* Test User Login Dialog */}
       <Dialog open={showLoginDialog} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-[425px]" hideClose>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="flex items-center space-x-2">
@@ -324,30 +320,7 @@ export function Sidebar() {
         </DialogContent>
       </Dialog>
 
-      {/* Access Denied Dialog */}
-      <Dialog open={showAccessDenied} onOpenChange={setShowAccessDenied}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center space-x-2 text-red-600">
-              <AlertTriangle className="w-5 h-5" />
-              <span>Access Denied</span>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-gray-700">
-              Access Denied
-            </p>
-          </div>
-          <div className="flex justify-end">
-            <Button
-              onClick={() => setShowAccessDenied(false)}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              OK
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+
     </div>
   );
 }
