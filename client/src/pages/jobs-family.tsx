@@ -163,7 +163,7 @@ export default function JobsFamily() {
     { id: 3, jobCode: "10003", jobTitle: "Billing Specialist", jobFamily: "Revenue Cycle", reviewer: "Robert Kennedy", responsible: "David Thompson", status: "Reviewed", lastUpdated: "March 22, 2025" },
     { id: 4, jobCode: "10004", jobTitle: "Financial Analyst", jobFamily: "Finance", reviewer: "Adam Lambert", responsible: "Susan Davis", status: "In Progress", lastUpdated: "May 10, 2025" },
     { id: 5, jobCode: "10005", jobTitle: "Nurse Practitioner", jobFamily: "Clinical Support", reviewer: "Jennifer Williams", responsible: "Patricia Miller", status: "In Progress", lastUpdated: "April 18, 2025" },
-    { id: 6, jobCode: "10006", jobTitle: "HR Generalist", jobFamily: "Human Resources", reviewer: "Michael Roberts", responsible: "Kevin Garcia", status: "Not Started", lastUpdated: "February 14, 2025" },
+    { id: 6, jobCode: "10006", jobTitle: "HR Generalist", jobFamily: "Human Resources", reviewer: "", responsible: "", status: "Not Started", lastUpdated: "February 14, 2025" },
     { id: 7, jobCode: "10007", jobTitle: "IT Support Technician", jobFamily: "IT Services", reviewer: "Linda Taylor", responsible: "Carlos Martinez", status: "Completed", lastUpdated: "June 3, 2025" },
     { id: 8, jobCode: "10008", jobTitle: "Pharmacy Tech", jobFamily: "Pharmacy", reviewer: "David Phillips", responsible: "Amanda Wilson", status: "In Progress", lastUpdated: "March 5, 2025" },
     { id: 9, jobCode: "10009", jobTitle: "Lab Assistant", jobFamily: "Lab Services", reviewer: "Emma Sullivan", responsible: "Nicole Taylor", status: "In Progress", lastUpdated: "January 30, 2025" },
@@ -737,7 +737,9 @@ export default function JobsFamily() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.jobTitle}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.jobFamily}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{getReviewerDisplay(entry, index)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.responsible}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {entry.responsible ? entry.responsible : <UserCircle className="w-5 h-5 text-gray-400" />}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
                           {entry.status}
