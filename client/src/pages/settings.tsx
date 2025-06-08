@@ -768,7 +768,12 @@ export default function Settings() {
             </div>
             <div className="flex justify-end space-x-2 pt-4">
               <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
-              <Button onClick={handleAddUser}>Add User</Button>
+              <Button 
+                onClick={handleAddUser}
+                disabled={!newUser.name || !newUser.email || !newUser.role || !newUser.password || !newUser.department}
+              >
+                Add User
+              </Button>
             </div>
           </div>
         </DialogContent>
