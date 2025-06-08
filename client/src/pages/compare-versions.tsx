@@ -276,20 +276,6 @@ export default function CompareVersions() {
                       <span>{isEditMode ? "View Mode" : "Edit Mode"}</span>
                     </Button>
                   )}
-                  
-                  <Button
-                    variant={syncScroll ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSyncScroll(!syncScroll)}
-                    className={`flex items-center space-x-2 ${
-                      syncScroll 
-                        ? "bg-blue-600 hover:bg-blue-700 text-white" 
-                        : "bg-white hover:bg-gray-50 text-gray-700"
-                    }`}
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                    <span>Sync Scroll</span>
-                  </Button>
                 </div>
               </div>
             </div>
