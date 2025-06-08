@@ -144,7 +144,6 @@ export function Sidebar() {
             alt="AdventHealth Logo" 
             className="w-24 h-auto mx-auto mb-3"
           />
-          <h1 className="text-xl font-bold">Advent AI</h1>
           <p className="text-blue-200 text-sm">HR Review System</p>
         </div>
       </div>
