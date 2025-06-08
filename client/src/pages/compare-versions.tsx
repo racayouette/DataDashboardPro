@@ -19,6 +19,7 @@ export default function CompareVersions() {
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
   const [isEditMode, setIsEditMode] = useState(true);
+  const [hasManuallyViewedMode, setHasManuallyViewedMode] = useState(false);
   
   // Get lastUpdatedDate from URL parameters
   const [lastUpdatedDate, setLastUpdatedDate] = useState("June 7, 2025");
@@ -260,15 +261,22 @@ export default function CompareVersions() {
               {/* Comparison Controls */}
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsEditMode(!isEditMode)}
-                    className="flex items-center space-x-2"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    <span>{isEditMode ? "View Mode" : "Edit Mode"}</span>
-                  </Button>
+                  {!hasManuallyViewedMode && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setIsEditMode(!isEditMode);
+                        if (isEditMode) {
+                          setHasManuallyViewedMode(true);
+                        }
+                      }}
+                      className="flex items-center space-x-2"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      <span>{isEditMode ? "View Mode" : "Edit Mode"}</span>
+                    </Button>
+                  )}
                   
                   <Button
                     variant="outline"
