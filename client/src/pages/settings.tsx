@@ -328,7 +328,7 @@ export default function Settings() {
       <Sidebar />
       
       <main className="flex-1 p-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-full mx-auto px-4">
           {/* Beta Banner */}
           <div className="mb-4 bg-orange-100 border border-orange-300 text-orange-800 px-4 py-3 rounded-lg">
             <div className="flex items-center justify-center">
