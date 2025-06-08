@@ -234,6 +234,7 @@ export function Sidebar() {
             </div>
           </DialogHeader>
           
+          <form autoComplete="off">
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -256,7 +257,10 @@ export function Sidebar() {
                   }}
                   placeholder="Enter email"
                   onKeyPress={(e) => e.key === 'Enter' && handleSignIn()}
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  data-form-type="other"
                 />
               </div>
               
@@ -291,7 +295,10 @@ export function Sidebar() {
                     setSignUpEmail(value);
                   }}
                   placeholder="Enter email"
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  data-form-type="other"
                 />
               </div>
               <div className="space-y-2">
@@ -302,7 +309,10 @@ export function Sidebar() {
                   value={signUpName}
                   onChange={(e) => setSignUpName(e.target.value)}
                   placeholder="Enter your full name"
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  data-form-type="other"
                 />
               </div>
               <div className="space-y-2">
@@ -313,7 +323,10 @@ export function Sidebar() {
                   value={signUpDepartment}
                   onChange={(e) => setSignUpDepartment(e.target.value)}
                   placeholder="Enter your department"
-                  autoComplete="off"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  data-form-type="other"
                 />
               </div>
               
@@ -333,6 +346,7 @@ export function Sidebar() {
               </div>
             </TabsContent>
           </Tabs>
+          </form>
         </DialogContent>
       </Dialog>
 
