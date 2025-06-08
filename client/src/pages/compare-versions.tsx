@@ -278,16 +278,6 @@ export default function CompareVersions() {
                   )}
                   
                   <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowDifferencesOnly(!showDifferencesOnly)}
-                    className="flex items-center space-x-2"
-                  >
-                    {showDifferencesOnly ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                    <span>{showDifferencesOnly ? "Show All" : "Diff Only"}</span>
-                  </Button>
-                  
-                  <Button
                     variant={syncScroll ? "default" : "outline"}
                     size="sm"
                     onClick={() => setSyncScroll(!syncScroll)}
