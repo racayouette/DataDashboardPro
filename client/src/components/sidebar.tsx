@@ -1,4 +1,4 @@
-import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText, X, LogIn } from "lucide-react";
+import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText, X, LogIn, ThumbsUp, Check } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState } from "react";
@@ -19,7 +19,10 @@ export function Sidebar() {
   
   // Form states
   const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
   const [signUpName, setSignUpName] = useState("");
   const [signUpDepartment, setSignUpDepartment] = useState("");
   
@@ -28,6 +31,26 @@ export function Sidebar() {
     queryKey: ['/api/users'],
     enabled: testLoginMode
   });
+
+  // Password validation
+  const validatePassword = (password: string) => {
+    const requirements = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+    
+    const score = Object.values(requirements).filter(Boolean).length;
+    return {
+      requirements,
+      isStrong: score >= 4,
+      score
+    };
+  };
+
+  const passwordValidation = validatePassword(signUpPassword);
 
   const handleTestLoginToggle = () => {
     if (isAuthenticated) {
@@ -85,7 +108,10 @@ export function Sidebar() {
     // In a real app, this would create the user in the database
     setIsAuthenticated(true);
     setShowLoginDialog(false);
+    setSignInEmail("");
+    setSignInPassword("");
     setSignUpEmail("");
+    setSignUpPassword("");
     setSignUpName("");
     setSignUpDepartment("");
     setLoginError("");
@@ -264,6 +290,39 @@ export function Sidebar() {
                 />
               </div>
               
+              <div className="space-y-2">
+                <Label htmlFor="signin-password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="signin-password"
+                    name="signin-password-field-xyz789"
+                    type={showSignInPassword ? "text" : "password"}
+                    value={signInPassword}
+                    onChange={(e) => setSignInPassword(e.target.value)}
+                    placeholder="Enter password"
+                    onKeyPress={(e) => e.key === 'Enter' && handleSignIn()}
+                    autoComplete="one-time-code"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    data-form-type="other"
+                    className="pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowSignInPassword(!showSignInPassword)}
+                  >
+                    {showSignInPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-400" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+              
               {loginError && (
                 <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
                   {loginError}
@@ -274,7 +333,7 @@ export function Sidebar() {
                 <Button variant="outline" onClick={handleLoginCancel}>
                   Cancel
                 </Button>
-                <Button onClick={handleSignIn} disabled={!signInEmail}>
+                <Button onClick={handleSignIn} disabled={!signInEmail || !signInPassword}>
                   Submit
                 </Button>
               </div>
@@ -302,6 +361,51 @@ export function Sidebar() {
                   data-form-type="other"
                 />
               </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="signup-password">Password</Label>
+                  {passwordValidation.isStrong && (
+                    <ThumbsUp className="h-4 w-4 text-green-600" />
+                  )}
+                </div>
+                <Input
+                  id="signup-password"
+                  name="signup-password-field-abc123"
+                  type="text"
+                  value={signUpPassword}
+                  onChange={(e) => setSignUpPassword(e.target.value)}
+                  placeholder="Enter password"
+                  autoComplete="one-time-code"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  data-form-type="other"
+                />
+                <div className="text-xs space-y-1">
+                  <div className="text-gray-600 font-medium">Password Requirements:</div>
+                  <div className={`flex items-center space-x-1 ${passwordValidation.requirements.length ? 'text-green-600' : 'text-gray-400'}`}>
+                    <Check className="h-3 w-3" />
+                    <span>At least 8 characters</span>
+                  </div>
+                  <div className={`flex items-center space-x-1 ${passwordValidation.requirements.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                    <Check className="h-3 w-3" />
+                    <span>One uppercase letter</span>
+                  </div>
+                  <div className={`flex items-center space-x-1 ${passwordValidation.requirements.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                    <Check className="h-3 w-3" />
+                    <span>One lowercase letter</span>
+                  </div>
+                  <div className={`flex items-center space-x-1 ${passwordValidation.requirements.number ? 'text-green-600' : 'text-gray-400'}`}>
+                    <Check className="h-3 w-3" />
+                    <span>One number</span>
+                  </div>
+                  <div className={`flex items-center space-x-1 ${passwordValidation.requirements.special ? 'text-green-600' : 'text-gray-400'}`}>
+                    <Check className="h-3 w-3" />
+                    <span>One special character</span>
+                  </div>
+                </div>
+              </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="signup-name">Full Name</Label>
                 <Input
