@@ -21,14 +21,19 @@ export default function CompareVersions() {
   const [isEditMode, setIsEditMode] = useState(true);
   const [hasManuallyViewedMode, setHasManuallyViewedMode] = useState(false);
   
-  // Get lastUpdatedDate from URL parameters
+  // Get lastUpdatedDate and jobCode from URL parameters
   const [lastUpdatedDate, setLastUpdatedDate] = useState("June 7, 2025");
+  const [jobCode, setJobCode] = useState("");
   
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const lastUpdatedFromUrl = urlParams.get('lastUpdated');
+    const jobCodeFromUrl = urlParams.get('jobCode');
     if (lastUpdatedFromUrl) {
       setLastUpdatedDate(decodeURIComponent(lastUpdatedFromUrl));
+    }
+    if (jobCodeFromUrl) {
+      setJobCode(decodeURIComponent(jobCodeFromUrl));
     }
   }, []);
   
@@ -256,6 +261,9 @@ export default function CompareVersions() {
                 <GitCompare className="w-6 h-6 text-blue-600" />
                 <div>
                   <h1 className="text-xl font-semibold text-gray-900">Compare Versions</h1>
+                  {jobCode && (
+                    <p className="text-sm text-gray-600 mt-1">Job Code: {jobCode}</p>
+                  )}
                 </div>
               </div>
 
