@@ -20,6 +20,7 @@ export default function CompareVersions() {
   const [syncScroll, setSyncScroll] = useState(true);
   const [isEditMode, setIsEditMode] = useState(true);
   const [hasManuallyViewedMode, setHasManuallyViewedMode] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
   
   // Get lastUpdatedDate and jobCode from URL parameters
   const [lastUpdatedDate, setLastUpdatedDate] = useState("June 7, 2025");
@@ -96,6 +97,7 @@ export default function CompareVersions() {
     const timer = setTimeout(() => {
       setIsEditMode(false);
       setHasManuallyViewedMode(true); // Hide buttons after auto-transition
+      setIsPageLoading(false); // Hide loading spinner when View Mode button is hidden
     }, 2000); // Switch to View Mode after 2 seconds
 
     return () => clearTimeout(timer);
@@ -251,6 +253,16 @@ export default function CompareVersions() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
+      
+      {/* Loading Overlay */}
+      {isPageLoading && (
+        <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+          <div className="flex flex-col items-center space-y-4">
+            <RefreshCw className="w-8 h-8 animate-spin text-blue-600" />
+            <span className="text-lg font-medium text-gray-700">Loading</span>
+          </div>
+        </div>
+      )}
       
       <main className="flex-1 p-8">
         <div className="max-w-7xl mx-auto">
