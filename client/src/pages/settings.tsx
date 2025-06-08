@@ -248,7 +248,7 @@ export default function Settings() {
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
-    { id: 'reviewers', label: 'Reviewers', icon: UserCheck },
+    { id: 'reviewers', label: 'Functional Leaders', icon: UserCheck },
     { id: 'responsible', label: 'Responsible', icon: Shield },
     { id: 'email', label: 'Email', icon: Mail, disabled: !notificationSettings.emailNotifications },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
@@ -574,14 +574,14 @@ export default function Settings() {
 
   const renderReviewersSection = () => (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Reviewer Management</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Functional Leader Management</h3>
       
       {/* Search and Actions */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
-            placeholder="Search reviewers..."
+            placeholder="Search functional leaders..."
             value={reviewerSearchTerm}
             onChange={(e) => setReviewerSearchTerm(e.target.value)}
             className="pl-10"
@@ -590,7 +590,7 @@ export default function Settings() {
         <div className="flex gap-2">
           <Button onClick={() => setShowAddReviewerModal(true)} className="flex items-center gap-2">
             <Plus className="w-4 h-4" />
-            Add Reviewer
+            Add Functional Leader
           </Button>
         </div>
       </div>
