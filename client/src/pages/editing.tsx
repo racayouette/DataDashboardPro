@@ -99,6 +99,20 @@ export default function Editing() {
   const [popupHistory, setPopupHistory] = useState<string[]>([]);
   const [showJobSummaryCloseConfirmation, setShowJobSummaryCloseConfirmation] = useState(false);
   
+  // Initialize and persist job code
+  useEffect(() => {
+    // Try to get job code from localStorage first
+    const storedJobCode = localStorage.getItem('currentJobCode');
+    if (storedJobCode) {
+      setJobCode(storedJobCode);
+    } else {
+      // Set default job code and store it
+      const defaultJobCode = "JD-2025-001";
+      setJobCode(defaultJobCode);
+      localStorage.setItem('currentJobCode', defaultJobCode);
+    }
+  }, []);
+
   // Function to check for changes
   const checkForChanges = () => {
     // Check if job summary has changed
