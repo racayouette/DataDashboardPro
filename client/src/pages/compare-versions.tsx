@@ -73,6 +73,9 @@ export default function CompareVersions() {
 
   // Automatically switch from Edit Mode to View Mode after page loads
   useEffect(() => {
+    // Scroll to top of page when component mounts
+    window.scrollTo(0, 0);
+    
     const timer = setTimeout(() => {
       setIsEditMode(false);
     }, 2000); // Switch to View Mode after 2 seconds
