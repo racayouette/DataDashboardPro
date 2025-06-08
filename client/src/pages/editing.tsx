@@ -800,10 +800,10 @@ export default function Editing() {
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="flex items-center space-x-2 mb-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className={`w-2 h-2 rounded-full ${status === "Complete" || status === "Completed" ? "bg-green-500" : "bg-blue-500"}`}></div>
                 <span className="text-sm font-medium text-gray-600">Status</span>
               </div>
-              <Badge className={status === "Complete" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
+              <Badge className={status === "Complete" || status === "Completed" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}>{status}</Badge>
             </div>
           </div>
 
@@ -1237,10 +1237,9 @@ export default function Editing() {
             )}
             {isAdminMode && (
               <Button 
-                className={isCompleted ? "bg-green-100 text-green-800 border-green-200 hover:bg-green-100 cursor-not-allowed" : "bg-green-500 text-white hover:bg-green-600"}
+                className={isCompleted ? "bg-gray-400 text-white cursor-not-allowed" : "bg-green-500 text-white hover:bg-green-600"}
                 onClick={handleComplete}
                 disabled={isCompleted}
-                variant={isCompleted ? "outline" : "default"}
               >
                 {isCompleted ? "Finished" : "Complete"}
               </Button>
