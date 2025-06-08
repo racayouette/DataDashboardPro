@@ -938,7 +938,12 @@ export default function Settings() {
               </div>
               <div className="flex justify-end space-x-2 pt-4">
                 <Button variant="outline" onClick={() => setShowEditModal(false)}>Cancel</Button>
-                <Button onClick={handleUpdateUser}>Update User</Button>
+                <Button 
+                  onClick={handleUpdateUser}
+                  disabled={!editingUser.name || !editPassword || !editingUser.role || !editingUser.department || !editingUser.status || !validatePassword(editPassword)}
+                >
+                  Update User
+                </Button>
               </div>
             </div>
           )}
