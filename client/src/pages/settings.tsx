@@ -848,37 +848,42 @@ export default function Settings() {
                 />
               </div>
               <div>
-                <Label htmlFor="editPassword">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="editPassword">Password</Label>
+                  {validatePassword(editPassword) && (
+                    <ThumbsUp className="h-4 w-4 text-green-600" />
+                  )}
+                </div>
                 <Input
                   id="editPassword"
                   type="text"
-                  value=""
-                  onChange={() => {}}
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
                   placeholder="Enter password"
                   autoComplete="off"
                 />
                 <div className="mt-2">
                   <p className="text-sm text-gray-700 mb-2">Password Requirements:</p>
-                  <div className="space-y-1 text-xs text-gray-500">
+                  <div className="space-y-1 text-xs">
                     <div className="flex items-center">
-                      <span className="mr-2 text-gray-400">✓</span>
-                      <span>At least 8 characters</span>
+                      <span className={`mr-2 ${editPassword.length >= 8 ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                      <span className={editPassword.length >= 8 ? 'text-green-600' : 'text-gray-500'}>At least 8 characters</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="mr-2 text-gray-400">✓</span>
-                      <span>One uppercase letter</span>
+                      <span className={`mr-2 ${/[A-Z]/.test(editPassword) ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                      <span className={/[A-Z]/.test(editPassword) ? 'text-green-600' : 'text-gray-500'}>One uppercase letter</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="mr-2 text-gray-400">✓</span>
-                      <span>One lowercase letter</span>
+                      <span className={`mr-2 ${/[a-z]/.test(editPassword) ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                      <span className={/[a-z]/.test(editPassword) ? 'text-green-600' : 'text-gray-500'}>One lowercase letter</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="mr-2 text-gray-400">✓</span>
-                      <span>One number</span>
+                      <span className={`mr-2 ${/\d/.test(editPassword) ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                      <span className={/\d/.test(editPassword) ? 'text-green-600' : 'text-gray-500'}>One number</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="mr-2 text-gray-400">✓</span>
-                      <span>One special character</span>
+                      <span className={`mr-2 ${/[!@#$%^&*(),.?":{}|<>]/.test(editPassword) ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                      <span className={/[!@#$%^&*(),.?":{}|<>]/.test(editPassword) ? 'text-green-600' : 'text-gray-500'}>One special character</span>
                     </div>
                   </div>
                 </div>
@@ -899,12 +904,25 @@ export default function Settings() {
               </div>
               <div>
                 <Label htmlFor="editDepartment">Department</Label>
-                <Input
-                  id="editDepartment"
-                  value={editingUser.department}
-                  onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
-                  autoComplete="off"
-                />
+                <Select value={editingUser.department} onValueChange={(value) => setEditingUser({ ...editingUser, department: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Human Resources">Human Resources</SelectItem>
+                    <SelectItem value="Information Technology">Information Technology</SelectItem>
+                    <SelectItem value="Finance">Finance</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                    <SelectItem value="Operations">Operations</SelectItem>
+                    <SelectItem value="Sales">Sales</SelectItem>
+                    <SelectItem value="Customer Service">Customer Service</SelectItem>
+                    <SelectItem value="Research & Development">Research & Development</SelectItem>
+                    <SelectItem value="Quality Assurance">Quality Assurance</SelectItem>
+                    <SelectItem value="Legal">Legal</SelectItem>
+                    <SelectItem value="Facilities">Facilities</SelectItem>
+                    <SelectItem value="Security">Security</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="editStatus">Status</Label>
