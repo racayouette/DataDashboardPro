@@ -123,14 +123,18 @@ export default function Dashboard() {
 
   // Filter data based on search terms
   const filteredJobFamilies = jobFamiliesData?.jobFamilies?.filter((jobFamily: JobFamily) =>
+    jobFamilySearch === "" || // Show all if no search term
     jobFamily.jobFamily.toLowerCase().includes(jobFamilySearch.toLowerCase()) ||
     jobFamily.description?.toLowerCase().includes(jobFamilySearch.toLowerCase())
   );
 
   const filteredReviewers = reviewersData?.reviewers?.filter((reviewer: Reviewer) =>
+    reviewerSearch === "" || // Show all if no search term
     reviewer.fullName?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
     reviewer.email?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
-    reviewer.username?.toLowerCase().includes(reviewerSearch.toLowerCase())
+    reviewer.username?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+    reviewer.jobFamily?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+    reviewer.responsible?.toLowerCase().includes(reviewerSearch.toLowerCase())
   );
 
   const handleJobFamilyClick = (jobFamily: JobFamily) => {
