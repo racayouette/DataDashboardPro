@@ -473,7 +473,7 @@ export default function Editing() {
 
   const handleComplete = () => {
     updateLastModifiedDate();
-    setStatus("Complete");
+    setStatus("Completed");
     setIsCompleted(true);
     console.log("Job description marked as complete");
   };
@@ -976,6 +976,7 @@ export default function Editing() {
                           checked={trackChangesMode}
                           onChange={(e) => setTrackChangesMode(e.target.checked)}
                           className="h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          disabled={isCompleted}
                         />
                         <label 
                           htmlFor="track-changes" 
@@ -988,6 +989,7 @@ export default function Editing() {
                         size="sm" 
                         variant="ghost"
                         onClick={handleEditJobSummary}
+                        disabled={isCompleted}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -996,6 +998,7 @@ export default function Editing() {
                         variant="ghost"
                         onClick={handleResetJobSummary}
                         title="Reset to original job summary"
+                        disabled={isCompleted}
                       >
                         <RotateCcw className="w-4 h-4" />
                       </Button>
@@ -1046,7 +1049,7 @@ export default function Editing() {
                         size="sm" 
                         variant="ghost"
                         onClick={handleUndoMove}
-                        disabled={functionsHistory.length === 0}
+                        disabled={functionsHistory.length === 0 || isCompleted}
                         title="Undo last move"
                       >
                         <Undo className="w-4 h-4" />
@@ -1056,6 +1059,7 @@ export default function Editing() {
                         variant="ghost"
                         onClick={handleResetFunctions}
                         title="Reset to original functions"
+                        disabled={isCompleted}
                       >
                         <RotateCcw className="w-4 h-4" />
                       </Button>
@@ -1066,11 +1070,11 @@ export default function Editing() {
                     {essentialFunctions.map((func, index) => (
                       <div 
                         key={func.id}
-                        className="flex items-start space-x-3 p-2 bg-gray-50 rounded cursor-move hover:bg-gray-100 transition-colors"
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, index)}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleDrop(e, index)}
+                        className={`flex items-start space-x-3 p-2 bg-gray-50 rounded ${isCompleted ? 'cursor-default' : 'cursor-move hover:bg-gray-100'} transition-colors`}
+                        draggable={!isCompleted}
+                        onDragStart={!isCompleted ? (e) => handleDragStart(e, index) : undefined}
+                        onDragOver={!isCompleted ? handleDragOver : undefined}
+                        onDrop={!isCompleted ? (e) => handleDrop(e, index) : undefined}
                       >
                         <GripVertical className="w-4 h-4 text-gray-400 mt-0.5" />
                         <div className="flex-1 flex items-start justify-between">
@@ -1084,6 +1088,7 @@ export default function Editing() {
                                 e.stopPropagation();
                                 handleEditFunction(func.id, func.text);
                               }}
+                              disabled={isCompleted}
                             >
                               <Pencil className="w-3 h-3" />
                             </Button>
@@ -1097,6 +1102,7 @@ export default function Editing() {
                       size="sm" 
                       className="mt-3"
                       onClick={() => setShowAddFunctionModal(true)}
+                      disabled={isCompleted}
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add New Function
@@ -1121,6 +1127,7 @@ export default function Editing() {
                           checked={isCritical}
                           onChange={(e) => setIsCritical(e.target.checked)}
                           className="h-4 w-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+                          disabled={isCompleted}
                         />
                         <label 
                           htmlFor="critical-checkbox" 
@@ -1134,6 +1141,7 @@ export default function Editing() {
                         variant="ghost"
                         onClick={handleEditAdditionalText}
                         title="Edit additional requirements"
+                        disabled={isCompleted}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
