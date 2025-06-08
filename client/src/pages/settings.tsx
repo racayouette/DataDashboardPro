@@ -283,6 +283,15 @@ export default function Settings() {
 
 
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.endsWith('@') && !value.includes('adventhealth.com')) {
+      setNewUser({ ...newUser, email: value + 'adventhealth.com' });
+    } else {
+      setNewUser({ ...newUser, email: value });
+    }
+  };
+
   const handleAddUser = () => {
     if (newUser.name && newUser.email && newUser.role && newUser.department && newUser.password) {
       const user: User = {
@@ -680,7 +689,7 @@ export default function Settings() {
                 id="newEmail"
                 type="email"
                 value={newUser.email || ""}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                onChange={handleEmailChange}
                 placeholder="Enter email address"
                 autoComplete="off"
               />
