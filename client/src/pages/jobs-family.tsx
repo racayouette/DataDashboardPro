@@ -442,8 +442,8 @@ export default function JobsFamily() {
       );
     }
     
-    // Fallback - show empty text
-    return <span className="text-sm text-gray-400">Unassigned</span>;
+    // Fallback - show empty user icon
+    return <UserCircle className="w-5 h-5 text-gray-400" />;
   };
 
   return (
