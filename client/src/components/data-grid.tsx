@@ -145,6 +145,12 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
           aValue = jobA.jobFamily;
           bValue = jobB.jobFamily;
           break;
+        case "functionalLeader":
+          const leadersA = getFunctionalLeadersForJobFamily(jobA.jobFamily);
+          const leadersB = getFunctionalLeadersForJobFamily(jobB.jobFamily);
+          aValue = leadersA.length > 0 ? leadersA[0] : "";
+          bValue = leadersB.length > 0 ? leadersB[0] : "";
+          break;
         case "totalJobs":
           aValue = jobA.totalJobs;
           bValue = jobB.totalJobs;
@@ -334,7 +340,13 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                       </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <span>Functional Leader</span>
+                      <button 
+                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
+                        onClick={() => handleSort("functionalLeader")}
+                      >
+                        <span>Functional Leader</span>
+                        {getSortIcon("functionalLeader")}
+                      </button>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       <button 
