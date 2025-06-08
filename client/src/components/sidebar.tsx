@@ -447,7 +447,7 @@ export function Sidebar() {
                 <Button variant="outline" onClick={handleLoginCancel}>
                   Cancel
                 </Button>
-                <Button onClick={handleSignUp} disabled={!signUpEmail || !signUpName || !signUpDepartment}>
+                <Button onClick={handleSignUp} disabled={!signUpEmail || !signUpPassword || !signUpName || !signUpDepartment || !passwordValidation.isStrong}>
                   Submit
                 </Button>
               </div>
