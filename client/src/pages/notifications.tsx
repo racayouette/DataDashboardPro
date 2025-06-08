@@ -33,7 +33,7 @@ export default function Notifications() {
       timestamp: "2025-06-04 12:15",
       read: false,
       priority: "medium",
-      category: "Job Submissions"
+      category: "Received"
     },
     {
       id: 4,
@@ -43,7 +43,7 @@ export default function Notifications() {
       timestamp: "2025-06-04 09:20",
       read: false,
       priority: "low",
-      category: "Approvals"
+      category: "Received"
     },
     {
       id: 5,
@@ -53,7 +53,7 @@ export default function Notifications() {
       timestamp: "2025-06-03 16:30",
       read: true,
       priority: "low",
-      category: "Completions"
+      category: "Received"
     },
     {
       id: 7,
@@ -63,7 +63,7 @@ export default function Notifications() {
       timestamp: "2025-06-03 11:30",
       read: true,
       priority: "medium",
-      category: "Assignments"
+      category: "Received"
     }
   ]);
 
