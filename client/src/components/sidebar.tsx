@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function Sidebar() {
   const [location, setLocation] = useLocation();
@@ -426,18 +427,25 @@ export function Sidebar() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="signup-department">Department</Label>
-                <Input
-                  id="signup-department"
-                  name="signup-dept-field-ghi012"
-                  type="text"
-                  value={signUpDepartment}
-                  onChange={(e) => setSignUpDepartment(e.target.value)}
-                  placeholder="Enter your department"
-                  autoComplete="one-time-code"
-                  autoCorrect="off"
-                  spellCheck="false"
-                  data-form-type="other"
-                />
+                <Select value={signUpDepartment} onValueChange={setSignUpDepartment}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Human Resources">Human Resources</SelectItem>
+                    <SelectItem value="Information Technology">Information Technology</SelectItem>
+                    <SelectItem value="Finance">Finance</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                    <SelectItem value="Operations">Operations</SelectItem>
+                    <SelectItem value="Sales">Sales</SelectItem>
+                    <SelectItem value="Customer Service">Customer Service</SelectItem>
+                    <SelectItem value="Research & Development">Research & Development</SelectItem>
+                    <SelectItem value="Quality Assurance">Quality Assurance</SelectItem>
+                    <SelectItem value="Legal">Legal</SelectItem>
+                    <SelectItem value="Facilities">Facilities</SelectItem>
+                    <SelectItem value="Security">Security</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               {loginError && (
