@@ -216,7 +216,7 @@ export function Sidebar() {
 
       {/* Test User Login Dialog */}
       <Dialog open={showLoginDialog} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] [&>button]:hidden">
           <DialogHeader>
             <div className="flex items-center justify-between">
               <DialogTitle className="flex items-center space-x-2">
