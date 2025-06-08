@@ -88,6 +88,7 @@ export default function Editing() {
   const [additionalTextComment, setAdditionalTextComment] = useState("");
   const [isCritical, setIsCritical] = useState(false);
   const [status, setStatus] = useState("In Progress");
+  const [isCompleted, setIsCompleted] = useState(false);
 
   // State for Job Summary popup editor
   const [showJobSummaryPopup, setShowJobSummaryPopup] = useState(false);
@@ -473,6 +474,7 @@ export default function Editing() {
   const handleComplete = () => {
     updateLastModifiedDate();
     setStatus("Complete");
+    setIsCompleted(true);
     console.log("Job description marked as complete");
   };
 
@@ -1206,10 +1208,11 @@ export default function Editing() {
             )}
             {isAdminMode && (
               <Button 
-                className="bg-green-500 text-white hover:bg-green-600"
+                className={isCompleted ? "bg-gray-400 text-white cursor-not-allowed" : "bg-green-500 text-white hover:bg-green-600"}
                 onClick={handleComplete}
+                disabled={isCompleted}
               >
-                Complete
+                {isCompleted ? "Finished" : "Complete"}
               </Button>
             )}
             <Button 
