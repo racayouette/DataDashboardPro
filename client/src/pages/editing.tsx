@@ -1237,9 +1237,10 @@ export default function Editing() {
             )}
             {isAdminMode && (
               <Button 
-                className={isCompleted ? "bg-green-100 text-green-800 cursor-not-allowed" : "bg-green-500 text-white hover:bg-green-600"}
+                className={isCompleted ? "bg-green-100 text-green-800 border-green-200 hover:bg-green-100 cursor-not-allowed" : "bg-green-500 text-white hover:bg-green-600"}
                 onClick={handleComplete}
                 disabled={isCompleted}
+                variant={isCompleted ? "outline" : "default"}
               >
                 {isCompleted ? "Finished" : "Complete"}
               </Button>
