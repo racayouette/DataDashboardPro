@@ -33,9 +33,11 @@ interface DataGridProps {
   };
   onJobFamilyClick?: (jobFamily: JobFamily) => void;
   reviewersData?: Reviewer[];
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
 }
 
-export function DataGrid({ title, subtitle, data, isLoading, type, pagination, onJobFamilyClick, reviewersData }: DataGridProps) {
+export function DataGrid({ title, subtitle, data, isLoading, type, pagination, onJobFamilyClick, reviewersData, searchValue, onSearchChange }: DataGridProps) {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 

@@ -22,6 +22,8 @@ export default function Dashboard() {
   const [reviewersPage, setReviewersPage] = useState(1);
   const [selectedJobFamily, setSelectedJobFamily] = useState<JobFamily | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [jobFamilySearch, setJobFamilySearch] = useState("");
+  const [reviewerSearch, setReviewerSearch] = useState("");
   const notificationRef = useRef<HTMLDivElement>(null);
   
   // Password protection state - check sessionStorage for existing authentication
@@ -118,6 +120,18 @@ export default function Dashboard() {
       reviewers: data.reviewers.sort((a, b) => b.completed - a.completed)
     })
   });
+
+  // Filter data based on search terms
+  const filteredJobFamilies = jobFamiliesData?.jobFamilies?.filter((jobFamily: JobFamily) =>
+    jobFamily.jobFamily.toLowerCase().includes(jobFamilySearch.toLowerCase()) ||
+    jobFamily.description?.toLowerCase().includes(jobFamilySearch.toLowerCase())
+  );
+
+  const filteredReviewers = reviewersData?.reviewers?.filter((reviewer: Reviewer) =>
+    reviewer.fullName?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+    reviewer.email?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+    reviewer.username?.toLowerCase().includes(reviewerSearch.toLowerCase())
+  );
 
   const handleJobFamilyClick = (jobFamily: JobFamily) => {
     setSelectedJobFamily(jobFamily);
