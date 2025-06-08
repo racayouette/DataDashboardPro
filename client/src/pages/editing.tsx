@@ -844,6 +844,7 @@ export default function Editing() {
                         className="h-5 w-5 p-0 hover:bg-red-100"
                         onClick={() => removeReviewer(user)}
                         title={`Remove ${user}`}
+                        disabled={isCompleted}
                       >
                         <X className="w-3 h-3 text-red-500 hover:text-red-700" />
                       </Button>
@@ -899,6 +900,7 @@ export default function Editing() {
                         className="h-5 w-5 p-0 hover:bg-red-100"
                         onClick={() => removeResponsibleUser(user)}
                         title={`Remove ${user}`}
+                        disabled={isCompleted}
                       >
                         <X className="w-3 h-3 text-red-500 hover:text-red-700" />
                       </Button>
