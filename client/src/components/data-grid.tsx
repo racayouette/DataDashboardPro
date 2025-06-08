@@ -88,7 +88,26 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
       <ArrowDown className="w-4 h-4" />;
   };
 
-  const sortedData = data ? [...data].sort((a, b) => {
+  // Apply search filtering first
+  const filteredData = data ? data.filter((item) => {
+    if (!searchValue || searchValue === "") return true;
+    
+    if (type === "jobFamilies") {
+      const jobFamily = item as JobFamily;
+      return jobFamily.jobFamily.toLowerCase().includes(searchValue.toLowerCase()) ||
+             (jobFamily.description && jobFamily.description.toLowerCase().includes(searchValue.toLowerCase()));
+    } else if (type === "reviewers") {
+      const reviewer = item as Reviewer;
+      return (reviewer.fullName && reviewer.fullName.toLowerCase().includes(searchValue.toLowerCase())) ||
+             (reviewer.email && reviewer.email.toLowerCase().includes(searchValue.toLowerCase())) ||
+             (reviewer.username && reviewer.username.toLowerCase().includes(searchValue.toLowerCase())) ||
+             (reviewer.jobFamily && reviewer.jobFamily.toLowerCase().includes(searchValue.toLowerCase())) ||
+             (reviewer.responsible && reviewer.responsible.toLowerCase().includes(searchValue.toLowerCase()));
+    }
+    return true;
+  }) : [];
+
+  const sortedData = filteredData ? [...filteredData].sort((a, b) => {
     if (!sortField) return 0;
     
     let aValue: any;

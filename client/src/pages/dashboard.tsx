@@ -122,20 +122,20 @@ export default function Dashboard() {
   });
 
   // Filter data based on search terms
-  const filteredJobFamilies = jobFamiliesData?.jobFamilies?.filter((jobFamily: JobFamily) =>
-    jobFamilySearch === "" || // Show all if no search term
-    jobFamily.jobFamily.toLowerCase().includes(jobFamilySearch.toLowerCase()) ||
-    jobFamily.description?.toLowerCase().includes(jobFamilySearch.toLowerCase())
-  );
+  const filteredJobFamilies = jobFamiliesData?.jobFamilies?.filter((jobFamily: JobFamily) => {
+    if (jobFamilySearch === "") return true;
+    return jobFamily.jobFamily.toLowerCase().includes(jobFamilySearch.toLowerCase()) ||
+           (jobFamily.description && jobFamily.description.toLowerCase().includes(jobFamilySearch.toLowerCase()));
+  }) || [];
 
-  const filteredReviewers = reviewersData?.reviewers?.filter((reviewer: Reviewer) =>
-    reviewerSearch === "" || // Show all if no search term
-    reviewer.fullName?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
-    reviewer.email?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
-    reviewer.username?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
-    reviewer.jobFamily?.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
-    reviewer.responsible?.toLowerCase().includes(reviewerSearch.toLowerCase())
-  );
+  const filteredReviewers = reviewersData?.reviewers?.filter((reviewer: Reviewer) => {
+    if (reviewerSearch === "") return true;
+    return (reviewer.fullName && reviewer.fullName.toLowerCase().includes(reviewerSearch.toLowerCase())) ||
+           (reviewer.email && reviewer.email.toLowerCase().includes(reviewerSearch.toLowerCase())) ||
+           (reviewer.username && reviewer.username.toLowerCase().includes(reviewerSearch.toLowerCase())) ||
+           (reviewer.jobFamily && reviewer.jobFamily.toLowerCase().includes(reviewerSearch.toLowerCase())) ||
+           (reviewer.responsible && reviewer.responsible.toLowerCase().includes(reviewerSearch.toLowerCase()));
+  }) || [];
 
   const handleJobFamilyClick = (jobFamily: JobFamily) => {
     setSelectedJobFamily(jobFamily);
@@ -361,7 +361,7 @@ export default function Dashboard() {
           <DataGrid
             title="Job Family"
             subtitle=""
-            data={filteredJobFamilies}
+            data={jobFamiliesData?.jobFamilies}
             isLoading={jobFamiliesLoading}
             type="jobFamilies"
             onJobFamilyClick={handleJobFamilyClick}
@@ -371,7 +371,7 @@ export default function Dashboard() {
             pagination={jobFamiliesData ? {
               currentPage: jobFamiliesData.currentPage,
               totalPages: jobFamiliesData.totalPages,
-              total: filteredJobFamilies?.length || 0,
+              total: jobFamiliesData.total,
               onPageChange: setJobFamiliesPage
             } : undefined}
           />
@@ -380,7 +380,7 @@ export default function Dashboard() {
           <DataGrid
             title="Reviewer"
             subtitle=""
-            data={filteredReviewers}
+            data={reviewersData?.reviewers}
             isLoading={reviewersLoading}
             type="reviewers"
             searchValue={reviewerSearch}
@@ -388,7 +388,7 @@ export default function Dashboard() {
             pagination={reviewersData ? {
               currentPage: reviewersData.currentPage,
               totalPages: reviewersData.totalPages,
-              total: filteredReviewers?.length || 0,
+              total: reviewersData.total,
               onPageChange: setReviewersPage
             } : undefined}
           />
