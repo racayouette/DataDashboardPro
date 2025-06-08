@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 
 interface JobEntry {
@@ -442,8 +443,19 @@ export default function JobsFamily() {
       );
     }
     
-    // Fallback - show empty user icon
-    return <UserCircle className="w-5 h-5 text-gray-400" />;
+    // Fallback - show empty user icon with tooltip
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <UserCircle className="w-5 h-5 text-gray-400 cursor-help" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>In order to add people here you need to assign them in the Job Description Review page</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
   };
 
   return (
@@ -738,7 +750,18 @@ export default function JobsFamily() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.jobFamily}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{getReviewerDisplay(entry, index)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                        {entry.responsible ? entry.responsible : <UserCircle className="w-5 h-5 text-gray-400" />}
+                        {entry.responsible ? entry.responsible : (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <UserCircle className="w-5 h-5 text-gray-400 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>In order to add people here you need to assign them in the Job Description Review page</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(entry.status)}`}>
