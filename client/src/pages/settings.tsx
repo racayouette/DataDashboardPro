@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { Sidebar } from "@/components/sidebar";
-import { DatabaseHealthMonitor } from "@/components/database-health-monitor";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown, ShieldCheck, Mail } from "lucide-react";
+import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail } from "lucide-react";
 
 interface NotificationSettings {
   emailNotifications: boolean;
@@ -219,7 +218,6 @@ export default function Settings() {
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
     { id: 'email', label: 'Email', icon: Mail, disabled: true },
-    { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
 
   const handleSaveSettings = async () => {
@@ -679,12 +677,7 @@ export default function Settings() {
               </div>
             )}
 
-            {activeTab === 'monitoring' && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">Database Health Monitoring</h3>
-                <DatabaseHealthMonitor />
-              </div>
-            )}
+
           </div>
         </div>
       </main>
