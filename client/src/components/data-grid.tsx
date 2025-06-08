@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { 
   Laptop, 
@@ -15,7 +16,8 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  UserCircle
+  UserCircle,
+  Search
 } from "lucide-react";
 import type { Transaction, JobFamily, Reviewer } from "@shared/schema";
 
@@ -240,8 +242,23 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <p className="text-sm text-gray-600">{subtitle}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <p className="text-sm text-gray-600">{subtitle}</p>
+          </div>
+          {(type === "jobFamilies" || type === "reviewers") && onSearchChange && (
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder={`Search ${type === "jobFamilies" ? "job families" : "reviewers"}...`}
+                value={searchValue || ""}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">

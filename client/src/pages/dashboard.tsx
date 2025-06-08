@@ -357,15 +357,17 @@ export default function Dashboard() {
           <DataGrid
             title="Job Family"
             subtitle=""
-            data={jobFamiliesData?.jobFamilies}
+            data={filteredJobFamilies}
             isLoading={jobFamiliesLoading}
             type="jobFamilies"
             onJobFamilyClick={handleJobFamilyClick}
             reviewersData={reviewersData?.reviewers}
+            searchValue={jobFamilySearch}
+            onSearchChange={setJobFamilySearch}
             pagination={jobFamiliesData ? {
               currentPage: jobFamiliesData.currentPage,
               totalPages: jobFamiliesData.totalPages,
-              total: jobFamiliesData.total,
+              total: filteredJobFamilies?.length || 0,
               onPageChange: setJobFamiliesPage
             } : undefined}
           />
@@ -374,13 +376,15 @@ export default function Dashboard() {
           <DataGrid
             title="Reviewer"
             subtitle=""
-            data={reviewersData?.reviewers}
+            data={filteredReviewers}
             isLoading={reviewersLoading}
             type="reviewers"
+            searchValue={reviewerSearch}
+            onSearchChange={setReviewerSearch}
             pagination={reviewersData ? {
               currentPage: reviewersData.currentPage,
               totalPages: reviewersData.totalPages,
-              total: reviewersData.total,
+              total: filteredReviewers?.length || 0,
               onPageChange: setReviewersPage
             } : undefined}
           />
