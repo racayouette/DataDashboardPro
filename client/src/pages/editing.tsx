@@ -1131,7 +1131,7 @@ export default function Editing() {
                   </div>
                   
                   {/* Job Description Content */}
-                  <div className="mt-4 text-sm text-black leading-relaxed">
+                  <div className="mt-4 text-sm text-gray-900 leading-relaxed">
                     <p>The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.</p>
                   </div>
                 </div>
@@ -1197,7 +1197,7 @@ export default function Editing() {
                       </div>
                     ) : (
                       <div className="group relative">
-                        <p className="text-sm text-black leading-relaxed italic">
+                        <p className="text-sm text-gray-900 leading-relaxed italic">
                           {additionalText || "Additional Job Description Content here..."}
                         </p>
                       </div>
