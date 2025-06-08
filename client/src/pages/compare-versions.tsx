@@ -20,6 +20,17 @@ export default function CompareVersions() {
   const [syncScroll, setSyncScroll] = useState(true);
   const [isEditMode, setIsEditMode] = useState(true);
   
+  // Get lastUpdatedDate from URL parameters
+  const [lastUpdatedDate, setLastUpdatedDate] = useState("June 7, 2025");
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const lastUpdatedFromUrl = urlParams.get('lastUpdated');
+    if (lastUpdatedFromUrl) {
+      setLastUpdatedDate(decodeURIComponent(lastUpdatedFromUrl));
+    }
+  }, []);
+  
   // Database selection state
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [selectedOriginalId, setSelectedOriginalId] = useState<number | null>(null);
@@ -315,7 +326,7 @@ export default function CompareVersions() {
                     <FileText className="w-5 h-5 text-green-600" />
                     <h3 className="text-lg font-semibold text-green-800">Current Version</h3>
                   </div>
-                  <p className="text-sm text-green-600 mt-2">Last modified: June 7, 2025</p>
+                  <p className="text-sm text-green-600 mt-2">Last Updated {lastUpdatedDate}</p>
                 </div>
               </div>
             </div>

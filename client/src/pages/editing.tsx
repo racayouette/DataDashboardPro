@@ -467,7 +467,7 @@ export default function Editing() {
   };
 
   const handleCompareVersions = () => {
-    setLocation("/compare-versions");
+    setLocation(`/compare-versions?lastUpdated=${encodeURIComponent(lastUpdatedDate)}`);
   };
 
   const handleComplete = () => {
