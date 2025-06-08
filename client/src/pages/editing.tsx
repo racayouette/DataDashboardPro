@@ -1100,6 +1100,11 @@ export default function Editing() {
                       Add New Function
                     </Button>
                   </div>
+                  
+                  {/* Job Description Content */}
+                  <div className="mt-4 text-sm text-gray-600 leading-relaxed">
+                    <p>The Patient Care Technician (PCT) Is A Key Member Of The Clinical Team Responsible For Delivering Foundational Support To Patients And Clinical Staff. Under The Guidance Of Licensed Nursing Personnel, The PCT Assists With Direct Patient Care To Meet Each Patient's Physical And Emotional Conditions, And Ensures A Clean, Safe, And Healing-Centered Environment.</p>
+                  </div>
                 </div>
 
                 {/* Additional Requirements Section */}
