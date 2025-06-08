@@ -234,7 +234,6 @@ export function Sidebar() {
             </div>
           </DialogHeader>
           
-          <form autoComplete="off">
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -246,6 +245,7 @@ export function Sidebar() {
                 <Label htmlFor="signin-email">Email</Label>
                 <Input
                   id="signin-email"
+                  name="signin-unique-field-xyz123"
                   type="text"
                   value={signInEmail}
                   onChange={(e) => {
@@ -257,7 +257,7 @@ export function Sidebar() {
                   }}
                   placeholder="Enter email"
                   onKeyPress={(e) => e.key === 'Enter' && handleSignIn()}
-                  autoComplete="new-password"
+                  autoComplete="one-time-code"
                   autoCorrect="off"
                   spellCheck="false"
                   data-form-type="other"
@@ -285,6 +285,7 @@ export function Sidebar() {
                 <Label htmlFor="signup-email">Email</Label>
                 <Input
                   id="signup-email"
+                  name="signup-unique-field-abc456"
                   type="text"
                   value={signUpEmail}
                   onChange={(e) => {
@@ -295,7 +296,7 @@ export function Sidebar() {
                     setSignUpEmail(value);
                   }}
                   placeholder="Enter email"
-                  autoComplete="new-password"
+                  autoComplete="one-time-code"
                   autoCorrect="off"
                   spellCheck="false"
                   data-form-type="other"
@@ -305,11 +306,12 @@ export function Sidebar() {
                 <Label htmlFor="signup-name">Full Name</Label>
                 <Input
                   id="signup-name"
+                  name="signup-name-field-def789"
                   type="text"
                   value={signUpName}
                   onChange={(e) => setSignUpName(e.target.value)}
                   placeholder="Enter your full name"
-                  autoComplete="new-password"
+                  autoComplete="one-time-code"
                   autoCorrect="off"
                   spellCheck="false"
                   data-form-type="other"
@@ -319,11 +321,12 @@ export function Sidebar() {
                 <Label htmlFor="signup-department">Department</Label>
                 <Input
                   id="signup-department"
+                  name="signup-dept-field-ghi012"
                   type="text"
                   value={signUpDepartment}
                   onChange={(e) => setSignUpDepartment(e.target.value)}
                   placeholder="Enter your department"
-                  autoComplete="new-password"
+                  autoComplete="one-time-code"
                   autoCorrect="off"
                   spellCheck="false"
                   data-form-type="other"
@@ -346,7 +349,6 @@ export function Sidebar() {
               </div>
             </TabsContent>
           </Tabs>
-          </form>
         </DialogContent>
       </Dialog>
 
