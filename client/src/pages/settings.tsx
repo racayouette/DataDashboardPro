@@ -1665,6 +1665,13 @@ export default function Settings() {
           </Button>
         </div>
       </div>
+      
+      {/* Feature Not Programmed Banner */}
+      <div className="mt-4 bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg">
+        <div className="flex items-center justify-center">
+          <span className="font-medium text-sm">This feature is not yet programmed.</span>
+        </div>
+      </div>
     </div>
   );
 
