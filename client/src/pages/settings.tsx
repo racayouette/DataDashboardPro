@@ -713,7 +713,7 @@ export default function Settings() {
               <div className="flex items-center justify-between">
                 <Label htmlFor="newPassword">Password</Label>
                 {validatePassword(newUser.password || "") && (
-                  <ThumbsUp className="w-5 h-5 text-green-500" />
+                  <ThumbsUp className="h-4 w-4 text-green-600" />
                 )}
               </div>
               <Input
