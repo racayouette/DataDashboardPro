@@ -137,15 +137,13 @@ export function Sidebar() {
   return (
     <div className="bg-blue-900 text-white w-64 min-h-screen p-4 flex flex-col">
       {/* Logo Section */}
-      <div className="mb-8">
-        <div className="bg-blue-800 rounded-lg p-4 mb-6">
-          <img 
-            src={adventHealthLogo} 
-            alt="AdventHealth Logo" 
-            className="w-24 h-auto mx-auto mb-3"
-          />
-          <p className="text-blue-200 text-sm">Jobs Description Review</p>
-        </div>
+      <div className="mb-8 text-center">
+        <img 
+          src={adventHealthLogo} 
+          alt="AdventHealth Logo" 
+          className="w-24 h-auto mx-auto mb-4"
+        />
+        <h1 className="text-xl font-bold text-white">Jobs Review System</h1>
       </div>
 
       {/* Navigation Menu */}
