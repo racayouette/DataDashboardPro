@@ -95,9 +95,10 @@ export default function Settings() {
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [newUser, setNewUser] = useState<Partial<User>>({
+  const [newUser, setNewUser] = useState<Partial<User & { password: string }>>({
     name: "",
     email: "",
+    password: "",
     role: "Employee",
     department: "",
     status: "Active"
@@ -280,8 +281,17 @@ export default function Settings() {
     return sortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.endsWith('@') && !value.includes('adventhealth.com')) {
+      setNewUser({ ...newUser, email: value + 'adventhealth.com' });
+    } else {
+      setNewUser({ ...newUser, email: value });
+    }
+  };
+
   const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.role && newUser.department) {
+    if (newUser.name && newUser.email && newUser.role && newUser.department && newUser.password) {
       const user: User = {
         id: Math.max(...users.map(u => u.id)) + 1,
         name: newUser.name,
@@ -292,7 +302,7 @@ export default function Settings() {
         lastLogin: "Never"
       };
       setUsers([...users, user]);
-      setNewUser({ name: "", email: "", role: "Employee", department: "", status: "Active" });
+      setNewUser({ name: "", email: "", password: "", role: "Employee", department: "", status: "Active" });
       setShowAddModal(false);
     }
   };
@@ -668,6 +678,7 @@ export default function Settings() {
                 value={newUser.name || ""}
                 onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                 placeholder="Enter full name"
+                autoComplete="off"
               />
             </div>
             <div>
@@ -676,9 +687,24 @@ export default function Settings() {
                 id="newEmail"
                 type="email"
                 value={newUser.email || ""}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                onChange={handleEmailChange}
                 placeholder="Enter email address"
+                autoComplete="off"
               />
+            </div>
+            <div>
+              <Label htmlFor="newPassword">Password</Label>
+              <Input
+                id="newPassword"
+                type="text"
+                value={newUser.password || ""}
+                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                placeholder="Enter password"
+                autoComplete="off"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Password must be at least 8 characters with uppercase, lowercase, number, and special character
+              </p>
             </div>
             <div>
               <Label htmlFor="newRole">Role</Label>
@@ -745,8 +771,24 @@ export default function Settings() {
                   id="editEmail"
                   type="email"
                   value={editingUser.email}
-                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  disabled
+                  className="bg-gray-100 cursor-not-allowed"
+                  autoComplete="off"
                 />
+              </div>
+              <div>
+                <Label htmlFor="editPassword">Password</Label>
+                <Input
+                  id="editPassword"
+                  type="text"
+                  value=""
+                  onChange={() => {}}
+                  placeholder="Enter new password"
+                  autoComplete="off"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Password must be at least 8 characters with uppercase, lowercase, number, and special character
+                </p>
               </div>
               <div>
                 <Label htmlFor="editRole">Role</Label>
