@@ -232,14 +232,12 @@ export function Sidebar() {
       
       {/* User Profile - positioned at bottom */}
       <div className="mb-4">
-        <Link href="/users">
-          <div className="flex items-center space-x-3 p-3 text-blue-200 hover:bg-blue-800 hover:text-white rounded-lg transition-colors cursor-pointer">
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">JM</span>
-            </div>
-            <span className="text-sm font-medium">John Marks</span>
+        <div className="flex items-center space-x-3 p-3 text-blue-200 rounded-lg">
+          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-sm font-medium">JM</span>
           </div>
-        </Link>
+          <span className="text-sm font-medium">John Marks</span>
+        </div>
       </div>
 
 
