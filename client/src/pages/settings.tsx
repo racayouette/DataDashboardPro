@@ -292,8 +292,23 @@ export default function Settings() {
     }
   };
 
+  const validatePassword = (password: string): boolean => {
+    const hasMinLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    return hasMinLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
+  };
+
   const handleAddUser = () => {
     if (newUser.name && newUser.email && newUser.role && newUser.department && newUser.password) {
+      if (!validatePassword(newUser.password)) {
+        alert("Password does not meet all requirements. Please ensure it has at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.");
+        return;
+      }
+      
       const user: User = {
         id: Math.max(...users.map(u => u.id)) + 1,
         name: newUser.name,
@@ -706,26 +721,26 @@ export default function Settings() {
               />
               <div className="mt-2">
                 <p className="text-sm text-gray-700 mb-2">Password Requirements:</p>
-                <div className="space-y-1 text-xs text-gray-500">
+                <div className="space-y-1 text-xs">
                   <div className="flex items-center">
-                    <span className="mr-2">✓</span>
-                    <span>At least 8 characters</span>
+                    <span className={`mr-2 ${(newUser.password || "").length >= 8 ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                    <span className={(newUser.password || "").length >= 8 ? 'text-green-600' : 'text-gray-500'}>At least 8 characters</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="mr-2">✓</span>
-                    <span>One uppercase letter</span>
+                    <span className={`mr-2 ${/[A-Z]/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                    <span className={/[A-Z]/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One uppercase letter</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="mr-2">✓</span>
-                    <span>One lowercase letter</span>
+                    <span className={`mr-2 ${/[a-z]/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                    <span className={/[a-z]/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One lowercase letter</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="mr-2">✓</span>
-                    <span>One number</span>
+                    <span className={`mr-2 ${/\d/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                    <span className={/\d/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One number</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="mr-2">✓</span>
-                    <span>One special character</span>
+                    <span className={`mr-2 ${/[!@#$%^&*(),.?":{}|<>]/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
+                    <span className={/[!@#$%^&*(),.?":{}|<>]/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One special character</span>
                   </div>
                 </div>
               </div>
@@ -770,7 +785,7 @@ export default function Settings() {
               <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
               <Button 
                 onClick={handleAddUser}
-                disabled={!newUser.name || !newUser.email || !newUser.role || !newUser.password || !newUser.department}
+                disabled={!newUser.name || !newUser.email || !newUser.role || !newUser.password || !newUser.department || !validatePassword(newUser.password || "")}
               >
                 Add User
               </Button>
