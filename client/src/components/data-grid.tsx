@@ -457,7 +457,7 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                                     <UserCircle className="w-5 h-5 text-gray-400 cursor-help" />
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>In order to add people here you need to assign them in the Jobs Family page</p>
+                                    <p>In order to add people here you need to assign them in the Jobs Description Review page</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
