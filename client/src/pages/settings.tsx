@@ -281,14 +281,7 @@ export default function Settings() {
     return sortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.endsWith('@') && !value.includes('adventhealth.com')) {
-      setNewUser({ ...newUser, email: value + 'adventhealth.com' });
-    } else {
-      setNewUser({ ...newUser, email: value });
-    }
-  };
+
 
   const handleAddUser = () => {
     if (newUser.name && newUser.email && newUser.role && newUser.department && newUser.password) {
@@ -687,7 +680,7 @@ export default function Settings() {
                 id="newEmail"
                 type="email"
                 value={newUser.email || ""}
-                onChange={handleEmailChange}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                 placeholder="Enter email address"
                 autoComplete="off"
               />
