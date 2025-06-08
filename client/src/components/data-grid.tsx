@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { 
   Laptop, 
@@ -450,7 +451,16 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                                 {index < functionalLeaders.length - 1 && <span className="text-gray-400">, </span>}
                               </span>
                             )) : (
-                              <UserCircle className="w-5 h-5 text-gray-400" />
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <UserCircle className="w-5 h-5 text-gray-400 cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>In order to add people here you need to assign them in the Jobs Family page</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             )}
                           </div>
                         </td>
