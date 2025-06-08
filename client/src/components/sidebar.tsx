@@ -242,13 +242,19 @@ export function Sidebar() {
             
             <TabsContent value="signin" className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="signin-email">Email (without @company.com)</Label>
+                <Label htmlFor="signin-email">Email</Label>
                 <Input
                   id="signin-email"
                   type="text"
                   value={signInEmail}
-                  onChange={(e) => setSignInEmail(e.target.value)}
-                  placeholder="Enter email prefix"
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value.includes('@') && !value.includes('@adventhealth.com')) {
+                      value = value.split('@')[0] + '@adventhealth.com';
+                    }
+                    setSignInEmail(value);
+                  }}
+                  placeholder="Enter email"
                   onKeyPress={(e) => e.key === 'Enter' && handleSignIn()}
                 />
               </div>
@@ -271,13 +277,19 @@ export function Sidebar() {
             
             <TabsContent value="signup" className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="signup-email">Email (without @company.com)</Label>
+                <Label htmlFor="signup-email">Email</Label>
                 <Input
                   id="signup-email"
                   type="text"
                   value={signUpEmail}
-                  onChange={(e) => setSignUpEmail(e.target.value)}
-                  placeholder="Enter email prefix"
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    if (value.includes('@') && !value.includes('@adventhealth.com')) {
+                      value = value.split('@')[0] + '@adventhealth.com';
+                    }
+                    setSignUpEmail(value);
+                  }}
+                  placeholder="Enter email"
                 />
               </div>
               <div className="space-y-2">
