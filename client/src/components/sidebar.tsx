@@ -256,6 +256,7 @@ export function Sidebar() {
                   }}
                   placeholder="Enter email"
                   onKeyPress={(e) => e.key === 'Enter' && handleSignIn()}
+                  autoComplete="off"
                 />
               </div>
               
@@ -290,6 +291,7 @@ export function Sidebar() {
                     setSignUpEmail(value);
                   }}
                   placeholder="Enter email"
+                  autoComplete="off"
                 />
               </div>
               <div className="space-y-2">
@@ -300,6 +302,7 @@ export function Sidebar() {
                   value={signUpName}
                   onChange={(e) => setSignUpName(e.target.value)}
                   placeholder="Enter your full name"
+                  autoComplete="off"
                 />
               </div>
               <div className="space-y-2">
@@ -310,6 +313,7 @@ export function Sidebar() {
                   value={signUpDepartment}
                   onChange={(e) => setSignUpDepartment(e.target.value)}
                   placeholder="Enter your department"
+                  autoComplete="off"
                 />
               </div>
               
