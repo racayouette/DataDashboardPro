@@ -218,7 +218,7 @@ export default function Settings() {
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
-    { id: 'email', label: 'Email', icon: Mail, disabled: !notificationSettings.emailNotifications },
+    { id: 'email', label: 'Email', icon: Mail, disabled: true },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
 
