@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Settings as SettingsIcon, Bell, User, Database, Shield, Monitor, Save, RefreshCw, Search, Plus, Edit3, Trash2, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown, ShieldCheck, Mail } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 
 interface NotificationSettings {
   emailNotifications: boolean;
@@ -49,34 +48,11 @@ interface User {
   lastLogin: string;
 }
 
-interface Reviewer {
-  id: number;
-  jobFamily: string;
-  completed: number;
-  inProgress: number;
-  responsible: string;
-  username: string | null;
-  fullName: string | null;
-  email: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('notifications');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const notificationRef = useRef<HTMLDivElement>(null);
-
-  // Fetch reviewers data
-  const { data: reviewersData, isLoading: reviewersLoading } = useQuery({
-    queryKey: ['/api/reviewers'],
-    queryFn: async () => {
-      const response = await fetch('/api/reviewers');
-      if (!response.ok) throw new Error('Failed to fetch reviewers');
-      return response.json();
-    }
-  });
 
   // Settings state
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
@@ -128,49 +104,7 @@ export default function Settings() {
     status: "Active"
   });
 
-  // Reviewers management state
-  const [reviewerSearchTerm, setReviewerSearchTerm] = useState("");
-  const [showAddReviewerModal, setShowAddReviewerModal] = useState(false);
-  const [showEditReviewerModal, setShowEditReviewerModal] = useState(false);
-  const [showDeleteReviewerDialog, setShowDeleteReviewerDialog] = useState(false);
-  const [editingReviewer, setEditingReviewer] = useState<Reviewer | null>(null);
-  const [reviewerToDelete, setReviewerToDelete] = useState<Reviewer | null>(null);
-  const [reviewerSortBy, setReviewerSortBy] = useState<string>("");
-  const [reviewerSortOrder, setReviewerSortOrder] = useState<"asc" | "desc">("asc");
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [unlockField, setUnlockField] = useState<'completed' | 'inProgress' | null>(null);
-  const [newReviewer, setNewReviewer] = useState<Partial<Reviewer>>({
-    jobFamily: "",
-    responsible: "",
-    completed: 0,
-    inProgress: 0,
-    username: "",
-    fullName: "",
-    email: ""
-  });
-
-  // Responsible people management state
-  const [responsibleSearchTerm, setResponsibleSearchTerm] = useState("");
-  const [showAddResponsibleModal, setShowAddResponsibleModal] = useState(false);
-  const [showEditResponsibleModal, setShowEditResponsibleModal] = useState(false);
-  const [showDeleteResponsibleDialog, setShowDeleteResponsibleDialog] = useState(false);
-  const [editingResponsible, setEditingResponsible] = useState<Reviewer | null>(null);
-  const [responsibleToDelete, setResponsibleToDelete] = useState<Reviewer | null>(null);
-  const [responsibleSortBy, setResponsibleSortBy] = useState<string>("");
-  const [responsibleSortOrder, setResponsibleSortOrder] = useState<"asc" | "desc">("asc");
-  const [newResponsible, setNewResponsible] = useState<Partial<Reviewer>>({
-    jobFamily: "",
-    responsible: "",
-    completed: 0,
-    inProgress: 0,
-    username: "",
-    fullName: "",
-    email: ""
-  });
-
-  // Sample user data
+  // Sample user data with Functional Leaders and Responsible Persons merged in
   const [users, setUsers] = useState<User[]>([
     {
       id: 1,
@@ -225,6 +159,42 @@ export default function Settings() {
       department: "Executive",
       status: "Active",
       lastLogin: "June 5, 2025"
+    },
+    {
+      id: 7,
+      name: "Clinical Support",
+      email: "clinical.support@adventhealth.com",
+      role: "Reviewer",
+      department: "Clinical Support",
+      status: "Active",
+      lastLogin: "June 5, 2025"
+    },
+    {
+      id: 8,
+      name: "Emergency Medicine",
+      email: "emergency.medicine@adventhealth.com",
+      role: "Reviewer",
+      department: "Emergency Medicine",
+      status: "Active",
+      lastLogin: "June 4, 2025"
+    },
+    {
+      id: 9,
+      name: "Nursing",
+      email: "nursing@adventhealth.com",
+      role: "Reviewer",
+      department: "Nursing",
+      status: "Active",
+      lastLogin: "June 3, 2025"
+    },
+    {
+      id: 10,
+      name: "Pharmacy",
+      email: "pharmacy@adventhealth.com",
+      role: "Reviewer",
+      department: "Pharmacy",
+      status: "Active",
+      lastLogin: "June 2, 2025"
     }
   ]);
 
@@ -248,8 +218,6 @@ export default function Settings() {
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
-    { id: 'reviewers', label: 'Functional Leaders', icon: UserCheck },
-    { id: 'responsible', label: 'Responsible', icon: Shield },
     { id: 'email', label: 'Email', icon: Mail, disabled: !notificationSettings.emailNotifications },
     { id: 'monitoring', label: 'Database Health', icon: Monitor },
   ];
@@ -357,1343 +325,6 @@ export default function Settings() {
     }
   };
 
-  // Reviewers management functions
-  const filteredReviewers = (reviewersData?.reviewers || []).filter((reviewer: Reviewer) => {
-    const matchesSearch = reviewer.jobFamily.toLowerCase().includes(reviewerSearchTerm.toLowerCase()) ||
-                         reviewer.responsible.toLowerCase().includes(reviewerSearchTerm.toLowerCase()) ||
-                         (reviewer.username && reviewer.username.toLowerCase().includes(reviewerSearchTerm.toLowerCase())) ||
-                         (reviewer.fullName && reviewer.fullName.toLowerCase().includes(reviewerSearchTerm.toLowerCase())) ||
-                         (reviewer.email && reviewer.email.toLowerCase().includes(reviewerSearchTerm.toLowerCase()));
-    
-    return matchesSearch;
-  });
-
-  const sortedReviewers = [...filteredReviewers].sort((a, b) => {
-    if (!reviewerSortBy) return 0;
-    
-    const aValue = a[reviewerSortBy as keyof Reviewer];
-    const bValue = b[reviewerSortBy as keyof Reviewer];
-    
-    if (reviewerSortOrder === "asc") {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-    } else {
-      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-    }
-  });
-
-  const handleReviewerSort = (column: string) => {
-    if (reviewerSortBy === column) {
-      setReviewerSortOrder(reviewerSortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setReviewerSortBy(column);
-      setReviewerSortOrder("asc");
-    }
-  };
-
-  const getReviewerSortIcon = (column: string) => {
-    if (reviewerSortBy !== column) {
-      return <ArrowUpDown className="w-4 h-4" />;
-    }
-    return reviewerSortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
-  };
-
-  const handleAddReviewer = () => {
-    if (newReviewer.jobFamily && newReviewer.responsible) {
-      // This would be an API call in a real implementation
-      console.log('Adding reviewer:', newReviewer);
-      setNewReviewer({
-        jobFamily: "",
-        responsible: "",
-        completed: 0,
-        inProgress: 0,
-        username: "",
-        fullName: "",
-        email: ""
-      });
-      setShowAddReviewerModal(false);
-    }
-  };
-
-  const handleEditReviewer = (reviewer: Reviewer) => {
-    setEditingReviewer({
-      ...reviewer,
-      fullName: reviewer.jobFamily // Set reviewer name in Full Name field
-    });
-    setShowEditReviewerModal(true);
-  };
-
-  const handleUpdateReviewer = () => {
-    if (editingReviewer) {
-      // This would be an API call in a real implementation
-      console.log('Updating reviewer:', editingReviewer);
-      setEditingReviewer(null);
-      setShowEditReviewerModal(false);
-    }
-  };
-
-  const handleDeleteReviewer = (reviewer: Reviewer) => {
-    setReviewerToDelete(reviewer);
-    setShowDeleteReviewerDialog(true);
-  };
-
-  const confirmDeleteReviewer = () => {
-    if (reviewerToDelete) {
-      // This would be an API call in a real implementation
-      console.log('Deleting reviewer:', reviewerToDelete);
-      setReviewerToDelete(null);
-      setShowDeleteReviewerDialog(false);
-    }
-  };
-
-  const handleShieldClick = (fieldType: 'completed' | 'inProgress') => {
-    console.log('Shield clicked for field:', fieldType);
-    console.log('Current showPasswordDialog state:', showPasswordDialog);
-    setUnlockField(fieldType);
-    setShowPasswordDialog(true);
-    setPasswordInput("");
-    setPasswordError("");
-    console.log('Setting showPasswordDialog to true');
-  };
-
-  const handlePasswordSubmit = () => {
-    if (passwordInput === "Sunshine") {
-      if (editingReviewer && unlockField) {
-        setEditingReviewer({ 
-          ...editingReviewer, 
-          [unlockField]: 0 
-        });
-      }
-      if (editingResponsible && unlockField) {
-        setEditingResponsible({ 
-          ...editingResponsible, 
-          [unlockField]: 0 
-        });
-      }
-      setShowPasswordDialog(false);
-      setPasswordInput("");
-      setPasswordError("");
-      setUnlockField(null);
-    } else {
-      setPasswordError("Incorrect password");
-    }
-  };
-
-  const handlePasswordCancel = () => {
-    setShowPasswordDialog(false);
-    setPasswordInput("");
-    setPasswordError("");
-    setUnlockField(null);
-  };
-
-  // Responsible people management functions
-  const filteredResponsible = (reviewersData?.reviewers || []).filter((reviewer: Reviewer) => {
-    const matchesSearch = reviewer.responsible.toLowerCase().includes(responsibleSearchTerm.toLowerCase()) ||
-                         (reviewer.username && reviewer.username.toLowerCase().includes(responsibleSearchTerm.toLowerCase())) ||
-                         (reviewer.fullName && reviewer.fullName.toLowerCase().includes(responsibleSearchTerm.toLowerCase())) ||
-                         (reviewer.email && reviewer.email.toLowerCase().includes(responsibleSearchTerm.toLowerCase()));
-    
-    return matchesSearch;
-  });
-
-  const sortedResponsible = [...filteredResponsible].sort((a, b) => {
-    if (!responsibleSortBy) return 0;
-    
-    const aValue = a[responsibleSortBy as keyof Reviewer];
-    const bValue = b[responsibleSortBy as keyof Reviewer];
-    
-    if (responsibleSortOrder === "asc") {
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-    } else {
-      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-    }
-  });
-
-  const handleResponsibleSort = (column: string) => {
-    if (responsibleSortBy === column) {
-      setResponsibleSortOrder(responsibleSortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setResponsibleSortBy(column);
-      setResponsibleSortOrder("asc");
-    }
-  };
-
-  const getResponsibleSortIcon = (column: string) => {
-    if (responsibleSortBy !== column) {
-      return <ArrowUpDown className="w-4 h-4" />;
-    }
-    return responsibleSortOrder === "asc" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
-  };
-
-  const handleAddResponsible = () => {
-    if (newResponsible.responsible) {
-      // This would be an API call in a real implementation
-      console.log('Adding responsible person:', newResponsible);
-      setNewResponsible({
-        jobFamily: "",
-        responsible: "",
-        completed: 0,
-        inProgress: 0,
-        username: "",
-        fullName: "",
-        email: ""
-      });
-      setShowAddResponsibleModal(false);
-    }
-  };
-
-  const handleEditResponsible = (responsible: Reviewer) => {
-    setEditingResponsible({
-      ...responsible,
-      fullName: responsible.responsible // Set responsible person name in Full Name field
-    });
-    setShowEditResponsibleModal(true);
-  };
-
-  const handleUpdateResponsible = () => {
-    if (editingResponsible) {
-      // This would be an API call in a real implementation
-      console.log('Updating responsible person:', editingResponsible);
-      setEditingResponsible(null);
-      setShowEditResponsibleModal(false);
-    }
-  };
-
-  const handleDeleteResponsible = (responsible: Reviewer) => {
-    setResponsibleToDelete(responsible);
-    setShowDeleteResponsibleDialog(true);
-  };
-
-  const confirmDeleteResponsible = () => {
-    if (responsibleToDelete) {
-      // This would be an API call in a real implementation
-      console.log('Deleting responsible person:', responsibleToDelete);
-      setResponsibleToDelete(null);
-      setShowDeleteResponsibleDialog(false);
-    }
-  };
-
-  const renderReviewersSection = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Functional Leader Management</h3>
-      
-      {/* Search and Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            placeholder="Search functional leaders..."
-            value={reviewerSearchTerm}
-            onChange={(e) => setReviewerSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setShowAddReviewerModal(true)} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Add Functional Leader
-          </Button>
-        </div>
-      </div>
-
-      {reviewersLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
-          <span className="ml-2 text-gray-500">Loading reviewers...</span>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('jobFamily')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      Full Name {getReviewerSortIcon('jobFamily')}
-                    </button>
-                  </th>
-
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('completed')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      Completed {getReviewerSortIcon('completed')}
-                    </button>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('inProgress')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      In Progress {getReviewerSortIcon('inProgress')}
-                    </button>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleReviewerSort('username')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      Username {getReviewerSortIcon('username')}
-                    </button>
-                  </th>
-
-
-                  <th className="px-6 py-3 text-left">
-                    <span className="text-sm font-medium text-gray-500 tracking-wider">
-                      Actions
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {sortedReviewers.map((reviewer: Reviewer) => (
-                  <tr key={reviewer.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{reviewer.jobFamily}</div>
-                        <div className="text-sm text-gray-500">{reviewer.email || '-'}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant="default" className="bg-green-100 text-green-800">
-                        {reviewer.completed}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                        {reviewer.inProgress}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {reviewer.username || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditReviewer(reviewer)}
-                          className="text-blue-600 hover:text-blue-700"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteReviewer(reviewer)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Add Reviewer Modal */}
-      <Dialog open={showAddReviewerModal} onOpenChange={setShowAddReviewerModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add New Reviewer</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                value={newReviewer.fullName || ""}
-                onChange={(e) => setNewReviewer({ ...newReviewer, fullName: e.target.value })}
-                placeholder="Enter full name"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="completed">Completed</Label>
-                <Input
-                  id="completed"
-                  type="number"
-                  value={newReviewer.completed || 0}
-                  onChange={(e) => setNewReviewer({ ...newReviewer, completed: parseInt(e.target.value) || 0 })}
-                  placeholder="0"
-                />
-              </div>
-              <div>
-                <Label htmlFor="inProgress">In Progress</Label>
-                <Input
-                  id="inProgress"
-                  type="number"
-                  value={newReviewer.inProgress || 0}
-                  onChange={(e) => setNewReviewer({ ...newReviewer, inProgress: parseInt(e.target.value) || 0 })}
-                  placeholder="0"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                value={newReviewer.username || ""}
-                onChange={(e) => setNewReviewer({ ...newReviewer, username: e.target.value })}
-                placeholder="Enter username"
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={newReviewer.email || ""}
-                onChange={(e) => setNewReviewer({ ...newReviewer, email: e.target.value })}
-                placeholder="Enter email address"
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowAddReviewerModal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddReviewer}>
-                Add Reviewer
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Reviewer Modal */}
-      <Dialog open={showEditReviewerModal} onOpenChange={setShowEditReviewerModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit Reviewer</DialogTitle>
-          </DialogHeader>
-          {editingReviewer && (
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="editFullName">Full Name</Label>
-                <Input
-                  id="editFullName"
-                  value={editingReviewer.fullName || ""}
-                  onChange={(e) => setEditingReviewer({ ...editingReviewer, fullName: e.target.value })}
-                  placeholder="Enter full name"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="editCompleted">Completed</Label>
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      id="editCompleted"
-                      type="number"
-                      value={editingReviewer.completed}
-                      onChange={(e) => setEditingReviewer({ ...editingReviewer, completed: parseInt(e.target.value) || 0 })}
-                      placeholder="0"
-                      disabled={editingReviewer.completed > 0}
-                      className="flex-1"
-                    />
-                    {editingReviewer.completed > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => handleShieldClick('completed')}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Click to unlock field"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="editInProgress">In Progress</Label>
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      id="editInProgress"
-                      type="number"
-                      value={editingReviewer.inProgress}
-                      onChange={(e) => setEditingReviewer({ ...editingReviewer, inProgress: parseInt(e.target.value) || 0 })}
-                      placeholder="0"
-                      disabled={editingReviewer.inProgress > 0}
-                      className="flex-1"
-                    />
-                    {editingReviewer.inProgress > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => handleShieldClick('inProgress')}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Click to unlock field"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="editUsername">Username</Label>
-                <Input
-                  id="editUsername"
-                  value={editingReviewer.username || ""}
-                  onChange={(e) => setEditingReviewer({ ...editingReviewer, username: e.target.value })}
-                  placeholder="Enter username"
-                />
-              </div>
-              <div>
-                <Label htmlFor="editEmail">Email</Label>
-                <Input
-                  id="editEmail"
-                  type="email"
-                  value={editingReviewer.email || ""}
-                  onChange={(e) => setEditingReviewer({ ...editingReviewer, email: e.target.value })}
-                  placeholder="Enter email address"
-                />
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setShowEditReviewerModal(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleUpdateReviewer}>
-                  Update Reviewer
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Reviewer Confirmation */}
-      <AlertDialog open={showDeleteReviewerDialog} onOpenChange={setShowDeleteReviewerDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the reviewer
-              "{reviewerToDelete?.jobFamily}" and remove their data from the system.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteReviewer}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-    </div>
-  );
-
-  const renderUsersSection = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">User Management</h3>
-      
-      {/* Filters and Search */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            placeholder="Search users..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="All Roles" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="Admin">Admin</SelectItem>
-              <SelectItem value="HR Manager">HR Manager</SelectItem>
-              <SelectItem value="Reviewer">Reviewer</SelectItem>
-              <SelectItem value="Employee">Employee</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="Active">Active</SelectItem>
-              <SelectItem value="Inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={() => setShowAddModal(true)} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Add User
-          </Button>
-        </div>
-      </div>
-
-      {/* Users Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('name')}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                  >
-                    Name {getSortIcon('name')}
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('role')}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                  >
-                    Role {getSortIcon('role')}
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('department')}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                  >
-                    Department {getSortIcon('department')}
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('status')}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                  >
-                    Status {getSortIcon('status')}
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <span className="text-sm font-medium text-gray-500 tracking-wider">
-                    Last Login
-                  </span>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <span className="text-sm font-medium text-gray-500 tracking-wider">
-                    Actions
-                  </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {sortedUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={user.role === 'Admin' ? 'default' : 'secondary'}>
-                      {user.role}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {user.department}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>
-                      {user.status}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {user.lastLogin}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditUser(user)}
-                        className="text-blue-600 hover:text-blue-700"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteUser(user)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Add User Modal */}
-      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add New User</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={newUser.name || ""}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                placeholder="Enter full name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={newUser.email || ""}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                placeholder="Enter email address"
-              />
-            </div>
-            <div>
-              <Label htmlFor="role">Role</Label>
-              <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value as User['role'] })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="HR Manager">HR Manager</SelectItem>
-                  <SelectItem value="Reviewer">Reviewer</SelectItem>
-                  <SelectItem value="Employee">Employee</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <Input
-                id="department"
-                value={newUser.department || ""}
-                onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
-                placeholder="Enter department"
-              />
-            </div>
-            <div className="flex justify-end gap-2 pt-4">
-              <Button variant="outline" onClick={() => setShowAddModal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddUser}>
-                Add User
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit User Modal */}
-      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-          </DialogHeader>
-          {editingUser && (
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="edit-name">Name</Label>
-                <Input
-                  id="edit-name"
-                  value={editingUser.name}
-                  onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-email">Email</Label>
-                <Input
-                  id="edit-email"
-                  type="email"
-                  value={editingUser.email}
-                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-role">Role</Label>
-                <Select value={editingUser.role} onValueChange={(value) => setEditingUser({ ...editingUser, role: value as User['role'] })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="HR Manager">HR Manager</SelectItem>
-                    <SelectItem value="Reviewer">Reviewer</SelectItem>
-                    <SelectItem value="Employee">Employee</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="edit-department">Department</Label>
-                <Input
-                  id="edit-department"
-                  value={editingUser.department}
-                  onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-status">Status</Label>
-                <Select value={editingUser.status} onValueChange={(value) => setEditingUser({ ...editingUser, status: value as User['status'] })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex justify-end gap-2 pt-4">
-                <Button variant="outline" onClick={() => setShowEditModal(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleUpdateUser}>
-                  Update User
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete User</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete {userToDelete?.name}? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteUser} className="bg-red-600 hover:bg-red-700">
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
-
-  const renderNotificationSettings = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Notification Preferences</h3>
-      
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <label className="text-sm font-medium text-gray-700">Email Notifications</label>
-            <p className="text-sm text-gray-500">Receive notifications via email</p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={notificationSettings.emailNotifications}
-              onChange={(e) => setNotificationSettings(prev => ({
-                ...prev,
-                emailNotifications: e.target.checked
-              }))}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
-        </div>
-
-
-
-        <div className="flex items-center justify-between">
-          <div>
-            <label className="text-sm font-medium text-gray-700">Job Updates</label>
-            <p className="text-sm text-gray-500">Notifications about job description changes</p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={notificationSettings.jobUpdates}
-              onChange={(e) => setNotificationSettings(prev => ({
-                ...prev,
-                jobUpdates: e.target.checked
-              }))}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </label>
-        </div>
-
-        {/* Save Changes Button */}
-        <div className="flex justify-end pt-4 border-t border-gray-200">
-          <button
-            onClick={handleSaveSettings}
-            disabled={isSaving}
-            className="flex items-center space-x-2 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            {isSaving ? (
-              <RefreshCw className="w-3 h-3 animate-spin" />
-            ) : (
-              <Save className="w-3 h-3" />
-            )}
-            <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-
-
-
-
-
-
-  const renderDatabaseHealth = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Database Health Monitoring</h3>
-      <DatabaseHealthMonitor />
-    </div>
-  );
-
-  const renderResponsibleSection = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Responsible Person Management</h3>
-      
-      {/* Search and Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            placeholder="Search responsible persons..."
-            value={responsibleSearchTerm}
-            onChange={(e) => setResponsibleSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setShowAddResponsibleModal(true)} className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Add Responsible Person
-          </Button>
-        </div>
-      </div>
-
-      {reviewersLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
-          <span className="ml-2 text-gray-500">Loading responsible persons...</span>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleResponsibleSort('responsible')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      Full Name {getResponsibleSortIcon('responsible')}
-                    </button>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleResponsibleSort('completed')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      Completed {getResponsibleSortIcon('completed')}
-                    </button>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleResponsibleSort('inProgress')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      In Progress {getResponsibleSortIcon('inProgress')}
-                    </button>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <button
-                      onClick={() => handleResponsibleSort('username')}
-                      className="flex items-center gap-1 text-sm font-medium text-gray-500 tracking-wider hover:text-gray-700"
-                    >
-                      Username {getResponsibleSortIcon('username')}
-                    </button>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <span className="text-sm font-medium text-gray-500 tracking-wider">
-                      Actions
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {sortedResponsible.map((responsible: Reviewer) => (
-                  <tr key={responsible.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{responsible.responsible}</div>
-                        <div className="text-sm text-gray-500">{responsible.email || '-'}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant="default" className="bg-green-100 text-green-800">
-                        {responsible.completed}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                        {responsible.inProgress}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {responsible.username || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditResponsible(responsible)}
-                          className="text-blue-600 hover:text-blue-700"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteResponsible(responsible)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Add Responsible Person Modal */}
-      <Dialog open={showAddResponsibleModal} onOpenChange={setShowAddResponsibleModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add New Responsible Person</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="responsibleName">Full Name</Label>
-              <Input
-                id="responsibleName"
-                value={newResponsible.responsible || ""}
-                onChange={(e) => setNewResponsible({ ...newResponsible, responsible: e.target.value })}
-                placeholder="Enter full name"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="responsibleCompleted">Completed</Label>
-                <Input
-                  id="responsibleCompleted"
-                  type="number"
-                  value={newResponsible.completed || 0}
-                  onChange={(e) => setNewResponsible({ ...newResponsible, completed: parseInt(e.target.value) || 0 })}
-                  placeholder="0"
-                />
-              </div>
-              <div>
-                <Label htmlFor="responsibleInProgress">In Progress</Label>
-                <Input
-                  id="responsibleInProgress"
-                  type="number"
-                  value={newResponsible.inProgress || 0}
-                  onChange={(e) => setNewResponsible({ ...newResponsible, inProgress: parseInt(e.target.value) || 0 })}
-                  placeholder="0"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="responsibleUsername">Username</Label>
-              <Input
-                id="responsibleUsername"
-                value={newResponsible.username || ""}
-                onChange={(e) => setNewResponsible({ ...newResponsible, username: e.target.value })}
-                placeholder="Enter username"
-              />
-            </div>
-            <div>
-              <Label htmlFor="responsibleEmail">Email</Label>
-              <Input
-                id="responsibleEmail"
-                type="email"
-                value={newResponsible.email || ""}
-                onChange={(e) => setNewResponsible({ ...newResponsible, email: e.target.value })}
-                placeholder="Enter email address"
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowAddResponsibleModal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddResponsible}>
-                Add Responsible Person
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Responsible Person Modal */}
-      <Dialog open={showEditResponsibleModal} onOpenChange={setShowEditResponsibleModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit Responsible Person</DialogTitle>
-          </DialogHeader>
-          {editingResponsible && (
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="editResponsibleName">Full Name</Label>
-                <Input
-                  id="editResponsibleName"
-                  value={editingResponsible.responsible}
-                  onChange={(e) => setEditingResponsible({ ...editingResponsible, responsible: e.target.value })}
-                  placeholder="Enter full name"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="editResponsibleCompleted">Completed</Label>
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      id="editResponsibleCompleted"
-                      type="number"
-                      value={editingResponsible.completed}
-                      onChange={(e) => setEditingResponsible({ ...editingResponsible, completed: parseInt(e.target.value) || 0 })}
-                      placeholder="0"
-                      disabled={editingResponsible.completed > 0}
-                      className="flex-1"
-                    />
-                    {editingResponsible.completed > 0 && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleShieldClick('completed');
-                        }}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Click to unlock field"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="editResponsibleInProgress">In Progress</Label>
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      id="editResponsibleInProgress"
-                      type="number"
-                      value={editingResponsible.inProgress}
-                      onChange={(e) => setEditingResponsible({ ...editingResponsible, inProgress: parseInt(e.target.value) || 0 })}
-                      placeholder="0"
-                      disabled={editingResponsible.inProgress > 0}
-                      className="flex-1"
-                    />
-                    {editingResponsible.inProgress > 0 && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleShieldClick('inProgress');
-                        }}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
-                        title="Click to unlock field"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-blue-600 hover:text-blue-700 cursor-pointer" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="editResponsibleUsername">Username</Label>
-                <Input
-                  id="editResponsibleUsername"
-                  value={editingResponsible.username || ""}
-                  onChange={(e) => setEditingResponsible({ ...editingResponsible, username: e.target.value })}
-                  placeholder="Enter username"
-                />
-              </div>
-              <div>
-                <Label htmlFor="editResponsibleEmail">Email</Label>
-                <Input
-                  id="editResponsibleEmail"
-                  type="email"
-                  value={editingResponsible.email || ""}
-                  onChange={(e) => setEditingResponsible({ ...editingResponsible, email: e.target.value })}
-                  placeholder="Enter email address"
-                />
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setShowEditResponsibleModal(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleUpdateResponsible}>
-                  Update Responsible Person
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Responsible Person Confirmation */}
-      <AlertDialog open={showDeleteResponsibleDialog} onOpenChange={setShowDeleteResponsibleDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the responsible person
-              "{responsibleToDelete?.responsible}" and remove their data from the system.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteResponsible}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
-
-  const renderEmailSettings = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-medium text-gray-900">Email Configuration</h3>
-          <p className="text-sm text-gray-500">Configure SendGrid settings for email notifications</p>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="apiKey">API Key</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              value={emailSettings.apiKey}
-              onChange={(e) => setEmailSettings({ ...emailSettings, apiKey: e.target.value })}
-              placeholder="Enter SendGrid API Key"
-            />
-          </div>
-          <div>
-            <Label htmlFor="apiPassword">API Password</Label>
-            <Input
-              id="apiPassword"
-              type="password"
-              value={emailSettings.apiPassword}
-              onChange={(e) => setEmailSettings({ ...emailSettings, apiPassword: e.target.value })}
-              placeholder="Enter API Password"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="fromEmail">From Email</Label>
-            <Input
-              id="fromEmail"
-              type="email"
-              value={emailSettings.fromEmail}
-              onChange={(e) => setEmailSettings({ ...emailSettings, fromEmail: e.target.value })}
-              placeholder="noreply@company.com"
-            />
-          </div>
-          <div>
-            <Label htmlFor="fromName">From Name</Label>
-            <Input
-              id="fromName"
-              type="text"
-              value={emailSettings.fromName}
-              onChange={(e) => setEmailSettings({ ...emailSettings, fromName: e.target.value })}
-              placeholder="Your Company Name"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <input
-            id="emailEnabled"
-            type="checkbox"
-            checked={emailSettings.enabled}
-            onChange={(e) => setEmailSettings({ ...emailSettings, enabled: e.target.checked })}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <Label htmlFor="emailEnabled">Enable email notifications</Label>
-        </div>
-
-        <div className="pt-4 border-t">
-          <Button
-            onClick={handleSaveEmailSettings}
-            disabled={isSaving}
-            className="flex items-center space-x-2"
-          >
-            {isSaving ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            <span>{isSaving ? 'Saving...' : 'Save Email Settings'}</span>
-          </Button>
-        </div>
-      </div>
-      
-      {/* Feature Not Programmed Banner */}
-      <div className="mt-4 bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg">
-        <div className="flex items-center justify-center">
-          <span className="font-medium text-sm">This feature is not yet programmed.</span>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'notifications':
-        return renderNotificationSettings();
-      case 'users':
-        return renderUsersSection();
-      case 'reviewers':
-        return renderReviewersSection();
-      case 'responsible':
-        return renderResponsibleSection();
-      case 'email':
-        return renderEmailSettings();
-      case 'monitoring':
-        return renderDatabaseHealth();
-      default:
-        return renderNotificationSettings();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
@@ -1717,81 +348,501 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="flex space-x-8">
-            {/* Sidebar Tabs */}
-            <div className="w-64">
-              <nav className="space-y-1">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isDisabled = tab.disabled;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => {
-                        if (!isDisabled) {
-                          setActiveTab(tab.id);
-                        }
-                      }}
-                      disabled={isDisabled}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 text-left rounded-lg transition-colors ${
-                        isDisabled
-                          ? 'text-gray-300 cursor-not-allowed bg-gray-50'
-                          : activeTab === tab.id
-                          ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                          : 'text-gray-600 hover:bg-gray-100'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span className="font-medium">{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </nav>
+          {/* Tab Navigation */}
+          <div className="mb-6">
+            <div className="flex space-x-1 border-b border-gray-200">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => !tab.disabled && setActiveTab(tab.id)}
+                    className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
+                      tab.disabled
+                        ? 'text-gray-400 cursor-not-allowed'
+                        : activeTab === tab.id
+                        ? 'bg-white text-blue-600 border-l border-r border-t border-gray-200'
+                        : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                    }`}
+                    disabled={tab.disabled}
+                  >
+                    <Icon className="w-4 h-4 inline mr-2" />
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Content Area */}
-            <div className="flex-1">
-              <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
-                {renderTabContent()}
+          {/* Tab Content */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            {activeTab === 'notifications' && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h3>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Email Notifications</label>
+                      <p className="text-xs text-gray-500">Receive job updates and system alerts via email</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={notificationSettings.emailNotifications}
+                      onChange={(e) => setNotificationSettings({
+                        ...notificationSettings,
+                        emailNotifications: e.target.checked
+                      })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Push Notifications</label>
+                      <p className="text-xs text-gray-500">Receive instant notifications in your browser</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={notificationSettings.pushNotifications}
+                      onChange={(e) => setNotificationSettings({
+                        ...notificationSettings,
+                        pushNotifications: e.target.checked
+                      })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Job Updates</label>
+                      <p className="text-xs text-gray-500">Get notified when job descriptions are updated</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={notificationSettings.jobUpdates}
+                      onChange={(e) => setNotificationSettings({
+                        ...notificationSettings,
+                        jobUpdates: e.target.checked
+                      })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">System Alerts</label>
+                      <p className="text-xs text-gray-500">Important system maintenance and security notifications</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={notificationSettings.systemAlerts}
+                      onChange={(e) => setNotificationSettings({
+                        ...notificationSettings,
+                        systemAlerts: e.target.checked
+                      })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <Button onClick={handleSaveSettings} disabled={isSaving} className="w-full sm:w-auto">
+                    {isSaving ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Save Notification Settings
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
+
+            {activeTab === 'users' && (
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
+                  <Button onClick={() => setShowAddModal(true)} className="text-sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add User
+                  </Button>
+                </div>
+
+                {/* Search and Filter Controls */}
+                <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search users..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={roleFilter} onValueChange={setRoleFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      <SelectItem value="Admin">Admin</SelectItem>
+                      <SelectItem value="HR Manager">HR Manager</SelectItem>
+                      <SelectItem value="Reviewer">Reviewer</SelectItem>
+                      <SelectItem value="Employee">Employee</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Users Table */}
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort('name')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Name</span>
+                              {getSortIcon('name')}
+                            </div>
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort('email')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Email</span>
+                              {getSortIcon('email')}
+                            </div>
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort('role')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Role</span>
+                              {getSortIcon('role')}
+                            </div>
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort('department')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Department</span>
+                              {getSortIcon('department')}
+                            </div>
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort('status')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Status</span>
+                              {getSortIcon('status')}
+                            </div>
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onClick={() => handleSort('lastLogin')}>
+                            <div className="flex items-center space-x-1">
+                              <span>Last Login</span>
+                              {getSortIcon('lastLogin')}
+                            </div>
+                          </th>
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {sortedUsers.map((user) => (
+                          <tr key={user.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant={user.role === 'Admin' ? 'destructive' : user.role === 'HR Manager' ? 'default' : 'secondary'}>
+                                {user.role}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.department}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge variant={user.status === 'Active' ? 'default' : 'secondary'}>
+                                {user.status}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.lastLogin}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <div className="flex items-center justify-end space-x-2">
+                                <Button variant="ghost" size="sm" onClick={() => handleEditUser(user)}>
+                                  <Edit3 className="w-4 h-4" />
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user)} className="text-red-600 hover:text-red-800">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'email' && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Email Configuration</h3>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Enable Email Service</label>
+                      <p className="text-xs text-gray-500">Allow the system to send emails</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={emailSettings.enabled}
+                      onChange={(e) => setEmailSettings({
+                        ...emailSettings,
+                        enabled: e.target.checked
+                      })}
+                      className="w-4 h-4 text-blue-600"
+                    />
+                  </div>
+
+                  {emailSettings.enabled && (
+                    <div className="space-y-4 pt-4 border-t border-gray-200">
+                      <div>
+                        <Label htmlFor="apiKey" className="text-sm font-medium text-gray-700">SendGrid API Key</Label>
+                        <Input
+                          id="apiKey"
+                          type="password"
+                          placeholder="Enter your SendGrid API key"
+                          value={emailSettings.apiKey}
+                          onChange={(e) => setEmailSettings({
+                            ...emailSettings,
+                            apiKey: e.target.value
+                          })}
+                          className="mt-1"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="fromEmail" className="text-sm font-medium text-gray-700">From Email</Label>
+                        <Input
+                          id="fromEmail"
+                          type="email"
+                          placeholder="noreply@yourcompany.com"
+                          value={emailSettings.fromEmail}
+                          onChange={(e) => setEmailSettings({
+                            ...emailSettings,
+                            fromEmail: e.target.value
+                          })}
+                          className="mt-1"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="fromName" className="text-sm font-medium text-gray-700">From Name</Label>
+                        <Input
+                          id="fromName"
+                          type="text"
+                          placeholder="Your Company Name"
+                          value={emailSettings.fromName}
+                          onChange={(e) => setEmailSettings({
+                            ...emailSettings,
+                            fromName: e.target.value
+                          })}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <Button onClick={handleSaveEmailSettings} disabled={isSaving} className="w-full sm:w-auto">
+                    {isSaving ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Save Email Settings
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'monitoring' && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Database Health Monitoring</h3>
+                <DatabaseHealthMonitor />
+              </div>
+            )}
           </div>
         </div>
       </main>
 
-      {/* Password Dialog - Moved outside main container to prevent z-index issues */}
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="sm:max-w-md">
+      {/* Add User Modal */}
+      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>Unlock Field</DialogTitle>
+            <DialogTitle>Add New User</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="password">Enter password to unlock the {unlockField} field:</Label>
+              <Label htmlFor="newName">Name</Label>
               <Input
-                id="password"
-                type="password"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="Enter password"
-                onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
-                autoFocus
+                id="newName"
+                value={newUser.name || ""}
+                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                placeholder="Enter full name"
               />
-              {passwordError && (
-                <p className="text-sm text-red-600 mt-1">{passwordError}</p>
-              )}
             </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={handlePasswordCancel}>
-                Cancel
-              </Button>
-              <Button onClick={handlePasswordSubmit}>
-                Unlock
-              </Button>
+            <div>
+              <Label htmlFor="newEmail">Email</Label>
+              <Input
+                id="newEmail"
+                type="email"
+                value={newUser.email || ""}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                placeholder="Enter email address"
+              />
+            </div>
+            <div>
+              <Label htmlFor="newRole">Role</Label>
+              <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value as User['role'] })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="HR Manager">HR Manager</SelectItem>
+                  <SelectItem value="Reviewer">Reviewer</SelectItem>
+                  <SelectItem value="Employee">Employee</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="newDepartment">Department</Label>
+              <Input
+                id="newDepartment"
+                value={newUser.department || ""}
+                onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
+                placeholder="Enter department"
+              />
+            </div>
+            <div>
+              <Label htmlFor="newStatus">Status</Label>
+              <Select value={newUser.status} onValueChange={(value) => setNewUser({ ...newUser, status: value as User['status'] })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
+              <Button onClick={handleAddUser}>Add User</Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Edit User Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          {editingUser && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="editName">Name</Label>
+                <Input
+                  id="editName"
+                  value={editingUser.name}
+                  onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editEmail">Email</Label>
+                <Input
+                  id="editEmail"
+                  type="email"
+                  value={editingUser.email}
+                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editRole">Role</Label>
+                <Select value={editingUser.role} onValueChange={(value) => setEditingUser({ ...editingUser, role: value as User['role'] })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="HR Manager">HR Manager</SelectItem>
+                    <SelectItem value="Reviewer">Reviewer</SelectItem>
+                    <SelectItem value="Employee">Employee</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editDepartment">Department</Label>
+                <Input
+                  id="editDepartment"
+                  value={editingUser.department}
+                  onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editStatus">Status</Label>
+                <Select value={editingUser.status} onValueChange={(value) => setEditingUser({ ...editingUser, status: value as User['status'] })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setShowEditModal(false)}>Cancel</Button>
+                <Button onClick={handleUpdateUser}>Update User</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete {userToDelete?.name}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteUser} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
