@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import adventHealthLogo from "@assets/advent-health250_1749395626405.png";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -139,7 +140,7 @@ export function Sidebar() {
       <div className="mb-8">
         <div className="bg-blue-800 rounded-lg p-4 mb-6">
           <img 
-            src="/attached_assets/advent-health250_1749395626405.png" 
+            src={adventHealthLogo} 
             alt="AdventHealth Logo" 
             className="w-24 h-auto mx-auto mb-3"
           />
