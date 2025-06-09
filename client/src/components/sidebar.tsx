@@ -153,6 +153,9 @@ export function Sidebar() {
       setSignInPassword("");
       setLoginError("");
       setFailedAttempts(0);
+      // Clear localStorage on successful login
+      localStorage.removeItem('lockoutEndTime');
+      localStorage.removeItem('failedAttempts');
     } else {
       // Failed login - increment attempts
       const newFailedAttempts = failedAttempts + 1;
