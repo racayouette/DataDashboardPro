@@ -16,7 +16,7 @@ export function Sidebar() {
   const { isAdminMode, setIsAdminMode } = useRole();
   const [testLoginMode, setTestLoginMode] = useState(false);
   const [ssoMode, setSsoMode] = useState(false);
-  const [activeDirectoryMode, setActiveDirectoryMode] = useState(false);
+  const [activeDirectoryMode, setActiveDirectoryMode] = useState(true);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState("");

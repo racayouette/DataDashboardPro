@@ -4,6 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema } from "@shared/schema";
 import { setupSSORoutes, ssoService } from "./sso";
+import { adService } from "./activeDirectory";
 // Database connection status removed - using in-memory storage
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -415,6 +416,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('WebSocket error:', error);
       clearInterval(statusInterval);
     });
+  });
+
+  // Active Directory routes
+  app.get("/api/active-directory/status", async (req, res) => {
+    try {
+      const status = adService.getConnectionStatus();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get AD status" });
+    }
+  });
+
+  app.post("/api/active-directory/test", async (req, res) => {
+    try {
+      const result = await adService.testConnection();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Connection test failed" });
+    }
+  });
+
+  app.post("/api/active-directory/authenticate", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      const adUser = await adService.authenticate(username, password);
+      if (!adUser) {
+        return res.status(401).json({ error: "Authentication failed" });
+      }
+
+      // Sync user to local database
+      const localUser = await adService.syncUserToDatabase(adUser);
+      res.json({ user: localUser, adUser });
+    } catch (error) {
+      console.error("AD authentication error:", error);
+      res.status(500).json({ error: "Authentication failed" });
+    }
+  });
+
+  app.get("/api/active-directory/users", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const users = await adService.getUsers(limit);
+      res.json({ users });
+    } catch (error) {
+      console.error("Error fetching AD users:", error);
+      res.status(500).json({ error: "Failed to fetch users" });
+    }
+  });
+
+  app.get("/api/active-directory/sync", async (req, res) => {
+    try {
+      const users = await adService.getUsers(100);
+      const syncResults = [];
+      
+      for (const adUser of users) {
+        if (adUser.email) {
+          try {
+            const localUser = await adService.syncUserToDatabase(adUser);
+            syncResults.push({ success: true, user: localUser.name });
+          } catch (error) {
+            syncResults.push({ success: false, user: adUser.username, error: String(error) });
+          }
+        }
+      }
+      
+      res.json({ 
+        message: "Sync completed", 
+        total: users.length,
+        synced: syncResults.filter(r => r.success).length,
+        failed: syncResults.filter(r => !r.success).length,
+        results: syncResults
+      });
+    } catch (error) {
+      console.error("AD sync error:", error);
+      res.status(500).json({ error: "Sync failed" });
+    }
   });
 
   // Authentication routes
