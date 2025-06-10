@@ -3,9 +3,13 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema } from "@shared/schema";
+import { setupSSORoutes, ssoService } from "./sso";
 // Database connection status removed - using in-memory storage
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup SSO routes
+  setupSSORoutes(app);
+
   // Dashboard summary endpoint
   app.get("/api/dashboard/summary", async (req, res) => {
     try {
