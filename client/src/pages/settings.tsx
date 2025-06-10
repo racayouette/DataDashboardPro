@@ -204,6 +204,7 @@ export default function Settings() {
   const [testingConfigs, setTestingConfigs] = useState<any[]>([]);
   const [productionConfigs, setProductionConfigs] = useState<any[]>([]);
   const [showAddConfigForm, setShowAddConfigForm] = useState<'testing' | 'production' | null>(null);
+  const [activeEnvironment, setActiveEnvironment] = useState<'testing' | 'production'>('testing');
   const [newConfig, setNewConfig] = useState({
     name: '',
     server: '',
@@ -231,17 +232,29 @@ export default function Settings() {
     console.log('Settings saved successfully');
   };
 
-  const handleTestADConnection = async () => {
+  const handleTestADConnection = async (configId: number, environment: 'testing' | 'production') => {
     setIsTestingAD(true);
     try {
       const response = await fetch('/api/active-directory/test', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ configId, environment })
       });
       const result = await response.json();
+      
+      // Update error message to specify environment
+      if (!result.success) {
+        const envName = environment === 'testing' ? 'Test' : 'Go Live';
+        result.message = `Failed to connect to the ${envName} Active Directory server`;
+      }
+      
       setAdTestResult(result);
     } catch (error) {
-      setAdTestResult({ success: false, message: 'Connection test failed' });
+      const envName = environment === 'testing' ? 'Test' : 'Go Live';
+      setAdTestResult({ 
+        success: false, 
+        message: `Failed to connect to the ${envName} Active Directory server` 
+      });
     }
     setIsTestingAD(false);
   };
@@ -693,11 +706,42 @@ export default function Settings() {
 
             {activeTab === 'active-directory' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">Active Directory Configuration</h3>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Active Directory Configuration</h3>
+                    <p className="text-sm text-gray-600">Configure Active Directory integration for user authentication</p>
+                  </div>
+                  
+                  {/* Environment Radio Controls */}
+                  <div className="flex items-center space-x-6 bg-gray-50 p-3 rounded-lg">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="adEnvironment"
+                        value="testing"
+                        checked={activeEnvironment === 'testing'}
+                        onChange={(e) => setActiveEnvironment(e.target.value as 'testing' | 'production')}
+                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Testing Active</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="adEnvironment" 
+                        value="production"
+                        checked={activeEnvironment === 'production'}
+                        onChange={(e) => setActiveEnvironment(e.target.value as 'testing' | 'production')}
+                        className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Go Live Active</span>
+                    </label>
+                  </div>
+                </div>
                 
                 <div className="space-y-8">
                   {/* Testing Active Directory Section */}
-                  <div className="border border-blue-200 rounded-lg p-6 bg-blue-50">
+                  <div className={`border border-blue-200 rounded-lg p-6 bg-blue-50 ${activeEnvironment !== 'testing' ? 'opacity-50 pointer-events-none' : ''}`}>
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h4 className="text-lg font-medium text-blue-900">Testing Active Directory</h4>
@@ -711,6 +755,7 @@ export default function Settings() {
                         size="sm"
                         variant="outline"
                         className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                        disabled={activeEnvironment !== 'testing'}
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Testing Config
