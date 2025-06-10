@@ -1,4 +1,4 @@
-import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText, X, LogIn, ThumbsUp, Check, Clock } from "lucide-react";
+import { Users, Settings, LayoutDashboard, Edit3, Bell, Shield, Eye, EyeOff, AlertTriangle, FileText, X, LogIn, ThumbsUp, Check, Clock, Bug } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { useState, useEffect } from "react";
@@ -16,6 +16,7 @@ export function Sidebar() {
   const { isAdminMode, setIsAdminMode } = useRole();
   const [testLoginMode, setTestLoginMode] = useState(false);
   const [ssoMode, setSsoMode] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState("");
@@ -151,6 +152,17 @@ export function Sidebar() {
       }
     } catch (error) {
       console.error('SSO toggle error:', error);
+    }
+  };
+
+  const handleDebugToggle = () => {
+    setDebugMode(!debugMode);
+    if (!debugMode) {
+      console.log('Debug mode enabled - Extended logging and developer tools activated');
+      localStorage.setItem('debugMode', 'true');
+    } else {
+      console.log('Debug mode disabled');
+      localStorage.removeItem('debugMode');
     }
   };
 
@@ -352,7 +364,7 @@ export function Sidebar() {
       </div>
 
       {/* SSO Toggle */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="bg-blue-800 rounded-lg p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
@@ -377,6 +389,37 @@ export function Sidebar() {
           <div className="text-center">
             <span className={`text-sm font-medium ${ssoMode ? 'text-green-200' : 'text-white'}`}>
               {ssoMode ? 'Enabled' : 'Disabled'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Debug Mode Toggle */}
+      <div className="mb-6">
+        <div className="bg-blue-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <Bug className="w-4 h-4 text-blue-200" />
+              <span className="text-blue-200 text-sm font-medium">Debug Mode</span>
+            </div>
+            <div className="relative">
+              <button
+                onClick={handleDebugToggle}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
+                  debugMode ? 'bg-orange-600' : 'bg-blue-700'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    debugMode ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+          <div className="text-center">
+            <span className={`text-sm font-medium ${debugMode ? 'text-orange-200' : 'text-white'}`}>
+              {debugMode ? 'Active' : 'Inactive'}
             </span>
           </div>
         </div>
