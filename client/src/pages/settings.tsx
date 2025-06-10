@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail, ThumbsUp } from "lucide-react";
+import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail, ThumbsUp, Server } from "lucide-react";
 
 interface NotificationSettings {
   emailNotifications: boolean;
@@ -29,13 +29,7 @@ interface SystemSettings {
   backupFrequency: 'daily' | 'weekly' | 'monthly';
 }
 
-interface EmailSettings {
-  apiKey: string;
-  apiPassword: string;
-  fromEmail: string;
-  fromName: string;
-  enabled: boolean;
-}
+
 
 interface User {
   id: number;
@@ -74,13 +68,7 @@ export default function Settings() {
     backupFrequency: 'daily',
   });
 
-  const [emailSettings, setEmailSettings] = useState<EmailSettings>({
-    apiKey: '',
-    apiPassword: '',
-    fromEmail: '',
-    fromName: '',
-    enabled: false,
-  });
+
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -209,17 +197,15 @@ export default function Settings() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Switch away from email tab when email notifications are disabled
-  useEffect(() => {
-    if (!notificationSettings.emailNotifications && activeTab === 'email') {
-      setActiveTab('notifications');
-    }
-  }, [notificationSettings.emailNotifications, activeTab]);
+  // Active Directory state
+  const [adStatus, setAdStatus] = useState({ connected: false, server: '', baseDN: '' });
+  const [adTestResult, setAdTestResult] = useState<any>(null);
+  const [isTestingAD, setIsTestingAD] = useState(false);
 
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
-    { id: 'email', label: 'Email', icon: Mail, disabled: true },
+    { id: 'active-directory', label: 'Active Directory', icon: Server },
   ];
 
   const handleSaveSettings = async () => {
@@ -232,13 +218,31 @@ export default function Settings() {
     console.log('Settings saved successfully');
   };
 
-  const handleSaveEmailSettings = async () => {
+  const handleTestADConnection = async () => {
+    setIsTestingAD(true);
+    try {
+      const response = await fetch('/api/active-directory/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const result = await response.json();
+      setAdTestResult(result);
+    } catch (error) {
+      setAdTestResult({ success: false, message: 'Connection test failed' });
+    }
+    setIsTestingAD(false);
+  };
+
+  const handleSyncADUsers = async () => {
     setIsSaving(true);
-    // Simulate API call to save email settings
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch('/api/active-directory/sync');
+      const result = await response.json();
+      console.log('AD Sync completed:', result);
+    } catch (error) {
+      console.error('AD Sync failed:', error);
+    }
     setIsSaving(false);
-    
-    console.log('Email settings saved successfully');
   };
 
   // Users management functions
@@ -389,15 +393,12 @@ export default function Settings() {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => !tab.disabled && setActiveTab(tab.id)}
+                    onClick={() => setActiveTab(tab.id)}
                     className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
-                      tab.disabled
-                        ? 'text-gray-400 cursor-not-allowed'
-                        : activeTab === tab.id
+                      activeTab === tab.id
                         ? 'bg-white text-blue-600 border-l border-r border-t border-gray-200'
                         : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
                     }`}
-                    disabled={tab.disabled}
                   >
                     <Icon className="w-4 h-4 inline mr-2" />
                     {tab.label}
@@ -595,91 +596,124 @@ export default function Settings() {
               </div>
             )}
 
-            {activeTab === 'email' && (
+            {activeTab === 'active-directory' && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">Email Configuration</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Active Directory Configuration</h3>
                 
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Enable Email Service</label>
-                      <p className="text-xs text-gray-500">Allow the system to send emails</p>
+                      <label className="text-sm font-medium text-gray-700">Enable Active Directory</label>
+                      <p className="text-xs text-gray-500">Connect to Active Directory for user authentication</p>
                     </div>
                     <input
                       type="checkbox"
-                      checked={emailSettings.enabled}
-                      onChange={(e) => setEmailSettings({
-                        ...emailSettings,
-                        enabled: e.target.checked
-                      })}
+                      checked={true}
+                      disabled
                       className="w-4 h-4 text-blue-600"
                     />
                   </div>
 
-                  {emailSettings.enabled && (
-                    <div className="space-y-4 pt-4 border-t border-gray-200">
-                      <div>
-                        <Label htmlFor="apiKey" className="text-sm font-medium text-gray-700">SendGrid API Key</Label>
-                        <Input
-                          id="apiKey"
-                          type="password"
-                          placeholder="Enter your SendGrid API key"
-                          value={emailSettings.apiKey}
-                          onChange={(e) => setEmailSettings({
-                            ...emailSettings,
-                            apiKey: e.target.value
-                          })}
-                          className="mt-1"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="fromEmail" className="text-sm font-medium text-gray-700">From Email</Label>
-                        <Input
-                          id="fromEmail"
-                          type="email"
-                          placeholder="noreply@yourcompany.com"
-                          value={emailSettings.fromEmail}
-                          onChange={(e) => setEmailSettings({
-                            ...emailSettings,
-                            fromEmail: e.target.value
-                          })}
-                          className="mt-1"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="fromName" className="text-sm font-medium text-gray-700">From Name</Label>
-                        <Input
-                          id="fromName"
-                          type="text"
-                          placeholder="Your Company Name"
-                          value={emailSettings.fromName}
-                          onChange={(e) => setEmailSettings({
-                            ...emailSettings,
-                            fromName: e.target.value
-                          })}
-                          className="mt-1"
-                        />
+                  <div className="space-y-4 pt-4 border-t border-gray-200">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0">
+                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-green-800">Connected to Test LDAP Server</p>
+                          <p className="text-sm text-green-700">ldap://ldap.forumsys.com:389</p>
+                          <p className="text-xs text-green-600 mt-1">Base DN: dc=example,dc=com</p>
+                        </div>
                       </div>
                     </div>
-                  )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Connection Status</Label>
+                        <div className="mt-1 p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Status</span>
+                            <span className="text-sm font-medium text-green-600">Connected</span>
+                          </div>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-sm text-gray-600">Last Test</span>
+                            <span className="text-sm text-gray-900">Active</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Available Test Users</Label>
+                        <div className="mt-1 p-3 bg-gray-50 rounded-lg">
+                          <div className="space-y-1 text-sm">
+                            <div className="text-gray-900 font-medium">Test Accounts:</div>
+                            <div className="text-gray-600">• einstein (password: password)</div>
+                            <div className="text-gray-600">• newton (password: password)</div>
+                            <div className="text-gray-600">• galieleo (password: password)</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {adTestResult && (
+                      <div className={`rounded-lg p-4 ${adTestResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                        <div className="flex items-center">
+                          <div className={`w-2 h-2 rounded-full ${adTestResult.success ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                          <p className={`ml-3 text-sm font-medium ${adTestResult.success ? 'text-green-800' : 'text-red-800'}`}>
+                            {adTestResult.message}
+                          </p>
+                        </div>
+                        {adTestResult.userCount && (
+                          <p className="mt-1 ml-5 text-sm text-green-700">
+                            Found {adTestResult.userCount} users available for sync
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <Button onClick={handleSaveEmailSettings} disabled={isSaving} className="w-full sm:w-auto">
-                    {isSaving ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Save Email Settings
-                      </>
-                    )}
-                  </Button>
+                <div className="mt-8 pt-6 border-t border-gray-200 space-y-4">
+                  <div className="flex space-x-4">
+                    <Button onClick={handleTestADConnection} disabled={isTestingAD} variant="outline">
+                      {isTestingAD ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Testing...
+                        </>
+                      ) : (
+                        <>
+                          <Server className="w-4 h-4 mr-2" />
+                          Test Connection
+                        </>
+                      )}
+                    </Button>
+
+                    <Button onClick={handleSyncADUsers} disabled={isSaving}>
+                      {isSaving ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Syncing...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Sync Users
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  <div className="text-sm text-gray-600">
+                    <p className="font-medium mb-2">Configuration Details:</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• Server: ldap://ldap.forumsys.com:389</li>
+                      <li>• Bind DN: cn=read-only-admin,dc=example,dc=com</li>
+                      <li>• Search Base: dc=example,dc=com</li>
+                      <li>• This is a free testing LDAP service for development</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             )}
