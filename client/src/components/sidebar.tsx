@@ -15,6 +15,7 @@ export function Sidebar() {
   const [location, setLocation] = useLocation();
   const { isAdminMode, setIsAdminMode } = useRole();
   const [testLoginMode, setTestLoginMode] = useState(false);
+  const [ssoMode, setSsoMode] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState("");
@@ -300,8 +301,8 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Role Toggle - positioned above user profile */}
-      <div className="mb-6">
+      {/* Role Toggle */}
+      <div className="mb-4">
         <div className="bg-blue-800 rounded-lg p-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-blue-200 text-sm font-medium">Role</span>
@@ -323,6 +324,37 @@ export function Sidebar() {
           <div className="text-center">
             <span className="text-white text-sm font-medium">
               {isAdminMode ? 'Admin' : 'Reviewer'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* SSO Toggle */}
+      <div className="mb-6">
+        <div className="bg-blue-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <Shield className="w-4 h-4 text-blue-200" />
+              <span className="text-blue-200 text-sm font-medium">SSO</span>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setSsoMode(!ssoMode)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
+                  ssoMode ? 'bg-green-600' : 'bg-blue-700'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    ssoMode ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+          <div className="text-center">
+            <span className={`text-sm font-medium ${ssoMode ? 'text-green-200' : 'text-white'}`}>
+              {ssoMode ? 'Enabled' : 'Disabled'}
             </span>
           </div>
         </div>
