@@ -824,7 +824,7 @@ export default function Settings() {
                   </div>
 
                   {/* Go Live Active Directory Section */}
-                  <div className="border border-green-200 rounded-lg p-6 bg-green-50">
+                  <div className={`border border-green-200 rounded-lg p-6 bg-green-50 ${activeEnvironment !== 'production' ? 'opacity-50 pointer-events-none' : ''}`}>
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h4 className="text-lg font-medium text-green-900">Go Live Active Directory</h4>
@@ -838,6 +838,7 @@ export default function Settings() {
                         size="sm"
                         variant="outline"
                         className="border-green-300 text-green-700 hover:bg-green-100"
+                        disabled={activeEnvironment !== 'production'}
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Production Config
@@ -911,7 +912,18 @@ export default function Settings() {
                   {/* Action Buttons */}
                   <div className="pt-6 border-t border-gray-200 space-y-4">
                     <div className="flex space-x-4">
-                      <Button onClick={handleTestADConnection} disabled={isTestingAD} variant="outline">
+                      <Button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const configs = activeEnvironment === 'testing' ? testingConfigs : productionConfigs;
+                          const activeConfig = configs.find(c => c.isActive);
+                          if (activeConfig) {
+                            handleTestADConnection(activeConfig.id, activeEnvironment);
+                          }
+                        }} 
+                        disabled={isTestingAD || (activeEnvironment === 'testing' ? testingConfigs.filter(c => c.isActive).length === 0 : productionConfigs.filter(c => c.isActive).length === 0)} 
+                        variant="outline"
+                      >
                         {isTestingAD ? (
                           <>
                             <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
@@ -920,7 +932,7 @@ export default function Settings() {
                         ) : (
                           <>
                             <Server className="w-4 h-4 mr-2" />
-                            Test Connection
+                            Test {activeEnvironment === 'testing' ? 'Testing' : 'Go Live'} Connection
                           </>
                         )}
                       </Button>

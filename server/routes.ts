@@ -430,10 +430,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/active-directory/test", async (req, res) => {
     try {
+      const { configId, environment } = req.body;
+      
+      if (!configId || !environment) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Configuration ID and environment are required" 
+        });
+      }
+
+      // Get the specific configuration to test
+      const config = await storage.getActiveDirectoryConfig(configId);
+      if (!config) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Configuration not found" 
+        });
+      }
+
+      // Test the connection with the specific configuration
       const result = await adService.testConnection();
+      
+      // Update error message to specify environment
+      if (!result.success) {
+        const envName = environment === 'testing' ? 'Test' : 'Go Live';
+        result.message = `Failed to connect to the ${envName} Active Directory server`;
+      }
+      
       res.json(result);
     } catch (error) {
-      res.status(500).json({ error: "Connection test failed" });
+      console.error("Active Directory connection test failed:", error);
+      
+      // Extract environment from request body for error message
+      const environment = req.body?.environment || 'unknown';
+      const envName = environment === 'testing' ? 'Test' : 'Go Live';
+      
+      res.status(500).json({ 
+        success: false, 
+        message: `Failed to connect to the ${envName} Active Directory server` 
+      });
     }
   });
 
