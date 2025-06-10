@@ -131,13 +131,19 @@ export class ActiveDirectoryService {
 
       const { searchEntries } = await this.client.search(AD_CONFIG.baseDN, searchOptions);
       
+      const getValue = (value: any): string => {
+        if (Buffer.isBuffer(value)) return value.toString();
+        if (Array.isArray(value)) return Buffer.isBuffer(value[0]) ? value[0].toString() : String(value[0]);
+        return value ? String(value) : '';
+      };
+
       return searchEntries.map((entry): ADUser => ({
-        username: Array.isArray(entry.uid) ? entry.uid[0] : entry.uid || '',
-        email: Array.isArray(entry.mail) ? entry.mail[0] : entry.mail || '',
-        firstName: Array.isArray(entry.givenName) ? entry.givenName[0] : entry.givenName || '',
-        lastName: Array.isArray(entry.sn) ? entry.sn[0] : entry.sn || '',
-        department: Array.isArray(entry.ou) ? entry.ou[0] : entry.ou || 'Information Technology',
-        groups: Array.isArray(entry.memberOf) ? entry.memberOf : (entry.memberOf ? [entry.memberOf] : []),
+        username: getValue(entry.uid),
+        email: getValue(entry.mail),
+        firstName: getValue(entry.givenName),
+        lastName: getValue(entry.sn),
+        department: getValue(entry.ou) || 'Information Technology',
+        groups: Array.isArray(entry.memberOf) ? entry.memberOf.map(getValue) : (entry.memberOf ? [getValue(entry.memberOf)] : []),
         dn: entry.dn
       }));
     } catch (error) {
@@ -165,13 +171,20 @@ export class ActiveDirectoryService {
       }
 
       const entry = searchEntries[0];
+      
+      const getValue = (value: any): string => {
+        if (Buffer.isBuffer(value)) return value.toString();
+        if (Array.isArray(value)) return Buffer.isBuffer(value[0]) ? value[0].toString() : String(value[0]);
+        return value ? String(value) : '';
+      };
+
       return {
-        username: Array.isArray(entry.uid) ? entry.uid[0] : entry.uid || username,
-        email: Array.isArray(entry.mail) ? entry.mail[0] : entry.mail || '',
-        firstName: Array.isArray(entry.givenName) ? entry.givenName[0] : entry.givenName || '',
-        lastName: Array.isArray(entry.sn) ? entry.sn[0] : entry.sn || '',
-        department: Array.isArray(entry.ou) ? entry.ou[0] : entry.ou || 'Information Technology',
-        groups: Array.isArray(entry.memberOf) ? entry.memberOf : (entry.memberOf ? [entry.memberOf] : []),
+        username: getValue(entry.uid) || username,
+        email: getValue(entry.mail),
+        firstName: getValue(entry.givenName),
+        lastName: getValue(entry.sn),
+        department: getValue(entry.ou) || 'Information Technology',
+        groups: Array.isArray(entry.memberOf) ? entry.memberOf.map(getValue) : (entry.memberOf ? [getValue(entry.memberOf)] : []),
         dn: entry.dn
       };
     } catch (error) {
