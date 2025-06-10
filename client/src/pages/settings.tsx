@@ -201,6 +201,19 @@ export default function Settings() {
   const [adStatus, setAdStatus] = useState({ connected: false, server: '', baseDN: '' });
   const [adTestResult, setAdTestResult] = useState<any>(null);
   const [isTestingAD, setIsTestingAD] = useState(false);
+  const [testingConfigs, setTestingConfigs] = useState<any[]>([]);
+  const [productionConfigs, setProductionConfigs] = useState<any[]>([]);
+  const [showAddConfigForm, setShowAddConfigForm] = useState<'testing' | 'production' | null>(null);
+  const [newConfig, setNewConfig] = useState({
+    name: '',
+    server: '',
+    port: 389,
+    bindDN: '',
+    bindPassword: '',
+    baseDN: '',
+    searchFilter: '(objectClass=person)',
+    environment: 'testing' as 'testing' | 'production'
+  });
 
   const tabs = [
     { id: 'notifications', label: 'Notifications', icon: Bell },
@@ -244,6 +257,88 @@ export default function Settings() {
     }
     setIsSaving(false);
   };
+
+  // Fetch AD configurations
+  const fetchADConfigs = async () => {
+    try {
+      const testingResponse = await fetch('/api/active-directory/configs?environment=testing');
+      const testingData = await testingResponse.json();
+      setTestingConfigs(testingData.configs || []);
+
+      const productionResponse = await fetch('/api/active-directory/configs?environment=production');
+      const productionData = await productionResponse.json();
+      setProductionConfigs(productionData.configs || []);
+    } catch (error) {
+      console.error('Failed to fetch AD configs:', error);
+    }
+  };
+
+  // Add new configuration
+  const handleAddConfig = async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/active-directory/configs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newConfig)
+      });
+      
+      if (response.ok) {
+        await fetchADConfigs();
+        setShowAddConfigForm(null);
+        setNewConfig({
+          name: '',
+          server: '',
+          port: 389,
+          bindDN: '',
+          bindPassword: '',
+          baseDN: '',
+          searchFilter: '(objectClass=person)',
+          environment: 'testing'
+        });
+      }
+    } catch (error) {
+      console.error('Failed to add AD config:', error);
+    }
+    setIsSaving(false);
+  };
+
+  // Activate configuration
+  const handleActivateConfig = async (id: number, environment: 'testing' | 'production') => {
+    try {
+      const response = await fetch(`/api/active-directory/configs/${id}/activate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ environment })
+      });
+      
+      if (response.ok) {
+        await fetchADConfigs();
+      }
+    } catch (error) {
+      console.error('Failed to activate AD config:', error);
+    }
+  };
+
+  // Delete configuration
+  const handleDeleteConfig = async (id: number) => {
+    try {
+      const response = await fetch(`/api/active-directory/configs/${id}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        await fetchADConfigs();
+      }
+    } catch (error) {
+      console.error('Failed to delete AD config:', error);
+    }
+  };
+
+  // Load configurations on component mount
+  useEffect(() => {
+    fetchADConfigs();
+  }, []);
 
   // Users management functions
   const filteredUsers = users.filter(user => {
@@ -600,119 +695,205 @@ export default function Settings() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-6">Active Directory Configuration</h3>
                 
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Enable Active Directory</label>
-                      <p className="text-xs text-gray-500">Connect to Active Directory for user authentication</p>
+                <div className="space-y-8">
+                  {/* Testing Active Directory Section */}
+                  <div className="border border-blue-200 rounded-lg p-6 bg-blue-50">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h4 className="text-lg font-medium text-blue-900">Testing Active Directory</h4>
+                        <p className="text-sm text-blue-700">Development and testing environment configurations</p>
+                      </div>
+                      <Button 
+                        onClick={() => {
+                          setNewConfig({ ...newConfig, environment: 'testing' });
+                          setShowAddConfigForm('testing');
+                        }}
+                        size="sm"
+                        variant="outline"
+                        className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Testing Config
+                      </Button>
                     </div>
-                    <input
-                      type="checkbox"
-                      checked={true}
-                      disabled
-                      className="w-4 h-4 text-blue-600"
-                    />
-                  </div>
 
-                  <div className="space-y-4 pt-4 border-t border-gray-200">
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="space-y-3">
+                      {testingConfigs.length === 0 ? (
+                        <div className="text-center py-6 text-gray-500">
+                          <Server className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                          <p>No testing configurations yet</p>
+                          <p className="text-sm">Add your first testing Active Directory configuration</p>
+                        </div>
+                      ) : (
+                        testingConfigs.map((config) => (
+                          <div key={config.id} className="bg-white border border-blue-200 rounded-lg p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-3">
+                                  <h5 className="font-medium text-gray-900">{config.name}</h5>
+                                  {config.isActive && (
+                                    <Badge className="bg-green-100 text-green-800 border-green-300">Active</Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-gray-600 mt-1">{config.server}:{config.port}</p>
+                                <p className="text-xs text-gray-500">Base DN: {config.baseDN}</p>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                {!config.isActive && (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleActivateConfig(config.id, 'testing')}
+                                    className="bg-blue-600 hover:bg-blue-700"
+                                  >
+                                    Activate
+                                  </Button>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleDeleteConfig(config.id)}
+                                  className="text-red-600 border-red-300 hover:bg-red-50"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    {/* Default testing connection status */}
+                    <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
                       <div className="flex items-center">
                         <div className="flex-shrink-0">
                           <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                         </div>
                         <div className="ml-3">
-                          <p className="text-sm font-medium text-green-800">Connected to Test LDAP Server</p>
+                          <p className="text-sm font-medium text-green-800">Default Test LDAP Server Available</p>
                           <p className="text-sm text-green-700">ldap://ldap.forumsys.com:389</p>
-                          <p className="text-xs text-green-600 mt-1">Base DN: dc=example,dc=com</p>
+                          <p className="text-xs text-green-600 mt-1">Test accounts: einstein, newton, galieleo (password: password)</p>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Go Live Active Directory Section */}
+                  <div className="border border-green-200 rounded-lg p-6 bg-green-50">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
-                        <Label className="text-sm font-medium text-gray-700">Connection Status</Label>
-                        <div className="mt-1 p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">Status</span>
-                            <span className="text-sm font-medium text-green-600">Connected</span>
-                          </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-sm text-gray-600">Last Test</span>
-                            <span className="text-sm text-gray-900">Active</span>
-                          </div>
-                        </div>
+                        <h4 className="text-lg font-medium text-green-900">Go Live Active Directory</h4>
+                        <p className="text-sm text-green-700">Production environment configurations</p>
                       </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700">Available Test Users</Label>
-                        <div className="mt-1 p-3 bg-gray-50 rounded-lg">
-                          <div className="space-y-1 text-sm">
-                            <div className="text-gray-900 font-medium">Test Accounts:</div>
-                            <div className="text-gray-600">• einstein (password: password)</div>
-                            <div className="text-gray-600">• newton (password: password)</div>
-                            <div className="text-gray-600">• galieleo (password: password)</div>
-                          </div>
-                        </div>
-                      </div>
+                      <Button 
+                        onClick={() => {
+                          setNewConfig({ ...newConfig, environment: 'production' });
+                          setShowAddConfigForm('production');
+                        }}
+                        size="sm"
+                        variant="outline"
+                        className="border-green-300 text-green-700 hover:bg-green-100"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Production Config
+                      </Button>
                     </div>
 
-                    {adTestResult && (
-                      <div className={`rounded-lg p-4 ${adTestResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                        <div className="flex items-center">
-                          <div className={`w-2 h-2 rounded-full ${adTestResult.success ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                          <p className={`ml-3 text-sm font-medium ${adTestResult.success ? 'text-green-800' : 'text-red-800'}`}>
-                            {adTestResult.message}
-                          </p>
+                    <div className="space-y-3">
+                      {productionConfigs.length === 0 ? (
+                        <div className="text-center py-6 text-gray-500">
+                          <Server className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                          <p>No production configurations yet</p>
+                          <p className="text-sm">Add your production Active Directory configuration</p>
                         </div>
-                        {adTestResult.userCount && (
-                          <p className="mt-1 ml-5 text-sm text-green-700">
-                            Found {adTestResult.userCount} users available for sync
-                          </p>
+                      ) : (
+                        productionConfigs.map((config) => (
+                          <div key={config.id} className="bg-white border border-green-200 rounded-lg p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-3">
+                                  <h5 className="font-medium text-gray-900">{config.name}</h5>
+                                  {config.isActive && (
+                                    <Badge className="bg-green-100 text-green-800 border-green-300">Active</Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-gray-600 mt-1">{config.server}:{config.port}</p>
+                                <p className="text-xs text-gray-500">Base DN: {config.baseDN}</p>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                {!config.isActive && (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleActivateConfig(config.id, 'production')}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    Activate
+                                  </Button>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleDeleteConfig(config.id)}
+                                  className="text-red-600 border-red-300 hover:bg-red-50"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Test Results */}
+                  {adTestResult && (
+                    <div className={`rounded-lg p-4 ${adTestResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                      <div className="flex items-center">
+                        <div className={`w-2 h-2 rounded-full ${adTestResult.success ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                        <p className={`ml-3 text-sm font-medium ${adTestResult.success ? 'text-green-800' : 'text-red-800'}`}>
+                          {adTestResult.message}
+                        </p>
+                      </div>
+                      {adTestResult.userCount && (
+                        <p className="mt-1 ml-5 text-sm text-green-700">
+                          Found {adTestResult.userCount} users available for sync
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="pt-6 border-t border-gray-200 space-y-4">
+                    <div className="flex space-x-4">
+                      <Button onClick={handleTestADConnection} disabled={isTestingAD} variant="outline">
+                        {isTestingAD ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            Testing...
+                          </>
+                        ) : (
+                          <>
+                            <Server className="w-4 h-4 mr-2" />
+                            Test Connection
+                          </>
                         )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                      </Button>
 
-                <div className="mt-8 pt-6 border-t border-gray-200 space-y-4">
-                  <div className="flex space-x-4">
-                    <Button onClick={handleTestADConnection} disabled={isTestingAD} variant="outline">
-                      {isTestingAD ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                          Testing...
-                        </>
-                      ) : (
-                        <>
-                          <Server className="w-4 h-4 mr-2" />
-                          Test Connection
-                        </>
-                      )}
-                    </Button>
-
-                    <Button onClick={handleSyncADUsers} disabled={isSaving}>
-                      {isSaving ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                          Syncing...
-                        </>
-                      ) : (
-                        <>
-                          <RefreshCw className="w-4 h-4 mr-2" />
-                          Sync Users
-                        </>
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="text-sm text-gray-600">
-                    <p className="font-medium mb-2">Configuration Details:</p>
-                    <ul className="space-y-1 text-xs">
-                      <li>• Server: ldap://ldap.forumsys.com:389</li>
-                      <li>• Bind DN: cn=read-only-admin,dc=example,dc=com</li>
-                      <li>• Search Base: dc=example,dc=com</li>
-                      <li>• This is a free testing LDAP service for development</li>
-                    </ul>
+                      <Button onClick={handleSyncADUsers} disabled={isSaving}>
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            Syncing...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Sync Users
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>

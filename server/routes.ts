@@ -498,6 +498,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Active Directory configuration routes
+  app.get("/api/active-directory/configs", async (req, res) => {
+    try {
+      const environment = req.query.environment as 'testing' | 'production';
+      const configs = await storage.getActiveDirectoryConfigs(environment);
+      res.json({ configs });
+    } catch (error) {
+      console.error("Error fetching AD configs:", error);
+      res.status(500).json({ error: "Failed to fetch configurations" });
+    }
+  });
+
+  app.get("/api/active-directory/configs/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const config = await storage.getActiveDirectoryConfig(id);
+      if (!config) {
+        return res.status(404).json({ error: "Configuration not found" });
+      }
+      res.json({ config });
+    } catch (error) {
+      console.error("Error fetching AD config:", error);
+      res.status(500).json({ error: "Failed to fetch configuration" });
+    }
+  });
+
+  app.post("/api/active-directory/configs", async (req, res) => {
+    try {
+      const { insertActiveDirectoryConfigSchema } = await import("@shared/schema");
+      const validatedData = insertActiveDirectoryConfigSchema.parse(req.body);
+      
+      const config = await storage.createActiveDirectoryConfig(validatedData);
+      res.status(201).json({ config });
+    } catch (error) {
+      console.error("Error creating AD config:", error);
+      res.status(400).json({ error: "Failed to create configuration" });
+    }
+  });
+
+  app.put("/api/active-directory/configs/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const config = await storage.updateActiveDirectoryConfig(id, req.body);
+      res.json({ config });
+    } catch (error) {
+      console.error("Error updating AD config:", error);
+      res.status(400).json({ error: "Failed to update configuration" });
+    }
+  });
+
+  app.delete("/api/active-directory/configs/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteActiveDirectoryConfig(id);
+      res.json({ message: "Configuration deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting AD config:", error);
+      res.status(500).json({ error: "Failed to delete configuration" });
+    }
+  });
+
+  app.post("/api/active-directory/configs/:id/activate", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { environment } = req.body;
+      
+      if (!environment || !['testing', 'production'].includes(environment)) {
+        return res.status(400).json({ error: "Valid environment (testing/production) required" });
+      }
+      
+      await storage.setActiveDirectoryConfigActive(id, environment);
+      res.json({ message: "Configuration activated successfully" });
+    } catch (error) {
+      console.error("Error activating AD config:", error);
+      res.status(500).json({ error: "Failed to activate configuration" });
+    }
+  });
+
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
