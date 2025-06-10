@@ -1182,6 +1182,113 @@ export default function Settings() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Add Configuration Dialog */}
+      {showAddConfigForm && (
+        <Dialog open={!!showAddConfigForm} onOpenChange={() => setShowAddConfigForm(null)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                Add {showAddConfigForm === 'testing' ? 'Testing' : 'Production'} Active Directory Configuration
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="configName">Configuration Name</Label>
+                <Input
+                  id="configName"
+                  value={newConfig.name}
+                  onChange={(e) => setNewConfig({ ...newConfig, name: e.target.value })}
+                  placeholder="e.g., Main AD Server"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="server">Server</Label>
+                  <Input
+                    id="server"
+                    value={newConfig.server}
+                    onChange={(e) => setNewConfig({ ...newConfig, server: e.target.value })}
+                    placeholder="ldap.company.com"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="port">Port</Label>
+                  <Input
+                    id="port"
+                    type="number"
+                    value={newConfig.port}
+                    onChange={(e) => setNewConfig({ ...newConfig, port: parseInt(e.target.value) || 389 })}
+                    placeholder="389"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="bindDN">Bind DN</Label>
+                <Input
+                  id="bindDN"
+                  value={newConfig.bindDN}
+                  onChange={(e) => setNewConfig({ ...newConfig, bindDN: e.target.value })}
+                  placeholder="CN=service-account,DC=company,DC=com"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="bindPassword">Bind Password</Label>
+                <Input
+                  id="bindPassword"
+                  type="password"
+                  value={newConfig.bindPassword}
+                  onChange={(e) => setNewConfig({ ...newConfig, bindPassword: e.target.value })}
+                  placeholder="Service account password"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="baseDN">Base DN</Label>
+                <Input
+                  id="baseDN"
+                  value={newConfig.baseDN}
+                  onChange={(e) => setNewConfig({ ...newConfig, baseDN: e.target.value })}
+                  placeholder="DC=company,DC=com"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="searchFilter">Search Filter</Label>
+                <Input
+                  id="searchFilter"
+                  value={newConfig.searchFilter}
+                  onChange={(e) => setNewConfig({ ...newConfig, searchFilter: e.target.value })}
+                  placeholder="(objectClass=person)"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button variant="outline" onClick={() => setShowAddConfigForm(null)}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleAddConfig} 
+                  disabled={isSaving || !newConfig.name || !newConfig.server || !newConfig.bindDN || !newConfig.baseDN}
+                >
+                  {isSaving ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    'Add Configuration'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

@@ -1018,6 +1018,10 @@ export class MemStorage implements IStorage {
     const newConfig: ActiveDirectoryConfig = {
       id: this.currentActiveDirectoryConfigId++,
       ...config,
+      port: config.port || 389,
+      searchFilter: config.searchFilter || '(objectClass=person)',
+      isEnabled: config.isEnabled || false,
+      isActive: config.isActive || false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -1045,7 +1049,7 @@ export class MemStorage implements IStorage {
 
   async setActiveDirectoryConfigActive(id: number, environment: 'testing' | 'production'): Promise<void> {
     // Deactivate all configs in the environment
-    for (const [configId, config] of this.activeDirectoryConfigsList) {
+    for (const [configId, config] of Array.from(this.activeDirectoryConfigsList.entries())) {
       if (config.environment === environment) {
         this.activeDirectoryConfigsList.set(configId, { ...config, isActive: false });
       }
@@ -1059,113 +1063,6 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Database storage implementation
-import { db } from './db';
 
-export class DatabaseStorage implements IStorage {
-
-  // Active Directory configurations
-  async getActiveDirectoryConfigs(environment?: 'testing' | 'production'): Promise<ActiveDirectoryConfig[]> {
-    const { activeDirectoryConfigs } = await import('@shared/schema');
-    const { eq } = await import('drizzle-orm');
-    
-    if (environment) {
-      return await db.select().from(activeDirectoryConfigs).where(eq(activeDirectoryConfigs.environment, environment));
-    }
-    return await db.select().from(activeDirectoryConfigs);
-  }
-
-  async getActiveDirectoryConfig(id: number): Promise<ActiveDirectoryConfig | undefined> {
-    const { activeDirectoryConfigs } = require('@shared/schema');
-    const { eq } = require('drizzle-orm');
-    
-    const [config] = await this.db.select().from(activeDirectoryConfigs).where(eq(activeDirectoryConfigs.id, id));
-    return config;
-  }
-
-  async createActiveDirectoryConfig(config: InsertActiveDirectoryConfig): Promise<ActiveDirectoryConfig> {
-    const { activeDirectoryConfigs } = require('@shared/schema');
-    
-    const [newConfig] = await this.db.insert(activeDirectoryConfigs).values(config).returning();
-    return newConfig;
-  }
-
-  async updateActiveDirectoryConfig(id: number, config: Partial<InsertActiveDirectoryConfig>): Promise<ActiveDirectoryConfig> {
-    const { activeDirectoryConfigs } = require('@shared/schema');
-    const { eq } = require('drizzle-orm');
-    
-    const [updated] = await this.db
-      .update(activeDirectoryConfigs)
-      .set({ ...config, updatedAt: new Date() })
-      .where(eq(activeDirectoryConfigs.id, id))
-      .returning();
-    return updated;
-  }
-
-  async deleteActiveDirectoryConfig(id: number): Promise<void> {
-    const { activeDirectoryConfigs } = require('@shared/schema');
-    const { eq } = require('drizzle-orm');
-    
-    await this.db.delete(activeDirectoryConfigs).where(eq(activeDirectoryConfigs.id, id));
-  }
-
-  async setActiveDirectoryConfigActive(id: number, environment: 'testing' | 'production'): Promise<void> {
-    const { activeDirectoryConfigs } = require('@shared/schema');
-    const { eq } = require('drizzle-orm');
-    
-    // Deactivate all configs in the environment
-    await this.db
-      .update(activeDirectoryConfigs)
-      .set({ isActive: false })
-      .where(eq(activeDirectoryConfigs.environment, environment));
-    
-    // Activate the specified config
-    await this.db
-      .update(activeDirectoryConfigs)
-      .set({ isActive: true })
-      .where(eq(activeDirectoryConfigs.id, id));
-  }
-
-  // Placeholder implementations for other methods
-  async getDashboardSummary(): Promise<any> { return undefined; }
-  async getRecentTransactions(): Promise<any> { return { transactions: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async getJobFamilies(): Promise<any> { return { jobFamilies: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async getReviewers(): Promise<any> { return { reviewers: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async createDashboardSummary(): Promise<any> { return {}; }
-  async createTransaction(): Promise<any> { return {}; }
-  async createJobFamily(): Promise<any> { return {}; }
-  async createReviewer(): Promise<any> { return {}; }
-  async getReviewerByUsername(): Promise<any> { return undefined; }
-  async createUserInReviewers(): Promise<any> { return {}; }
-  async getUsers(): Promise<any> { return { users: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async getUserById(): Promise<any> { return undefined; }
-  async getUserByEmail(): Promise<any> { return undefined; }
-  async createUser(): Promise<any> { return {}; }
-  async updateUser(): Promise<any> { return {}; }
-  async deleteUser(): Promise<void> { }
-  async getJobs(): Promise<any> { return { jobs: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async getJobById(): Promise<any> { return undefined; }
-  async createJob(): Promise<any> { return {}; }
-  async updateJob(): Promise<any> { return {}; }
-  async deleteJob(): Promise<void> { }
-  async getJobDescriptions(): Promise<any> { return { jobDescriptions: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async getJobDescriptionById(): Promise<any> { return undefined; }
-  async createJobDescription(): Promise<any> { return {}; }
-  async updateJobDescription(): Promise<any> { return {}; }
-  async deleteJobDescription(): Promise<void> { }
-  async getEssentialFunctions(): Promise<any> { return []; }
-  async createEssentialFunction(): Promise<any> { return {}; }
-  async updateEssentialFunction(): Promise<any> { return {}; }
-  async deleteEssentialFunction(): Promise<void> { }
-  async reorderEssentialFunctions(): Promise<void> { }
-  async getNotifications(): Promise<any> { return { notifications: [], total: 0, totalPages: 0, currentPage: 1 }; }
-  async createNotification(): Promise<any> { return {}; }
-  async markNotificationAsRead(): Promise<void> { }
-  async deleteNotification(): Promise<void> { }
-  async getJobDescriptionChanges(): Promise<any> { return []; }
-  async createJobDescriptionChange(): Promise<any> { return {}; }
-  async createAuditLog(): Promise<any> { return {}; }
-  async getAuditLogs(): Promise<any> { return { logs: [], total: 0, totalPages: 0, currentPage: 1 }; }
-}
 
 export const storage = new MemStorage();
