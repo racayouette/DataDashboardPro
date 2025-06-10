@@ -132,6 +132,28 @@ export function Sidebar() {
     }
   };
 
+  const handleSSOToggle = async () => {
+    try {
+      const response = await fetch('/api/sso/toggle', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ enabled: !ssoMode }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSsoMode(data.enabled);
+        console.log(`SSO ${data.enabled ? 'enabled' : 'disabled'}`);
+      } else {
+        console.error('Failed to toggle SSO');
+      }
+    } catch (error) {
+      console.error('SSO toggle error:', error);
+    }
+  };
+
   const handleSignIn = () => {
     setLoginError("");
     if (!signInEmail) {
@@ -339,7 +361,7 @@ export function Sidebar() {
             </div>
             <div className="relative">
               <button
-                onClick={() => setSsoMode(!ssoMode)}
+                onClick={handleSSOToggle}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
                   ssoMode ? 'bg-green-600' : 'bg-blue-700'
                 }`}
