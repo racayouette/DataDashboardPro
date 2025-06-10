@@ -20,7 +20,9 @@ import {
   JobDescriptionChange,
   InsertJobDescriptionChange,
   AuditLog,
-  InsertAuditLog
+  InsertAuditLog,
+  ActiveDirectoryConfig,
+  InsertActiveDirectoryConfig
 } from "@shared/schema";
 
 export interface IStorage {
@@ -81,6 +83,14 @@ export interface IStorage {
   // Audit log
   createAuditLog(log: InsertAuditLog): Promise<AuditLog>;
   getAuditLogs(page?: number, limit?: number): Promise<{ logs: AuditLog[], total: number, totalPages: number, currentPage: number }>;
+  
+  // Active Directory configurations
+  getActiveDirectoryConfigs(environment?: 'testing' | 'production'): Promise<ActiveDirectoryConfig[]>;
+  getActiveDirectoryConfig(id: number): Promise<ActiveDirectoryConfig | undefined>;
+  createActiveDirectoryConfig(config: InsertActiveDirectoryConfig): Promise<ActiveDirectoryConfig>;
+  updateActiveDirectoryConfig(id: number, config: Partial<InsertActiveDirectoryConfig>): Promise<ActiveDirectoryConfig>;
+  deleteActiveDirectoryConfig(id: number): Promise<void>;
+  setActiveDirectoryConfigActive(id: number, environment: 'testing' | 'production'): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -95,6 +105,7 @@ export class MemStorage implements IStorage {
   private notificationsList: Map<number, Notification>;
   private jobDescriptionChangesList: Map<number, JobDescriptionChange>;
   private auditLogsList: Map<number, AuditLog>;
+  private activeDirectoryConfigsList: Map<number, ActiveDirectoryConfig>;
   
   private currentSummaryId: number;
   private currentTransactionId: number;
@@ -107,6 +118,7 @@ export class MemStorage implements IStorage {
   private currentNotificationId: number;
   private currentJobDescriptionChangeId: number;
   private currentAuditLogId: number;
+  private currentActiveDirectoryConfigId: number;
 
   constructor() {
     this.dashboardSummaries = new Map();
@@ -120,6 +132,7 @@ export class MemStorage implements IStorage {
     this.notificationsList = new Map();
     this.jobDescriptionChangesList = new Map();
     this.auditLogsList = new Map();
+    this.activeDirectoryConfigsList = new Map();
     
     this.currentSummaryId = 1;
     this.currentTransactionId = 1;
@@ -132,6 +145,7 @@ export class MemStorage implements IStorage {
     this.currentNotificationId = 1;
     this.currentJobDescriptionChangeId = 1;
     this.currentAuditLogId = 1;
+    this.currentActiveDirectoryConfigId = 1;
 
     this.initializeData();
   }

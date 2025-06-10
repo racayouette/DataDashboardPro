@@ -318,5 +318,31 @@ export type InsertJobDescriptionChange = z.infer<typeof insertJobDescriptionChan
 export type AuditLog = typeof auditLog.$inferSelect;
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 
+// Active Directory configurations
+export const activeDirectoryConfigs = pgTable("active_directory_configs", {
+  id: serial("id").primaryKey(),
+  environment: text("environment").notNull(), // 'testing' or 'production'
+  name: text("name").notNull(),
+  server: text("server").notNull(),
+  port: integer("port").notNull().default(389),
+  bindDN: text("bind_dn").notNull(),
+  bindPassword: text("bind_password").notNull(),
+  baseDN: text("base_dn").notNull(),
+  searchFilter: text("search_filter").default("(objectClass=person)"),
+  isEnabled: boolean("is_enabled").default(false),
+  isActive: boolean("is_active").default(false), // Only one config per environment can be active
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertActiveDirectoryConfigSchema = createInsertSchema(activeDirectoryConfigs).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type ActiveDirectoryConfig = typeof activeDirectoryConfigs.$inferSelect;
+export type InsertActiveDirectoryConfig = z.infer<typeof insertActiveDirectoryConfigSchema>;
+
 // Legacy export for backward compatibility
 export const insertProductSchema = insertJobFamilySchema;
