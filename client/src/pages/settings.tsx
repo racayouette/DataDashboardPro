@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail, ThumbsUp, Server } from "lucide-react";
 
 interface NotificationSettings {
-  emailNotifications: boolean;
   pushNotifications: boolean;
   jobUpdates: boolean;
   systemAlerts: boolean;
@@ -49,7 +48,6 @@ export default function Settings() {
 
   // Settings state
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
-    emailNotifications: true,
     pushNotifications: false,
     jobUpdates: true,
     systemAlerts: true,
@@ -523,21 +521,6 @@ export default function Settings() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h3>
                 
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Email Notifications</label>
-                      <p className="text-xs text-gray-500">Receive job updates and system alerts via email</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={notificationSettings.emailNotifications}
-                      onChange={(e) => setNotificationSettings({
-                        ...notificationSettings,
-                        emailNotifications: e.target.checked
-                      })}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                  </div>
 
 
 
