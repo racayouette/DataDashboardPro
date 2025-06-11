@@ -202,6 +202,7 @@ export default function Settings() {
   const [testingConfigs, setTestingConfigs] = useState<any[]>([]);
   const [productionConfigs, setProductionConfigs] = useState<any[]>([]);
   const [showAddConfigForm, setShowAddConfigForm] = useState<'testing' | 'production' | null>(null);
+  const [editingConfig, setEditingConfig] = useState<any | null>(null);
   const [activeEnvironment, setActiveEnvironment] = useState<'testing' | 'production'>('testing');
   const [newConfig, setNewConfig] = useState({
     name: '',
@@ -310,6 +311,53 @@ export default function Settings() {
       }
     } catch (error) {
       console.error('Failed to add AD config:', error);
+    }
+    setIsSaving(false);
+  };
+
+  // Edit existing configuration
+  const handleEditConfig = (config: any) => {
+    setEditingConfig(config);
+    setNewConfig({
+      name: config.name,
+      server: config.server,
+      port: config.port,
+      bindDN: config.bindDN,
+      bindPassword: config.bindPassword,
+      baseDN: config.baseDN,
+      searchFilter: config.searchFilter,
+      environment: config.environment
+    });
+  };
+
+  // Update configuration
+  const handleUpdateConfig = async () => {
+    if (!editingConfig) return;
+    
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/active-directory/configs/${editingConfig.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newConfig)
+      });
+      
+      if (response.ok) {
+        await fetchADConfigs();
+        setEditingConfig(null);
+        setNewConfig({
+          name: '',
+          server: '',
+          port: 389,
+          bindDN: '',
+          bindPassword: '',
+          baseDN: '',
+          searchFilter: '(objectClass=person)',
+          environment: 'testing'
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update config:', error);
     }
     setIsSaving(false);
   };
@@ -779,6 +827,14 @@ export default function Settings() {
                                 <Button
                                   size="sm"
                                   variant="outline"
+                                  onClick={() => handleEditConfig(config)}
+                                  className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                                >
+                                  <Edit3 className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
                                   onClick={() => handleDeleteConfig(config.id)}
                                   className="text-red-600 border-red-300 hover:bg-red-50"
                                 >
@@ -859,6 +915,14 @@ export default function Settings() {
                                     Activate
                                   </Button>
                                 )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleEditConfig(config)}
+                                  className="text-green-600 border-green-300 hover:bg-green-50"
+                                >
+                                  <Edit3 className="w-4 h-4" />
+                                </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -1223,13 +1287,26 @@ export default function Settings() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Add Configuration Dialog */}
-      {showAddConfigForm && (
-        <Dialog open={!!showAddConfigForm} onOpenChange={() => setShowAddConfigForm(null)}>
+      {/* Add/Edit Configuration Dialog */}
+      {(showAddConfigForm || editingConfig) && (
+        <Dialog open={!!(showAddConfigForm || editingConfig)} onOpenChange={() => {
+          setShowAddConfigForm(null);
+          setEditingConfig(null);
+          setNewConfig({
+            name: '',
+            server: '',
+            port: 389,
+            bindDN: '',
+            bindPassword: '',
+            baseDN: '',
+            searchFilter: '(objectClass=person)',
+            environment: 'testing'
+          });
+        }}>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
-                Add {showAddConfigForm === 'testing' ? 'Testing' : 'Production'} Active Directory Configuration
+                {editingConfig ? 'Edit' : 'Add'} {(editingConfig?.environment || showAddConfigForm) === 'testing' ? 'Testing' : 'Production'} Active Directory Configuration
               </DialogTitle>
             </DialogHeader>
             
@@ -1308,20 +1385,33 @@ export default function Settings() {
               </div>
 
               <div className="flex justify-end space-x-3 pt-4">
-                <Button variant="outline" onClick={() => setShowAddConfigForm(null)}>
+                <Button variant="outline" onClick={() => {
+                  setShowAddConfigForm(null);
+                  setEditingConfig(null);
+                  setNewConfig({
+                    name: '',
+                    server: '',
+                    port: 389,
+                    bindDN: '',
+                    bindPassword: '',
+                    baseDN: '',
+                    searchFilter: '(objectClass=person)',
+                    environment: 'testing'
+                  });
+                }}>
                   Cancel
                 </Button>
                 <Button 
-                  onClick={handleAddConfig} 
+                  onClick={editingConfig ? handleUpdateConfig : handleAddConfig} 
                   disabled={isSaving || !newConfig.name || !newConfig.server || !newConfig.bindDN || !newConfig.baseDN}
                 >
                   {isSaving ? (
                     <>
                       <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                      Adding...
+                      {editingConfig ? 'Updating...' : 'Adding...'}
                     </>
                   ) : (
-                    'Add Configuration'
+                    editingConfig ? 'Update Configuration' : 'Add Configuration'
                   )}
                 </Button>
               </div>
