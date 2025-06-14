@@ -24,6 +24,9 @@ import {
   ActiveDirectoryConfig,
   InsertActiveDirectoryConfig
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, count, sql } from "drizzle-orm";
+import * as schema from "@shared/schema";
 
 export interface IStorage {
   // Dashboard and summary data
@@ -1065,4 +1068,17 @@ export class MemStorage implements IStorage {
 
 
 
-export const storage = new MemStorage();
+// Use database storage if available, fallback to memory for development
+const storage = process.env.DATABASE_URL ? 
+  (() => {
+    try {
+      const { DatabaseStorage } = require("./storage-database");
+      return new DatabaseStorage();
+    } catch (error) {
+      console.warn('Database connection failed, using memory storage:', error.message);
+      return new MemStorage();
+    }
+  })() : 
+  new MemStorage();
+
+export { storage };
