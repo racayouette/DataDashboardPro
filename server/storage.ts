@@ -1068,17 +1068,4 @@ export class MemStorage implements IStorage {
 
 
 
-// Use database storage if available, fallback to memory for development
-const storage = process.env.DATABASE_URL ? 
-  (() => {
-    try {
-      const { DatabaseStorage } = require("./storage-database");
-      return new DatabaseStorage();
-    } catch (error) {
-      console.warn('Database connection failed, using memory storage:', error.message);
-      return new MemStorage();
-    }
-  })() : 
-  new MemStorage();
-
-export { storage };
+export const storage = new MemStorage();

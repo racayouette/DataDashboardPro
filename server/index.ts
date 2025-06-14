@@ -47,13 +47,21 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
+  // Setup static file serving for production
+  if (process.env.NODE_ENV === "production") {
+    // Serve static files from dist/client in production
+    app.use(express.static("dist/client"));
+    
+    // Handle SPA routing - serve index.html for non-API routes
+    app.get("*", (req, res, next) => {
+      if (req.path.startsWith("/api")) {
+        return next();
+      }
+      res.sendFile("index.html", { root: "dist/client" });
+    });
   } else {
-    serveStatic(app);
+    // Development mode with Vite
+    await setupVite(app, server);
   }
 
   // Use Azure's assigned port or fallback to 5000 for local development
