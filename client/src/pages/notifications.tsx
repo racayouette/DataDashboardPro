@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Bell, Check, X, Clock, AlertCircle, Info, CheckCircle } from "lucide-react";
+import { Search, Bell, Check, X, Clock, AlertCircle, Info, CheckCircle, FileSpreadsheet } from "lucide-react";
+import * as XLSX from 'xlsx';
 
 interface Notification {
   id: number;
@@ -131,6 +132,49 @@ export default function Notifications() {
     setNotifications(prev => prev.map(notification => ({ ...notification, read: true })));
   };
 
+  // Excel export function
+  const exportToExcel = () => {
+    // Get all filtered notifications data
+    const dataToExport = filteredNotifications.map(notification => ({
+      'ID': notification.id,
+      'Title': notification.title,
+      'Message': notification.message,
+      'Type': notification.type,
+      'Category': notification.category,
+      'Priority': notification.priority,
+      'Status': notification.read ? 'Read' : 'Unread',
+      'Timestamp': notification.timestamp
+    }));
+
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+
+    // Set column widths
+    const colWidths = [
+      { wch: 8 },  // ID
+      { wch: 30 }, // Title
+      { wch: 50 }, // Message
+      { wch: 12 }, // Type
+      { wch: 15 }, // Category
+      { wch: 12 }, // Priority
+      { wch: 12 }, // Status
+      { wch: 18 }  // Timestamp
+    ];
+    ws['!cols'] = colWidths;
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Notifications');
+
+    // Generate filename with current date
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0];
+    const filename = `Notifications_Export_${dateStr}.xlsx`;
+
+    // Save file
+    XLSX.writeFile(wb, filename);
+  };
+
   const filteredNotifications = notifications.filter(notification => {
     const matchesSearch = notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          notification.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -207,6 +251,19 @@ export default function Notifications() {
                   </Select>
                 </div>
               </div>
+            </div>
+
+            {/* Export Button */}
+            <div className="mb-4">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={exportToExcel}
+                className="flex items-center space-x-2"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>Export to Excel</span>
+              </Button>
             </div>
 
             {/* Notifications List */}
