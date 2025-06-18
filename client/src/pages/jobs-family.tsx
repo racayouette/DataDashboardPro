@@ -3,7 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { useRole } from "@/contexts/RoleContext";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
-import { Search, Filter, Bell, FilterX, ChevronDown, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle } from "lucide-react";
+import { Search, Filter, Bell, FilterX, ChevronDown, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle, FileSpreadsheet } from "lucide-react";
+import * as XLSX from 'xlsx';
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -344,6 +345,47 @@ export default function JobsFamily() {
     setCurrentPage(1); // Reset to first page
   };
 
+  // Excel export function
+  const exportToExcel = () => {
+    // Get all filtered data (not just paginated data)
+    const dataToExport = filteredEntries.map(entry => ({
+      'Job Code': entry.jobCode,
+      'Job Title': entry.jobTitle,
+      'Job Family': entry.jobFamily,
+      'Functional Leader': entry.reviewer,
+      'Responsible': entry.responsible,
+      'Status': entry.status,
+      'Last Updated': entry.lastUpdated
+    }));
+
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+
+    // Set column widths
+    const colWidths = [
+      { wch: 12 }, // Job Code
+      { wch: 40 }, // Job Title
+      { wch: 20 }, // Job Family
+      { wch: 20 }, // Functional Leader
+      { wch: 20 }, // Responsible
+      { wch: 15 }, // Status
+      { wch: 15 }  // Last Updated
+    ];
+    ws['!cols'] = colWidths;
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Job Descriptions');
+
+    // Generate filename with current date
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0];
+    const filename = `Job_Descriptions_Export_${dateStr}.xlsx`;
+
+    // Save file
+    XLSX.writeFile(wb, filename);
+  };
+
   // Function to get the reviewer display for a given entry
   const getReviewerDisplay = (entry: JobEntry, index: number) => {
     const actualIndex = startIndex + index + 1; // Calculate actual row number
@@ -582,6 +624,19 @@ export default function JobsFamily() {
                 </DropdownMenu>
 
               </div>
+            </div>
+
+            {/* Export Button */}
+            <div className="mb-4 flex justify-end">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={exportToExcel}
+                className="flex items-center space-x-2"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>Export to Excel</span>
+              </Button>
             </div>
 
             {/* Table */}
