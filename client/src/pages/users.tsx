@@ -39,6 +39,24 @@ export default function Users() {
     department: "",
     status: "Active"
   });
+  
+  // Password validation for complex passwords
+  const validatePassword = (password: string) => {
+    const requirements = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+    
+    const score = Object.values(requirements).filter(Boolean).length;
+    return {
+      requirements,
+      isStrong: score >= 4,
+      score
+    };
+  };
   const notificationRef = useRef<HTMLDivElement>(null);
 
   // Sample notifications
@@ -486,14 +504,40 @@ export default function Users() {
                   <Label htmlFor="edit-password" className="text-right">
                     Password
                   </Label>
-                  <Input
-                    id="edit-password"
-                    type="password"
-                    value={editingUser.password || ''}
-                    onChange={(e) => setEditingUser({...editingUser, password: e.target.value})}
-                    className="col-span-3"
-                    placeholder="Leave blank to keep current password"
-                  />
+                  <div className="col-span-3 space-y-2">
+                    <Input
+                      id="edit-password"
+                      type="password"
+                      value={editingUser.password || ''}
+                      onChange={(e) => setEditingUser({...editingUser, password: e.target.value})}
+                      placeholder="Leave blank to keep current password"
+                    />
+                    {editingUser.password && (
+                      <div className="text-xs space-y-1">
+                        <div className="font-medium text-gray-700">Password Requirements:</div>
+                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.length ? 'text-green-600' : 'text-gray-400'}`}>
+                          <span className="mr-2">{validatePassword(editingUser.password).requirements.length ? '✓' : '○'}</span>
+                          <span>At least 8 characters</span>
+                        </div>
+                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                          <span className="mr-2">{validatePassword(editingUser.password).requirements.uppercase ? '✓' : '○'}</span>
+                          <span>One uppercase letter</span>
+                        </div>
+                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                          <span className="mr-2">{validatePassword(editingUser.password).requirements.lowercase ? '✓' : '○'}</span>
+                          <span>One lowercase letter</span>
+                        </div>
+                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.number ? 'text-green-600' : 'text-gray-400'}`}>
+                          <span className="mr-2">{validatePassword(editingUser.password).requirements.number ? '✓' : '○'}</span>
+                          <span>One number</span>
+                        </div>
+                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.special ? 'text-green-600' : 'text-gray-400'}`}>
+                          <span className="mr-2">{validatePassword(editingUser.password).requirements.special ? '✓' : '○'}</span>
+                          <span>One special character</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="edit-role" className="text-right">
