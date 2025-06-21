@@ -863,7 +863,7 @@ export default function JobsFamily() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 5))}
                   disabled={currentPage === 1}
                 >
                   &lt;
@@ -899,7 +899,7 @@ export default function JobsFamily() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 5))}
                   disabled={currentPage === totalPages}
                 >
                   &gt;
