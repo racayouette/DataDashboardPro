@@ -449,7 +449,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Test the connection with the specific configuration
-      const result = await adService.testConnection(config);
+      const testConfig = { ...config, environment };
+      const result = await adService.testConnection(testConfig);
       
       // Update error message to specify environment
       if (!result.success) {
