@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Plus, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail, ThumbsUp, Server } from "lucide-react";
+import { Settings as SettingsIcon, Bell, User, Save, RefreshCw, Search, Edit3, Trash2, X, ArrowUpDown, ArrowUp, ArrowDown, Mail, ThumbsUp, Server } from "lucide-react";
 
 interface NotificationSettings {
   pushNotifications: boolean;
@@ -74,7 +74,7 @@ export default function Settings() {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [showAddModal, setShowAddModal] = useState(false);
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -82,14 +82,7 @@ export default function Settings() {
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [sortBy, setSortBy] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [newUser, setNewUser] = useState<Partial<User & { password: string }>>({
-    name: "",
-    email: "",
-    password: "",
-    role: "Employee",
-    department: "",
-    status: "Active"
-  });
+
 
   // Sample user data with Functional Leaders and Responsible Persons merged in
   const [users, setUsers] = useState<User[]>([
@@ -441,15 +434,6 @@ export default function Settings() {
 
 
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.endsWith('@') && !value.includes('adventhealth.com')) {
-      setNewUser({ ...newUser, email: value + 'adventhealth.com' });
-    } else {
-      setNewUser({ ...newUser, email: value });
-    }
-  };
-
   const validatePassword = (password: string): boolean => {
     const hasMinLength = password.length >= 8;
     const hasUppercase = /[A-Z]/.test(password);
@@ -458,28 +442,6 @@ export default function Settings() {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     
     return hasMinLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
-  };
-
-  const handleAddUser = () => {
-    if (newUser.name && newUser.email && newUser.role && newUser.department && newUser.password) {
-      if (!validatePassword(newUser.password)) {
-        alert("Password does not meet all requirements. Please ensure it has at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.");
-        return;
-      }
-      
-      const user: User = {
-        id: Math.max(...users.map(u => u.id)) + 1,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role as User['role'],
-        department: newUser.department,
-        status: newUser.status as User['status'] || "Active",
-        lastLogin: "Never"
-      };
-      setUsers([...users, user]);
-      setNewUser({ name: "", email: "", password: "", role: "Employee", department: "", status: "Active" });
-      setShowAddModal(false);
-    }
   };
 
   const handleEditUser = (user: User) => {
@@ -569,10 +531,6 @@ export default function Settings() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-                  <Button onClick={() => setShowAddModal(true)} className="text-sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add User
-                  </Button>
                 </div>
 
                 {/* Search and Filter Controls */}
@@ -964,135 +922,7 @@ export default function Settings() {
         </div>
       </main>
 
-      {/* Add User Modal */}
-      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New User</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="newName">Name</Label>
-              <Input
-                id="newName"
-                value={newUser.name || ""}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                placeholder="Enter full name"
-                autoComplete="off"
-              />
-            </div>
-            <div>
-              <Label htmlFor="newEmail">Email</Label>
-              <Input
-                id="newEmail"
-                type="email"
-                value={newUser.email || ""}
-                onChange={handleEmailChange}
-                placeholder="Enter email address"
-                autoComplete="off"
-              />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <Label htmlFor="newPassword">Password</Label>
-                {validatePassword(newUser.password || "") && (
-                  <ThumbsUp className="h-4 w-4 text-green-600 mr-3" />
-                )}
-              </div>
-              <Input
-                id="newPassword"
-                type="text"
-                value={newUser.password || ""}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                placeholder="Enter password"
-                autoComplete="off"
-              />
-              <div className="mt-2">
-                <p className="text-sm text-gray-700 mb-2">Password Requirements:</p>
-                <div className="space-y-1 text-xs">
-                  <div className="flex items-center">
-                    <span className={`mr-2 ${(newUser.password || "").length >= 8 ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
-                    <span className={(newUser.password || "").length >= 8 ? 'text-green-600' : 'text-gray-500'}>At least 8 characters</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className={`mr-2 ${/[A-Z]/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
-                    <span className={/[A-Z]/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One uppercase letter</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className={`mr-2 ${/[a-z]/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
-                    <span className={/[a-z]/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One lowercase letter</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className={`mr-2 ${/\d/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
-                    <span className={/\d/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One number</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className={`mr-2 ${/[!@#$%^&*(),.?":{}|<>]/.test(newUser.password || "") ? 'text-green-500' : 'text-gray-400'}`}>✓</span>
-                    <span className={/[!@#$%^&*(),.?":{}|<>]/.test(newUser.password || "") ? 'text-green-600' : 'text-gray-500'}>One special character</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="newRole">Role</Label>
-              <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value as User['role'] })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="HR Manager">HR Manager</SelectItem>
-                  <SelectItem value="Reviewer">Reviewer</SelectItem>
-                  <SelectItem value="Employee">Employee</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="newDepartment">Department</Label>
-              <Select value={newUser.department} onValueChange={(value) => setNewUser({ ...newUser, department: value })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Human Resources">Human Resources</SelectItem>
-                  <SelectItem value="Information Technology">Information Technology</SelectItem>
-                  <SelectItem value="Finance">Finance</SelectItem>
-                  <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Operations">Operations</SelectItem>
-                  <SelectItem value="Sales">Sales</SelectItem>
-                  <SelectItem value="Customer Service">Customer Service</SelectItem>
-                  <SelectItem value="Research & Development">Research & Development</SelectItem>
-                  <SelectItem value="Quality Assurance">Quality Assurance</SelectItem>
-                  <SelectItem value="Legal">Legal</SelectItem>
-                  <SelectItem value="Facilities">Facilities</SelectItem>
-                  <SelectItem value="Security">Security</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="newStatus">Status</Label>
-              <Select value={newUser.status} onValueChange={(value) => setNewUser({ ...newUser, status: value as User['status'] })}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex justify-end space-x-2 pt-4">
-              <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
-              <Button 
-                onClick={handleAddUser}
-                disabled={!newUser.name || !newUser.email || !newUser.role || !newUser.password || !newUser.department || !validatePassword(newUser.password || "")}
-              >
-                Add User
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       {/* Edit User Modal */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
