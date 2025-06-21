@@ -397,9 +397,7 @@ export default function Users() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Department
-                    </th>
+
 
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Last Login
@@ -427,9 +425,7 @@ export default function Users() {
                           {user.role}
                         </Badge>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.department}
-                      </td>
+
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.lastLogin}
