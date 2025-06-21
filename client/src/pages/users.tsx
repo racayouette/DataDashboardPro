@@ -369,13 +369,7 @@ export default function Users() {
 
 
 
-              <Button 
-                className="w-full lg:w-auto"
-                onClick={() => setShowAddModal(true)}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add User
-              </Button>
+
             </div>
           </div>
 
@@ -455,93 +449,7 @@ export default function Users() {
           </div>
         </div>
 
-        {/* Add User Modal */}
-        <Dialog open={showAddModal} onOpenChange={() => {}}>
-          <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  value={newUser.name || ""}
-                  onChange={(e) => setNewUser({...newUser, name: e.target.value})}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={newUser.email || ""}
-                  onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Role
-                </Label>
-                <Select 
-                  value={newUser.role || "Employee"} 
-                  onValueChange={(value) => setNewUser({...newUser, role: value as User["role"]})}
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {uniqueRoles.map(role => (
-                      <SelectItem key={role} value={role}>{role}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="department" className="text-right">
-                  Department
-                </Label>
-                <Input
-                  id="department"
-                  value={newUser.department || ""}
-                  onChange={(e) => setNewUser({...newUser, department: e.target.value})}
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="status" className="text-right">
-                  Status
-                </Label>
-                <Select 
-                  value={newUser.status || "Active"} 
-                  onValueChange={(value) => setNewUser({...newUser, status: value as User["status"]})}
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowAddModal(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddUser}>
-                Save
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+
 
         {/* Edit User Modal */}
         <Dialog open={showEditModal} onOpenChange={() => {}}>
