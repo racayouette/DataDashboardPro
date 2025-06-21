@@ -181,15 +181,17 @@ export default function Dashboard() {
     }
   };
 
-  // Show error messages
-  if (summaryError || transactionsError || jobFamiliesError || reviewersError) {
-    const errorMessage = summaryError?.message || transactionsError?.message || jobFamiliesError?.message || reviewersError?.message;
-    toast({
-      title: "Error loading data",
-      description: errorMessage || "Failed to load dashboard data.",
-      variant: "destructive",
-    });
-  }
+  // Show error messages in useEffect to prevent infinite re-renders
+  useEffect(() => {
+    if (summaryError || transactionsError || jobFamiliesError || reviewersError) {
+      const errorMessage = summaryError?.message || transactionsError?.message || jobFamiliesError?.message || reviewersError?.message;
+      toast({
+        title: "Error loading data",
+        description: errorMessage || "Failed to load dashboard data.",
+        variant: "destructive",
+      });
+    }
+  }, [summaryError, transactionsError, jobFamiliesError, reviewersError, toast]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
