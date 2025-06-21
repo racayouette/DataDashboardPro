@@ -575,6 +575,19 @@ export default function Users() {
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="edit-password" className="text-right">
+                    Password
+                  </Label>
+                  <Input
+                    id="edit-password"
+                    type="password"
+                    value={editingUser.password || ''}
+                    onChange={(e) => setEditingUser({...editingUser, password: e.target.value})}
+                    className="col-span-3"
+                    placeholder="Leave blank to keep current password"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="edit-role" className="text-right">
                     Role
                   </Label>
