@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema } from "@shared/schema";
+import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema, insertConfigurationSchema } from "@shared/schema";
 import { setupSSORoutes, ssoService } from "./sso";
 import { adService } from "./activeDirectory";
 // Database connection status removed - using in-memory storage
@@ -608,6 +608,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error activating AD config:", error);
       res.status(500).json({ error: "Failed to activate configuration" });
+    }
+  });
+
+  // Configuration management routes
+  app.get("/api/configurations/:configType", async (req, res) => {
+    try {
+      const { configType } = req.params;
+      const config = await storage.getConfiguration(configType);
+      
+      if (!config) {
+        return res.status(404).json({ error: "Configuration not found" });
+      }
+      
+      res.json(config);
+    } catch (error) {
+      console.error("Error fetching configuration:", error);
+      res.status(500).json({ error: "Failed to fetch configuration" });
+    }
+  });
+
+  app.post("/api/configurations", async (req, res) => {
+    try {
+      const validatedData = insertConfigurationSchema.parse(req.body);
+      const config = await storage.createConfiguration(validatedData);
+      res.status(201).json(config);
+    } catch (error) {
+      console.error("Error creating configuration:", error);
+      res.status(400).json({ error: "Failed to create configuration" });
+    }
+  });
+
+  app.put("/api/configurations/:configType", async (req, res) => {
+    try {
+      const { configType } = req.params;
+      const { configData } = req.body;
+      
+      if (!configData) {
+        return res.status(400).json({ error: "Configuration data is required" });
+      }
+      
+      const config = await storage.updateConfiguration(configType, configData);
+      res.json(config);
+    } catch (error) {
+      console.error("Error updating configuration:", error);
+      res.status(400).json({ error: "Failed to update configuration" });
     }
   });
 
