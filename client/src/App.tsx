@@ -7,6 +7,7 @@ import { WindowsAuth } from "@/components/windows-auth";
 import { RoleProvider } from "@/contexts/RoleContext";
 import { useState } from "react";
 import Home from "@/pages/home";
+import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import JobsFamily from "@/pages/jobs-family";
 import Editing from "@/pages/editing";
@@ -23,6 +24,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/login" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/jobs-family" component={JobsFamily} />
       <Route path="/editing" component={Editing} />
