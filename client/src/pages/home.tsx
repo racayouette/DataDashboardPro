@@ -6,11 +6,11 @@ export default function Home() {
       <div className="text-center">
         {/* Logo positioned slightly higher than center */}
         <div className="mb-8 flex justify-center">
-          <div className="bg-white p-8 shadow-2xl">
+          <div className="bg-white p-4 shadow-2xl">
             <img 
               src={adventHealthLogo} 
               alt="AdventHealth Logo" 
-              className="w-24 h-24 object-contain"
+              className="w-40 h-40 object-contain"
             />
           </div>
         </div>
