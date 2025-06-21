@@ -111,8 +111,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   };
 
+  // Role-based authorization middleware
+  const requireRole = (roles: string[]) => {
+    return (req: any, res: any, next: any) => {
+      if (!req.session?.user) {
+        return res.status(401).json({ 
+          success: false, 
+          message: "Authentication required" 
+        });
+      }
+      
+      if (!roles.includes(req.session.user.role)) {
+        return res.status(403).json({ 
+          success: false, 
+          message: "Insufficient permissions" 
+        });
+      }
+      
+      next();
+    };
+  };
+
+  // Logout endpoint
+  app.post('/api/auth/logout', requireAuth, (req: any, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ 
+          success: false, 
+          message: "Failed to logout" 
+        });
+      }
+      
+      res.json({
+        success: true,
+        message: "Logged out successfully"
+      });
+    });
+  });
+
   // Dashboard summary endpoint
-  app.get("/api/dashboard/summary", async (req, res) => {
+  app.get("/api/dashboard/summary", requireAuth, async (req, res) => {
     try {
       const summary = await storage.getDashboardSummary();
       if (!summary) {
@@ -125,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Recent transactions endpoint
-  app.get("/api/transactions", async (req, res) => {
+  app.get("/api/transactions", requireAuth, async (req, res) => {
     try {
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
@@ -137,7 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Job families endpoint
-  app.get("/api/job-families", async (req, res) => {
+  app.get("/api/job-families", requireAuth, async (req, res) => {
     try {
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
