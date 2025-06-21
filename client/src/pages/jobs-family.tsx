@@ -863,8 +863,12 @@ export default function JobsFamily() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 5))}
-                  disabled={currentPage === 1}
+                  onClick={() => {
+                    const currentGroup = Math.floor((currentPage - 1) / 5);
+                    const previousGroupStart = Math.max(0, currentGroup - 1) * 5 + 1;
+                    setCurrentPage(previousGroupStart);
+                  }}
+                  disabled={currentPage <= 5}
                 >
                   &lt;
                 </Button>
@@ -876,12 +880,12 @@ export default function JobsFamily() {
                       return Array.from({ length: totalPages }, (_, i) => i + 1);
                     }
                     
-                    // Show up to 5 buttons, positioned based on current page
-                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
-                    const end = Math.min(totalPages, start + 4);
-                    const adjustedStart = Math.max(1, end - 4);
+                    // Calculate which group of 5 the current page belongs to
+                    const currentGroup = Math.floor((currentPage - 1) / 5);
+                    const groupStart = currentGroup * 5 + 1;
+                    const groupEnd = Math.min(groupStart + 4, totalPages);
                     
-                    return Array.from({ length: end - adjustedStart + 1 }, (_, i) => adjustedStart + i);
+                    return Array.from({ length: groupEnd - groupStart + 1 }, (_, i) => groupStart + i);
                   };
                   
                   return getVisiblePages().map((pageNum) => (
@@ -899,8 +903,12 @@ export default function JobsFamily() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 5))}
-                  disabled={currentPage === totalPages}
+                  onClick={() => {
+                    const currentGroup = Math.floor((currentPage - 1) / 5);
+                    const nextGroupStart = (currentGroup + 1) * 5 + 1;
+                    setCurrentPage(Math.min(totalPages, nextGroupStart));
+                  }}
+                  disabled={Math.floor((currentPage - 1) / 5) >= Math.floor((totalPages - 1) / 5)}
                 >
                   &gt;
                 </Button>
