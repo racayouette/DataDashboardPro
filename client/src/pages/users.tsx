@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Edit3, Trash2, Bell, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Search, Plus, Edit3, Trash2, Bell, UserCheck, X, ArrowUpDown, ArrowUp, ArrowDown, Check } from "lucide-react";
 import { Link } from "wouter";
 
 interface User {
@@ -515,24 +515,24 @@ export default function Users() {
                     {editingUser.password && (
                       <div className="text-xs space-y-1">
                         <div className="font-medium text-gray-700">Password Requirements:</div>
-                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.length ? 'text-green-600' : 'text-gray-400'}`}>
-                          <span className="mr-2">{validatePassword(editingUser.password).requirements.length ? '✓' : '○'}</span>
+                        <div className={`flex items-center space-x-1 ${validatePassword(editingUser.password).requirements.length ? 'text-green-600' : 'text-gray-400'}`}>
+                          <Check className="h-3 w-3" />
                           <span>At least 8 characters</span>
                         </div>
-                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
-                          <span className="mr-2">{validatePassword(editingUser.password).requirements.uppercase ? '✓' : '○'}</span>
+                        <div className={`flex items-center space-x-1 ${validatePassword(editingUser.password).requirements.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                          <Check className="h-3 w-3" />
                           <span>One uppercase letter</span>
                         </div>
-                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
-                          <span className="mr-2">{validatePassword(editingUser.password).requirements.lowercase ? '✓' : '○'}</span>
+                        <div className={`flex items-center space-x-1 ${validatePassword(editingUser.password).requirements.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                          <Check className="h-3 w-3" />
                           <span>One lowercase letter</span>
                         </div>
-                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.number ? 'text-green-600' : 'text-gray-400'}`}>
-                          <span className="mr-2">{validatePassword(editingUser.password).requirements.number ? '✓' : '○'}</span>
+                        <div className={`flex items-center space-x-1 ${validatePassword(editingUser.password).requirements.number ? 'text-green-600' : 'text-gray-400'}`}>
+                          <Check className="h-3 w-3" />
                           <span>One number</span>
                         </div>
-                        <div className={`flex items-center ${validatePassword(editingUser.password).requirements.special ? 'text-green-600' : 'text-gray-400'}`}>
-                          <span className="mr-2">{validatePassword(editingUser.password).requirements.special ? '✓' : '○'}</span>
+                        <div className={`flex items-center space-x-1 ${validatePassword(editingUser.password).requirements.special ? 'text-green-600' : 'text-gray-400'}`}>
+                          <Check className="h-3 w-3" />
                           <span>One special character</span>
                         </div>
                       </div>
