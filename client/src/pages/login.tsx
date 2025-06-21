@@ -174,13 +174,15 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
       <div className="bg-white rounded-lg p-8 shadow-2xl max-w-md w-full mx-4">
         {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <img 
-              src={adventHealthLogo} 
-              alt="AdventHealth Logo" 
-              className="w-24 h-24 object-contain"
-            />
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-2">
+            <div className="bg-white p-2">
+              <img 
+                src={adventHealthLogo} 
+                alt="AdventHealth Logo" 
+                className="w-20 h-20 object-contain"
+              />
+            </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Job Review System</h1>
           <p className="text-gray-600">Please sign in to continue</p>
