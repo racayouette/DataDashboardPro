@@ -4,9 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Eye, EyeOff, AlertTriangle, Clock, Check, X } from "lucide-react";
+import { Eye, EyeOff, AlertTriangle, Clock } from "lucide-react";
 import adventHealthLogo from "@assets/advent-health250_1749395626405.png";
 
 export default function Login() {
@@ -24,10 +22,6 @@ export default function Login() {
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
   const [showSignInPassword, setShowSignInPassword] = useState(false);
-  const [signUpEmail, setSignUpEmail] = useState("");
-  const [signUpPassword, setSignUpPassword] = useState("");
-  const [signUpName, setSignUpName] = useState("");
-  const [signUpDepartment, setSignUpDepartment] = useState("");
   
   // Fetch users data for authentication
   const { data: usersData } = useQuery({
@@ -100,7 +94,7 @@ export default function Login() {
       return;
     }
 
-    const users = usersData?.data || usersData || [];
+    const users = usersData || [];
     const foundUser = users.find((user: any) => 
       user.email.toLowerCase() === signInEmail.toLowerCase() && 
       user.password === signInPassword
@@ -140,29 +134,13 @@ export default function Login() {
     }
   };
 
-  const handleSignUp = () => {
-    // Handle sign up logic here
-    console.log("Sign up attempt", { signUpEmail, signUpName, signUpDepartment });
-  };
+
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  const passwordValidation = {
-    length: signUpPassword.length >= 8,
-    uppercase: /[A-Z]/.test(signUpPassword),
-    lowercase: /[a-z]/.test(signUpPassword),
-    number: /\d/.test(signUpPassword),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(signUpPassword),
-    isStrong: signUpPassword.length >= 8 && 
-              /[A-Z]/.test(signUpPassword) && 
-              /[a-z]/.test(signUpPassword) && 
-              /\d/.test(signUpPassword) && 
-              /[!@#$%^&*(),.?":{}|<>]/.test(signUpPassword)
   };
 
   if (isLocked) {
@@ -208,152 +186,53 @@ export default function Login() {
           <p className="text-gray-600">Please sign in to continue</p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="signin-email">Email</Label>
+            <Input
+              id="signin-email"
+              type="email"
+              value={signInEmail}
+              onChange={(e) => setSignInEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="signin-password">Password</Label>
+            <div className="relative">
+              <Input
+                id="signin-password"
+                type={showSignInPassword ? "text" : "password"}
+                value={signInPassword}
+                onChange={(e) => setSignInPassword(e.target.value)}
+                placeholder="Enter your password"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                onClick={() => setShowSignInPassword(!showSignInPassword)}
+              >
+                {showSignInPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
           
-          <TabsContent value="signin" className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="signin-email">Email</Label>
-              <Input
-                id="signin-email"
-                type="email"
-                value={signInEmail}
-                onChange={(e) => setSignInEmail(e.target.value)}
-                placeholder="Enter your email"
-              />
+          {loginError && (
+            <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+              {loginError}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="signin-password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="signin-password"
-                  type={showSignInPassword ? "text" : "password"}
-                  value={signInPassword}
-                  onChange={(e) => setSignInPassword(e.target.value)}
-                  placeholder="Enter your password"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowSignInPassword(!showSignInPassword)}
-                >
-                  {showSignInPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-            
-            {loginError && (
-              <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
-                {loginError}
-              </div>
-            )}
-            
-            <Button onClick={handleSignIn} className="w-full" disabled={!signInEmail || !signInPassword}>
-              Sign In
-            </Button>
-          </TabsContent>
+          )}
           
-          <TabsContent value="signup" className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="signup-email">Email</Label>
-              <Input
-                id="signup-email"
-                type="email"
-                value={signUpEmail}
-                onChange={(e) => setSignUpEmail(e.target.value)}
-                placeholder="Enter your email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="signup-password">Password</Label>
-              <Input
-                id="signup-password"
-                type="password"
-                value={signUpPassword}
-                onChange={(e) => setSignUpPassword(e.target.value)}
-                placeholder="Create a password"
-              />
-              <div className="space-y-1">
-                <div className={`flex items-center space-x-2 text-xs ${passwordValidation.length ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passwordValidation.length ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  <span>At least 8 characters</span>
-                </div>
-                <div className={`flex items-center space-x-2 text-xs ${passwordValidation.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passwordValidation.uppercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  <span>One uppercase letter</span>
-                </div>
-                <div className={`flex items-center space-x-2 text-xs ${passwordValidation.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passwordValidation.lowercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  <span>One lowercase letter</span>
-                </div>
-                <div className={`flex items-center space-x-2 text-xs ${passwordValidation.number ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passwordValidation.number ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  <span>One number</span>
-                </div>
-                <div className={`flex items-center space-x-2 text-xs ${passwordValidation.special ? 'text-green-600' : 'text-gray-400'}`}>
-                  {passwordValidation.special ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  <span>One special character</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="signup-name">Full Name</Label>
-              <Input
-                id="signup-name"
-                type="text"
-                value={signUpName}
-                onChange={(e) => setSignUpName(e.target.value)}
-                placeholder="Enter your full name"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="signup-department">Department</Label>
-              <Select value={signUpDepartment} onValueChange={setSignUpDepartment}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Human Resources">Human Resources</SelectItem>
-                  <SelectItem value="Information Technology">Information Technology</SelectItem>
-                  <SelectItem value="Finance">Finance</SelectItem>
-                  <SelectItem value="Marketing">Marketing</SelectItem>
-                  <SelectItem value="Operations">Operations</SelectItem>
-                  <SelectItem value="Sales">Sales</SelectItem>
-                  <SelectItem value="Customer Service">Customer Service</SelectItem>
-                  <SelectItem value="Research & Development">Research & Development</SelectItem>
-                  <SelectItem value="Quality Assurance">Quality Assurance</SelectItem>
-                  <SelectItem value="Legal">Legal</SelectItem>
-                  <SelectItem value="Facilities">Facilities</SelectItem>
-                  <SelectItem value="Security">Security</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            {loginError && (
-              <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
-                {loginError}
-              </div>
-            )}
-            
-            <Button 
-              onClick={handleSignUp} 
-              className="w-full"
-              disabled={!signUpEmail || !signUpPassword || !signUpName || !signUpDepartment || !passwordValidation.isStrong}
-            >
-              Create Account
-            </Button>
-          </TabsContent>
-        </Tabs>
+          <Button onClick={handleSignIn} className="w-full" disabled={!signInEmail || !signInPassword}>
+            Sign In
+          </Button>
+        </div>
 
         <div className="mt-6 text-center">
           <Button variant="ghost" onClick={() => setLocation('/')}>
