@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema, insertConfigurationSchema } from "@shared/schema";
+import { insertTransactionSchema, insertJobFamilySchema, insertReviewerSchema, insertConfigurationSchema, insertActiveDirectoryConfigSchema } from "@shared/schema";
 import { setupSSORoutes, ssoService } from "./sso";
 import { adService } from "./activeDirectory";
 // Database connection status removed - using in-memory storage
@@ -561,11 +561,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/active-directory/configs", async (req, res) => {
     try {
-      const { insertActiveDirectoryConfigSchema } = await import("@shared/schema");
       const validatedData = insertActiveDirectoryConfigSchema.parse(req.body);
-      
       const config = await storage.createActiveDirectoryConfig(validatedData);
-      res.status(201).json({ config });
+      res.status(201).json(config);
     } catch (error) {
       console.error("Error creating AD config:", error);
       res.status(400).json({ error: "Failed to create configuration" });

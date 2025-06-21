@@ -263,6 +263,18 @@ export const insertConfigurationSchema = z.object({
   configData: z.any(),
 });
 
+export const insertActiveDirectoryConfigSchema = z.object({
+  name: z.string(),
+  environment: z.enum(['testing', 'production']),
+  server: z.string(),
+  port: z.number(),
+  bindDN: z.string(),
+  bindPassword: z.string(),
+  baseDN: z.string(),
+  searchFilter: z.string().optional(),
+  isEnabled: z.boolean().default(true),
+});
+
 // Database Table Definitions for Drizzle ORM
 export const configurations = pgTable("configurations", {
   id: serial("id").primaryKey(),
