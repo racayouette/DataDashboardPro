@@ -1,4 +1,4 @@
-import { Building } from "lucide-react";
+import adventHealthLogo from "@assets/advent-health250_1749395626405.png";
 
 export default function Home() {
   return (
@@ -7,7 +7,11 @@ export default function Home() {
         {/* Logo positioned slightly higher than center */}
         <div className="mb-8 flex justify-center">
           <div className="bg-white rounded-full p-8 shadow-2xl">
-            <Building className="w-24 h-24 text-blue-600" />
+            <img 
+              src={adventHealthLogo} 
+              alt="AdventHealth Logo" 
+              className="w-24 h-24 object-contain"
+            />
           </div>
         </div>
         
