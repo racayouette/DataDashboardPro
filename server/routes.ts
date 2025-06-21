@@ -11,6 +11,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup SSO routes
   setupSSORoutes(app);
 
+  // AD Authentication endpoints
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Username and password are required" 
+        });
+      }
+
+      // Authenticate with Active Directory
+      const adUser = await adService.authenticate(username, password);
+      
+      if (!adUser) {
+        return res.status(401).json({ 
+          success: false, 
+          message: "Invalid AdventHealth credentials" 
+        });
+      }
+
+      // Sync user to database and get application user
+      const appUser = await adService.syncUserToDatabase(adUser);
+      
+      // Create session (in a real app, you'd use express-session or JWT)
+      req.session = req.session || {};
+      req.session.user = {
+        id: appUser.id,
+        username: adUser.username,
+        email: adUser.email,
+        firstName: adUser.firstName,
+        lastName: adUser.lastName,
+        department: adUser.department,
+        role: appUser.role
+      };
+
+      res.json({
+        success: true,
+        message: "Successfully authenticated with AdventHealth Active Directory",
+        user: req.session.user
+      });
+    } catch (error) {
+      console.error("AD Authentication error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Authentication service temporarily unavailable" 
+      });
+    }
+  });
+
+  // Get current user session
+  app.get("/api/auth/user", (req, res) => {
+    if (!req.session?.user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Not authenticated" 
+      });
+    }
+    
+    res.json({
+      success: true,
+      user: req.session.user
+    });
+  });
+
+  // Logout endpoint
+  app.post("/api/auth/logout", (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          return res.status(500).json({ 
+            success: false, 
+            message: "Failed to logout" 
+          });
+        }
+        res.json({ 
+          success: true, 
+          message: "Successfully logged out" 
+        });
+      });
+    } else {
+      res.json({ 
+        success: true, 
+        message: "Already logged out" 
+      });
+    }
+  });
+
+  // Authentication middleware for protected routes
+  const requireAuth = (req: any, res: any, next: any) => {
+    if (!req.session?.user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Authentication required" 
+      });
+    }
+    next();
+  };
+
   // Dashboard summary endpoint
   app.get("/api/dashboard/summary", async (req, res) => {
     try {
