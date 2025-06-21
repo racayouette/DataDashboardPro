@@ -1,13 +1,13 @@
 import { Client } from 'ldapts';
 import { storage } from './storage';
 
-// Free testing Active Directory service configuration
-// Using demo.freeipa.org - a free FreeIPA testing instance
+// Default testing Active Directory service configuration
+// Using a public LDAP test server that doesn't require SSL
 const AD_CONFIG = {
-  url: 'ldaps://ipa.demo1.freeipa.org',
-  baseDN: 'cn=users,cn=accounts,dc=demo1,dc=freeipa,dc=org',
-  bindDN: 'uid=admin,cn=users,cn=accounts,dc=demo1,dc=freeipa,dc=org',
-  bindPassword: 'Secret123', // Demo password for testing
+  url: 'ldap://ldap.forumsys.com:389',
+  baseDN: 'dc=example,dc=com',
+  bindDN: 'cn=read-only-admin,dc=example,dc=com',
+  bindPassword: 'password',
   searchFilter: '(uid={username})',
   userAttributes: {
     username: 'uid',
@@ -38,6 +38,9 @@ export class ActiveDirectoryService {
       url: AD_CONFIG.url,
       timeout: 10000,
       connectTimeout: 10000,
+      tlsOptions: {
+        rejectUnauthorized: false // Allow self-signed certificates for testing
+      }
     });
   }
 
@@ -88,7 +91,12 @@ export class ActiveDirectoryService {
       const userDN = userEntry.dn;
 
       // Try to bind with user credentials to verify password
-      const userClient = new Client({ url: AD_CONFIG.url });
+      const userClient = new Client({ 
+        url: AD_CONFIG.url,
+        tlsOptions: {
+          rejectUnauthorized: false // Allow self-signed certificates for testing
+        }
+      });
       try {
         await userClient.bind(userDN, password);
         await userClient.unbind();
@@ -249,21 +257,39 @@ export class ActiveDirectoryService {
     };
   }
 
-  async testConnection(): Promise<{ success: boolean; message: string; userCount?: number }> {
+  async testConnection(config?: any): Promise<{ success: boolean; message: string; userCount?: number }> {
     try {
-      const connected = await this.connect();
-      if (!connected) {
-        return { success: false, message: 'Failed to connect to Active Directory server' };
-      }
-
-      // Test by fetching a small number of users
-      const users = await this.getUsers(5);
-      await this.disconnect();
-
+      // Use provided config or default
+      const testConfig = config || AD_CONFIG;
+      
+      // Create a test client with the provided configuration
+      const testClient = new Client({
+        url: `ldap://${testConfig.server}:${testConfig.port}`,
+        timeout: 10000,
+        connectTimeout: 10000,
+        tlsOptions: {
+          rejectUnauthorized: false // Allow self-signed certificates for testing
+        }
+      });
+      
+      // Test bind with the configuration
+      await testClient.bind(testConfig.bindDN, testConfig.bindPassword);
+      
+      // Test search to verify configuration
+      const searchOptions = {
+        scope: 'sub' as const,
+        filter: testConfig.searchFilter || '(objectClass=person)',
+        attributes: ['cn', 'mail', 'uid'],
+        sizeLimit: 5
+      };
+      
+      const { searchEntries } = await testClient.search(testConfig.baseDN, searchOptions);
+      await testClient.unbind();
+      
       return {
         success: true,
-        message: `Successfully connected to Active Directory. Found ${users.length} test users.`,
-        userCount: users.length
+        message: `Successfully connected to Active Directory. Found ${searchEntries.length} test users.`,
+        userCount: searchEntries.length
       };
     } catch (error) {
       return {
