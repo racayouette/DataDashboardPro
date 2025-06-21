@@ -41,7 +41,7 @@ interface User {
 }
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState('notifications');
+  const [activeTab, setActiveTab] = useState('users');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -216,7 +216,6 @@ export default function Settings() {
   });
 
   const tabs = [
-    { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'users', label: 'Users', icon: User },
     { id: 'active-directory', label: 'Active Directory', icon: Server },
   ];
@@ -564,50 +563,7 @@ export default function Settings() {
 
           {/* Tab Content */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            {activeTab === 'notifications' && (
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h3>
-                
-                <div className="space-y-6">
 
-
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Job Updates</label>
-                      <p className="text-xs text-gray-500">Get notified when job descriptions are updated</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={notificationSettings.jobUpdates}
-                      onChange={(e) => setNotificationSettings({
-                        ...notificationSettings,
-                        jobUpdates: e.target.checked
-                      })}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                  </div>
-
-
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <Button onClick={handleSaveSettings} disabled={isSaving} className="w-full sm:w-auto">
-                    {isSaving ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Save Notification Settings
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
 
             {activeTab === 'users' && (
               <div>
