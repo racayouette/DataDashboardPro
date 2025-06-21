@@ -761,19 +761,7 @@ export default function Settings() {
                       )}
                     </div>
 
-                    {/* Default testing connection status */}
-                    <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        </div>
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-green-800">Default Test LDAP Server Available</p>
-                          <p className="text-sm text-green-700">ldap://ldap.forumsys.com:389</p>
-                          <p className="text-xs text-green-600 mt-1">Test accounts: einstein, newton, galieleo (password: password)</p>
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
 
                   {/* Go Live Active Directory Section */}
