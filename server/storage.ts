@@ -22,7 +22,9 @@ import {
   AuditLog,
   InsertAuditLog,
   ActiveDirectoryConfig,
-  InsertActiveDirectoryConfig
+  InsertActiveDirectoryConfig,
+  Configuration,
+  InsertConfiguration
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, count, sql } from "drizzle-orm";
@@ -94,6 +96,11 @@ export interface IStorage {
   updateActiveDirectoryConfig(id: number, config: Partial<InsertActiveDirectoryConfig>): Promise<ActiveDirectoryConfig>;
   deleteActiveDirectoryConfig(id: number): Promise<void>;
   setActiveDirectoryConfigActive(id: number, environment: 'testing' | 'production'): Promise<void>;
+  
+  // Configuration management
+  getConfiguration(configType: string): Promise<Configuration | undefined>;
+  createConfiguration(config: InsertConfiguration): Promise<Configuration>;
+  updateConfiguration(configType: string, configData: any): Promise<Configuration>;
 }
 
 export class MemStorage implements IStorage {

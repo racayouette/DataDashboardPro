@@ -149,6 +149,14 @@ export interface ActiveDirectoryConfig {
   updatedAt: Date;
 }
 
+export interface Configuration {
+  id: number;
+  configType: string;
+  configData: any; // JSON data
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Insert types for form validation
 export type InsertUser = Omit<User, 'id' | 'createdAt' | 'updatedAt'> & {
   createdAt?: Date;
@@ -204,6 +212,11 @@ export type InsertActiveDirectoryConfig = Omit<ActiveDirectoryConfig, 'id' | 'cr
   updatedAt?: Date;
 };
 
+export type InsertConfiguration = Omit<Configuration, 'id' | 'createdAt' | 'updatedAt'> & {
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
 // Schema validation (using zod for form validation)
 import { z } from "zod";
 
@@ -242,4 +255,9 @@ export const insertReviewerSchema = z.object({
   jobFamily: z.string(),
   inProgress: z.number(),
   completed: z.number(),
+});
+
+export const insertConfigurationSchema = z.object({
+  configType: z.string(),
+  configData: z.any(),
 });

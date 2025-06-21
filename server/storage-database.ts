@@ -22,7 +22,9 @@ import {
   AuditLog,
   InsertAuditLog,
   ActiveDirectoryConfig,
-  InsertActiveDirectoryConfig
+  InsertActiveDirectoryConfig,
+  Configuration,
+  InsertConfiguration
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, count, sql, ilike } from "drizzle-orm";
@@ -576,6 +578,57 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error searching jobs:', error);
       return { jobs: [], total: 0, totalPages: 0, currentPage: 1 };
+    }
+  }
+
+  // Configuration management
+  async getConfiguration(configType: string): Promise<Configuration | undefined> {
+    if (!db) return undefined;
+    try {
+      const [config] = await db.select().from(schema.configurations).where(eq(schema.configurations.configType, configType));
+      return config;
+    } catch (error) {
+      console.error('Error fetching configuration:', error);
+      return undefined;
+    }
+  }
+
+  async createConfiguration(config: InsertConfiguration): Promise<Configuration> {
+    if (!db) throw new Error('Database not available');
+    try {
+      const [newConfig] = await db.insert(schema.configurations).values({
+        ...config,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      return newConfig;
+    } catch (error) {
+      console.error('Error creating configuration:', error);
+      throw error;
+    }
+  }
+
+  async updateConfiguration(configType: string, configData: any): Promise<Configuration> {
+    if (!db) throw new Error('Database not available');
+    try {
+      const [updatedConfig] = await db
+        .update(schema.configurations)
+        .set({ 
+          configData,
+          updatedAt: new Date()
+        })
+        .where(eq(schema.configurations.configType, configType))
+        .returning();
+      
+      if (!updatedConfig) {
+        // If no config exists, create one
+        return this.createConfiguration({ configType, configData });
+      }
+      
+      return updatedConfig;
+    } catch (error) {
+      console.error('Error updating configuration:', error);
+      throw error;
     }
   }
 }
