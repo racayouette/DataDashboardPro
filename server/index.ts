@@ -77,15 +77,15 @@ app.use((req, res, next) => {
 
   // Setup static file serving for production
   if (process.env.NODE_ENV === "production") {
-    // Serve static files from dist/client in production
-    app.use(express.static("dist/client"));
+    // Serve static files from dist/public in production (matches Vite build output)
+    app.use(express.static("dist/public"));
     
     // Handle SPA routing - serve index.html for non-API routes
     app.get("*", (req, res, next) => {
       if (req.path.startsWith("/api")) {
         return next();
       }
-      res.sendFile("index.html", { root: "dist/client" });
+      res.sendFile("index.html", { root: "dist/public" });
     });
   } else {
     // Development mode with Vite
