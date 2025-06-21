@@ -179,7 +179,7 @@ export default function Login() {
             <img 
               src={adventHealthLogo} 
               alt="AdventHealth Logo" 
-              className="w-16 h-16 object-contain"
+              className="w-24 h-24 object-contain"
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Job Review System</h1>
