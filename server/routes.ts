@@ -652,9 +652,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (adUser.email) {
           try {
             const localUser = await adService.syncUserToDatabase(adUser);
-            syncResults.push({ success: true, user: localUser.name });
+            syncResults.push({
+              username: adUser.username,
+              email: adUser.email,
+              firstName: adUser.firstName,
+              lastName: adUser.lastName,
+              department: adUser.department,
+              status: 'synced' as const
+            });
           } catch (error) {
-            syncResults.push({ success: false, user: adUser.username, error: String(error) });
+            syncResults.push({
+              username: adUser.username,
+              email: adUser.email,
+              firstName: adUser.firstName,
+              lastName: adUser.lastName,
+              department: adUser.department,
+              status: 'failed' as const,
+              error: String(error)
+            });
           }
         }
       }
@@ -662,8 +677,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: "Sync completed", 
         total: users.length,
-        synced: syncResults.filter(r => r.success).length,
-        failed: syncResults.filter(r => !r.success).length,
+        synced: syncResults.filter(r => r.status === 'synced').length,
+        failed: syncResults.filter(r => r.status === 'failed').length,
         results: syncResults
       });
     } catch (error) {

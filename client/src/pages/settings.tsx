@@ -197,6 +197,22 @@ export default function Settings() {
   const [showAddConfigForm, setShowAddConfigForm] = useState<'testing' | 'production' | null>(null);
   const [editingConfig, setEditingConfig] = useState<any | null>(null);
   const [activeEnvironment, setActiveEnvironment] = useState<'testing' | 'production'>('testing');
+  const [showSyncResults, setShowSyncResults] = useState(false);
+  const [syncResults, setSyncResults] = useState<{
+    message: string;
+    total: number;
+    synced: number;
+    failed: number;
+    results: Array<{
+      username: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      department: string;
+      status: 'synced' | 'failed';
+      error?: string;
+    }>;
+  } | null>(null);
   const [newConfig, setNewConfig] = useState({
     name: '',
     server: '',
@@ -256,8 +272,21 @@ export default function Settings() {
       const response = await fetch('/api/active-directory/sync');
       const result = await response.json();
       console.log('AD Sync completed:', result);
+      
+      // Show sync results in popup
+      setSyncResults(result);
+      setShowSyncResults(true);
     } catch (error) {
       console.error('AD Sync failed:', error);
+      // Show error in popup
+      setSyncResults({
+        message: 'Sync failed due to connection error',
+        total: 0,
+        synced: 0,
+        failed: 0,
+        results: []
+      });
+      setShowSyncResults(true);
     }
     setIsSaving(false);
   };
@@ -1193,6 +1222,100 @@ export default function Settings() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Sync Results Modal */}
+      <Dialog open={showSyncResults} onOpenChange={setShowSyncResults}>
+        <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Server className="w-5 h-5" />
+              Active Directory Sync Results
+            </DialogTitle>
+          </DialogHeader>
+          
+          {syncResults && (
+            <div className="space-y-4">
+              {/* Summary Stats */}
+              <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{syncResults.total}</div>
+                  <div className="text-sm text-gray-600">Total Found</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{syncResults.synced}</div>
+                  <div className="text-sm text-gray-600">Successfully Synced</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600">{syncResults.failed}</div>
+                  <div className="text-sm text-gray-600">Failed</div>
+                </div>
+              </div>
+
+              {/* Status Message */}
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800">{syncResults.message}</p>
+              </div>
+
+              {/* User List */}
+              {syncResults.results && syncResults.results.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium text-gray-900">Sync Details</h4>
+                  <div className="border rounded-lg max-h-96 overflow-y-auto">
+                    <div className="divide-y divide-gray-200">
+                      {syncResults.results.map((user, index) => (
+                        <div key={index} className="p-3 hover:bg-gray-50">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <div className="font-medium text-gray-900">
+                                  {user.firstName} {user.lastName}
+                                </div>
+                                <Badge 
+                                  variant={user.status === 'synced' ? 'default' : 'destructive'}
+                                  className="text-xs"
+                                >
+                                  {user.status === 'synced' ? 'Synced' : 'Failed'}
+                                </Badge>
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                {user.email} • {user.department}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                Username: {user.username}
+                              </div>
+                              {user.error && (
+                                <div className="text-xs text-red-600 mt-1">
+                                  Error: {user.error}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* No Results Message */}
+              {(!syncResults.results || syncResults.results.length === 0) && (
+                <div className="text-center py-8 text-gray-500">
+                  <Server className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p>No users found in the Active Directory sync</p>
+                  <p className="text-sm">Check your configuration and try again</p>
+                </div>
+              )}
+
+              {/* Close Button */}
+              <div className="flex justify-end pt-4 border-t">
+                <Button onClick={() => setShowSyncResults(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
