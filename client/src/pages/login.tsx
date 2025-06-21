@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, AlertTriangle, Clock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Eye, EyeOff, AlertTriangle, Clock, Shield } from "lucide-react";
 import adventHealthLogo from "@assets/advent-health250_1749395626405.png";
 
 export default function Login() {
   const [, setLocation] = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const { toast } = useToast();
   
   // Brute force protection states
   const [failedAttempts, setFailedAttempts] = useState(0);
@@ -19,13 +20,70 @@ export default function Login() {
   const [remainingTime, setRemainingTime] = useState(0);
   
   // Form states
-  const [signInEmail, setSignInEmail] = useState("");
-  const [signInPassword, setSignInPassword] = useState("");
-  const [showSignInPassword, setShowSignInPassword] = useState(false);
-  
-  // Fetch users data for authentication
-  const { data: usersData } = useQuery({
-    queryKey: ['/api/users']
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Active Directory authentication mutation
+  const loginMutation = useMutation({
+    mutationFn: async (credentials: { username: string; password: string }) => {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Authentication failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Login Successful",
+        description: `Welcome ${data.user.firstName} ${data.user.lastName}`,
+      });
+      
+      // Reset lockout state on successful login
+      localStorage.removeItem('lockoutEndTime');
+      localStorage.removeItem('failedAttempts');
+      setFailedAttempts(0);
+      setIsLocked(false);
+      
+      // Redirect to dashboard
+      setLocation('/');
+    },
+    onError: (error: Error) => {
+      const newFailedAttempts = failedAttempts + 1;
+      setFailedAttempts(newFailedAttempts);
+      localStorage.setItem('failedAttempts', newFailedAttempts.toString());
+      
+      // Implement progressive lockout
+      if (newFailedAttempts >= 5) {
+        const lockoutDuration = Math.min(30000 * Math.pow(2, newFailedAttempts - 5), 300000); // Max 5 minutes
+        const endTime = Date.now() + lockoutDuration;
+        
+        setIsLocked(true);
+        setLockoutEndTime(endTime);
+        setRemainingTime(lockoutDuration);
+        
+        localStorage.setItem('lockoutEndTime', endTime.toString());
+        
+        setLoginError(`Account locked for ${Math.ceil(lockoutDuration / 60000)} minutes due to multiple failed attempts`);
+      } else {
+        setLoginError(error.message);
+      }
+      
+      toast({
+        title: "Authentication Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   // Initialize lockout state from localStorage on component mount
@@ -81,60 +139,26 @@ export default function Login() {
     }
   }, [isLocked, lockoutEndTime]);
 
-  // Redirect to dashboard if authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      setLocation('/dashboard');
-    }
-  }, [isAuthenticated, setLocation]);
-
-  const handleSignIn = () => {
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (isLocked) {
-      setLoginError("Account is temporarily locked. Please wait.");
+      toast({
+        title: "Account Locked",
+        description: `Please wait ${Math.ceil(remainingTime / 60000)} minutes before trying again`,
+        variant: "destructive",
+      });
       return;
     }
 
-    const users = usersData || [];
-    const foundUser = users.find((user: any) => 
-      user.email.toLowerCase() === signInEmail.toLowerCase() && 
-      user.password === signInPassword
-    );
-
-    if (foundUser) {
-      // Successful login - reset failed attempts
-      setIsAuthenticated(true);
-      setSignInEmail("");
-      setSignInPassword("");
-      setLoginError("");
-      setFailedAttempts(0);
-      localStorage.removeItem('lockoutEndTime');
-      localStorage.removeItem('failedAttempts');
-    } else {
-      // Failed login - increment attempts
-      const newFailedAttempts = failedAttempts + 1;
-      setFailedAttempts(newFailedAttempts);
-      
-      if (newFailedAttempts >= 3) {
-        // Lock out for 25 minutes
-        const lockoutDuration = 25 * 60 * 1000;
-        const endTime = Date.now() + lockoutDuration;
-        
-        setIsLocked(true);
-        setLockoutEndTime(endTime);
-        setRemainingTime(lockoutDuration);
-        
-        localStorage.setItem('lockoutEndTime', endTime.toString());
-        localStorage.setItem('failedAttempts', newFailedAttempts.toString());
-        
-        setLocation('/access-denied');
-      } else {
-        setLoginError(`Login unsuccessful. ${3 - newFailedAttempts} attempt(s) remaining.`);
-        localStorage.setItem('failedAttempts', newFailedAttempts.toString());
-      }
+    if (!username || !password) {
+      setLoginError("Please enter your AdventHealth username and password");
+      return;
     }
+
+    setLoginError("");
+    loginMutation.mutate({ username, password });
   };
-
-
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -184,39 +208,44 @@ export default function Login() {
               />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Job Review System</h1>
-          <p className="text-gray-600">Please sign in to continue</p>
+          <h1 className="text-2xl font-bold text-gray-900">Job Management System</h1>
+          <p className="text-gray-600 flex items-center justify-center gap-2">
+            <Shield className="w-4 h-4" />
+            Sign in with your AdventHealth credentials
+          </p>
         </div>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSignIn} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="signin-email">Email</Label>
+            <Label htmlFor="username">AdventHealth Username</Label>
             <Input
-              id="signin-email"
-              type="email"
-              value={signInEmail}
-              onChange={(e) => setSignInEmail(e.target.value)}
-              placeholder="Enter your email"
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              disabled={loginMutation.isPending}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="signin-password">Password</Label>
+            <Label htmlFor="password">Password</Label>
             <div className="relative">
               <Input
-                id="signin-password"
-                type={showSignInPassword ? "text" : "password"}
-                value={signInPassword}
-                onChange={(e) => setSignInPassword(e.target.value)}
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
+                disabled={loginMutation.isPending}
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={() => setShowSignInPassword(!showSignInPassword)}
+                onClick={() => setShowPassword(!showPassword)}
               >
-                {showSignInPassword ? (
+                {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
@@ -230,16 +259,25 @@ export default function Login() {
               {loginError}
             </div>
           )}
-          
-          <Button onClick={handleSignIn} className="w-full" disabled={!signInEmail || !signInPassword}>
-            Sign In
-          </Button>
-        </div>
 
-        <div className="mt-6 text-center">
-          <Button variant="ghost" onClick={() => setLocation('/')}>
-            ← Back to Home
+          {failedAttempts > 0 && failedAttempts < 5 && (
+            <div className="text-sm text-amber-600 bg-amber-50 p-2 rounded">
+              {5 - failedAttempts} attempt(s) remaining before account lockout
+            </div>
+          )}
+
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={loginMutation.isPending}
+          >
+            {loginMutation.isPending ? "Authenticating..." : "Sign In"}
           </Button>
+        </form>
+
+        <div className="mt-6 text-center text-xs text-gray-500">
+          <p>Secure authentication through AdventHealth Active Directory</p>
+          <p className="mt-1">Contact IT support if you need assistance</p>
         </div>
       </div>
     </div>
