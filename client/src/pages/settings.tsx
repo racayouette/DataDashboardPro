@@ -1224,12 +1224,26 @@ export default function Settings() {
       )}
 
       {/* Sync Results Modal */}
-      <Dialog open={showSyncResults} onOpenChange={setShowSyncResults}>
-        <DialogContent className="max-w-2xl max-h-[80vh]">
+      <Dialog open={showSyncResults} onOpenChange={() => {}}>
+        <DialogContent 
+          className="max-w-2xl max-h-[80vh]"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Server className="w-5 h-5" />
-              Active Directory Sync Results
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Server className="w-5 h-5" />
+                Active Directory Sync Results
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSyncResults(false)}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </DialogTitle>
           </DialogHeader>
           
