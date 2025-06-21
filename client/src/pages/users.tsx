@@ -104,42 +104,6 @@ export default function Users() {
       department: "IT",
       status: "Active",
       lastLogin: "June 4, 2025"
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      email: "sarah.johnson@company.com",
-      role: "HR Manager",
-      department: "Human Resources",
-      status: "Active",
-      lastLogin: "June 3, 2025"
-    },
-    {
-      id: 3,
-      name: "Michael Brown",
-      email: "michael.brown@company.com",
-      role: "Reviewer",
-      department: "Operations",
-      status: "Active",
-      lastLogin: "June 2, 2025"
-    },
-    {
-      id: 4,
-      name: "Emily Davis",
-      email: "emily.davis@company.com",
-      role: "Employee",
-      department: "Marketing",
-      status: "Inactive",
-      lastLogin: "May 28, 2025"
-    },
-    {
-      id: 5,
-      name: "David Wilson",
-      email: "david.wilson@company.com",
-      role: "Reviewer",
-      department: "Quality Assurance",
-      status: "Active",
-      lastLogin: "June 1, 2025"
     }
   ]);
 
@@ -403,38 +367,7 @@ export default function Users() {
                 </div>
               </div>
 
-              <div className="w-full lg:w-48">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Role
-                </label>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Roles" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    {uniqueRoles.map(role => (
-                      <SelectItem key={role} value={role}>{role}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
 
-              <div className="w-full lg:w-48">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Status
-                </label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               <Button 
                 className="w-full lg:w-auto"
@@ -459,49 +392,19 @@ export default function Users() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <button 
-                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
-                        onClick={() => handleSort("name")}
-                      >
-                        <span>User</span>
-                        {getSortIcon("name")}
-                      </button>
+                      User
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <button 
-                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
-                        onClick={() => handleSort("role")}
-                      >
-                        <span>Role</span>
-                        {getSortIcon("role")}
-                      </button>
+                      Role
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <button 
-                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
-                        onClick={() => handleSort("department")}
-                      >
-                        <span>Department</span>
-                        {getSortIcon("department")}
-                      </button>
+                      Department
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <button 
-                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
-                        onClick={() => handleSort("status")}
-                      >
-                        <span>Status</span>
-                        {getSortIcon("status")}
-                      </button>
+                      Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      <button 
-                        className="flex items-center space-x-1 hover:text-gray-700 transition-colors"
-                        onClick={() => handleSort("lastLogin")}
-                      >
-                        <span>Last Login</span>
-                        {getSortIcon("lastLogin")}
-                      </button>
+                      Last Login
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Actions
@@ -545,14 +448,6 @@ export default function Users() {
                             onClick={() => handleEditUser(user)}
                           >
                             <Edit3 className="w-4 h-4" />
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="text-red-600 hover:text-red-700"
-                            onClick={() => handleDeleteUser(user)}
-                          >
-                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>
