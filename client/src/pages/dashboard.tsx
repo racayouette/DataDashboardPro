@@ -26,13 +26,7 @@ export default function Dashboard() {
   const [reviewerSearch, setReviewerSearch] = useState("");
   const notificationRef = useRef<HTMLDivElement>(null);
   
-  // Password protection state - check sessionStorage for existing authentication
-  const [isPasswordProtected, setIsPasswordProtected] = useState(() => {
-    return !sessionStorage.getItem('dashboardAuthenticated');
-  });
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  // Dashboard is now freely accessible - no password protection
 
   // Sample notifications
   const [notifications, setNotifications] = useState([
@@ -59,24 +53,7 @@ export default function Dashboard() {
     };
   }, [showNotifications]);
 
-  // Handle password submission
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === "Welcome123") {
-      setIsPasswordProtected(false);
-      setPasswordError("");
-      // Store authentication state in sessionStorage
-      sessionStorage.setItem('dashboardAuthenticated', 'true');
-    } else {
-      setPasswordError("Incorrect password");
-      setPassword("");
-    }
-  };
 
-  // Handle dialog close - redirect to Jobs Family page
-  const handleDialogClose = () => {
-    setLocation("/jobs-family");
-  };
 
   const {
     data: summaryData,
@@ -197,56 +174,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar />
       
-      {/* Show password dialog if protected */}
-      {isPasswordProtected ? (
-        <main className="flex-1 flex items-center justify-center">
-          <Dialog open={true} onOpenChange={handleDialogClose}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <div className="flex items-center space-x-2 mb-2">
-                  <Lock className="w-5 h-5 text-blue-600" />
-                  <DialogTitle>Dashboard Access Required</DialogTitle>
-                </div>
-                <DialogDescription>
-                  Please enter the password to access the Dashboard
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                <div>
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={`pr-10 ${passwordError ? "border-red-500" : ""}`}
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                  {passwordError && (
-                    <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-                  )}
-                </div>
-                <Button type="submit" className="w-full">
-                  Access Dashboard
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </main>
-      ) : (
-        <main className="flex-1 p-6">
+      <main className="flex-1 p-6">
         {/* Beta Banner */}
         <div className="mb-4 bg-orange-100 border border-orange-300 text-orange-800 px-4 py-3 rounded-lg">
           <div className="flex items-center justify-center">
@@ -396,7 +324,6 @@ export default function Dashboard() {
           />
         </div>
         </main>
-      )}
     </div>
   );
 }
