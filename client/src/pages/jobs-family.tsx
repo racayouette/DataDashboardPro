@@ -4,7 +4,12 @@ import { useRole } from "@/contexts/RoleContext";
 import { Button } from "@/components/ui/button";
 import { useLocation, Link } from "wouter";
 import { Search, Filter, Bell, FilterX, ChevronDown, Trash2, Users, ArrowUpDown, ArrowUp, ArrowDown, UserCircle, FileSpreadsheet } from "lucide-react";
-import * as XLSX from 'xlsx';
+// Using secure SheetJS CDN instead of vulnerable npm package
+declare global {
+  interface Window {
+    XLSX: any;
+  }
+}
 import { Sidebar } from "@/components/sidebar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -478,6 +483,12 @@ export default function JobsFamily() {
 
   // Excel export function
   const exportToExcel = () => {
+    // Check if secure CDN version is available
+    if (!window.XLSX) {
+      console.error('XLSX library not loaded from CDN');
+      return;
+    }
+
     // Get all filtered data (not just paginated data)
     const dataToExport = filteredEntries.map(entry => ({
       'Job Code': entry.jobCode,
@@ -489,9 +500,9 @@ export default function JobsFamily() {
       'Last Updated': entry.lastUpdated
     }));
 
-    // Create workbook and worksheet
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    // Create workbook and worksheet using secure CDN version
+    const wb = window.XLSX.utils.book_new();
+    const ws = window.XLSX.utils.json_to_sheet(dataToExport);
 
     // Set column widths
     const colWidths = [
@@ -506,15 +517,15 @@ export default function JobsFamily() {
     ws['!cols'] = colWidths;
 
     // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Job Descriptions');
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Job Descriptions');
 
     // Generate filename with current date
     const today = new Date();
     const dateStr = today.toISOString().split('T')[0];
     const filename = `Job_Descriptions_Export_${dateStr}.xlsx`;
 
-    // Save file
-    XLSX.writeFile(wb, filename);
+    // Save file using secure CDN version
+    window.XLSX.writeFile(wb, filename);
   };
 
   // Function to get the reviewer display for a given entry

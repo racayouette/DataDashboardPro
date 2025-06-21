@@ -6,7 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Bell, Check, X, Clock, AlertCircle, Info, CheckCircle, FileSpreadsheet, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import * as XLSX from 'xlsx';
+// Using secure SheetJS CDN instead of vulnerable npm package
+declare global {
+  interface Window {
+    XLSX: any;
+  }
+}
 
 interface Notification {
   id: number;
@@ -497,6 +502,12 @@ export default function Notifications() {
 
   // Excel export function
   const exportToExcel = () => {
+    // Check if secure CDN version is available
+    if (!window.XLSX) {
+      console.error('XLSX library not loaded from CDN');
+      return;
+    }
+
     // Get all sorted notifications data
     const dataToExport = sortedNotifications.map(notification => ({
       'ID': notification.id,
@@ -509,9 +520,9 @@ export default function Notifications() {
       'Timestamp': notification.timestamp
     }));
 
-    // Create workbook and worksheet
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    // Create workbook and worksheet using secure CDN version
+    const wb = window.XLSX.utils.book_new();
+    const ws = window.XLSX.utils.json_to_sheet(dataToExport);
 
     // Set column widths
     const colWidths = [
@@ -527,15 +538,15 @@ export default function Notifications() {
     ws['!cols'] = colWidths;
 
     // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Notifications');
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Notifications');
 
     // Generate filename with current date
     const today = new Date();
     const dateStr = today.toISOString().split('T')[0];
     const filename = `Notifications_Export_${dateStr}.xlsx`;
 
-    // Save file
-    XLSX.writeFile(wb, filename);
+    // Save file using secure CDN version
+    window.XLSX.writeFile(wb, filename);
   };
 
   // Sorting function
