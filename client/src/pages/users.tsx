@@ -592,17 +592,7 @@ export default function Users() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="edit-department" className="text-right">
-                    Department
-                  </Label>
-                  <Input
-                    id="edit-department"
-                    value={editingUser.department}
-                    onChange={(e) => setEditingUser({...editingUser, department: e.target.value})}
-                    className="col-span-3"
-                  />
-                </div>
+
 
               </div>
             )}
