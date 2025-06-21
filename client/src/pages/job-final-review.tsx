@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { 
@@ -40,6 +40,7 @@ import { Badge } from "@/components/ui/badge";
 export default function JobFinalReview() {
   const [, setLocation] = useLocation();
   const { isAdminMode } = useRole();
+  const queryClient = useQueryClient();
   const [jobCode, setJobCode] = useState("");
 
   // Get job code from URL parameters
@@ -631,11 +632,17 @@ export default function JobFinalReview() {
               </div>
             </div>
             
-            <Button variant="ghost" asChild className="mb-4 bg-gray-100 text-gray-600 hover:bg-gray-200 border-0 text-xs px-2 py-1 h-7">
-              <Link href="/jobs-family">
-                <ArrowLeft className="w-3 h-3 mr-1" />
-                Back
-              </Link>
+            <Button 
+              variant="ghost" 
+              className="mb-4 bg-gray-100 text-gray-600 hover:bg-gray-200 border-0 text-xs px-2 py-1 h-7"
+              onClick={() => {
+                // Clear all cached data and force refresh
+                queryClient.invalidateQueries();
+                setLocation("/jobs-family");
+              }}
+            >
+              <ArrowLeft className="w-3 h-3 mr-1" />
+              Back
             </Button>
           </div>
 

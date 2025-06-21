@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useRole } from "@/contexts/RoleContext";
 import { 
@@ -39,6 +39,7 @@ import { Badge } from "@/components/ui/badge";
 export default function Editing() {
   const [, setLocation] = useLocation();
   const { isAdminMode } = useRole();
+  const queryClient = useQueryClient();
   const [jobCode, setJobCode] = useState("");
   const originalEssentialFunctions = [
     { id: 1, text: "Record Vital Signs And Immediately Escalate Critical Values", hasEdit: true },
@@ -773,7 +774,11 @@ export default function Editing() {
               variant="ghost" 
               size="sm" 
               className="text-gray-600 hover:text-gray-900"
-              onClick={() => setLocation("/jobs-family")}
+              onClick={() => {
+                // Clear all cached data and force refresh
+                queryClient.invalidateQueries();
+                setLocation("/jobs-family");
+              }}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
