@@ -1007,7 +1007,7 @@ export default function Editing() {
                           checked={trackChangesMode}
                           onChange={(e) => setTrackChangesMode(e.target.checked)}
                           className="h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                          disabled={isCompleted}
+                          disabled={isCompleted || isSubmittedForReview}
                         />
                         <label 
                           htmlFor="track-changes" 
@@ -1090,7 +1090,7 @@ export default function Editing() {
                         variant="ghost"
                         onClick={handleResetFunctions}
                         title="Reset to original functions"
-                        disabled={isCompleted}
+                        disabled={isCompleted || isSubmittedForReview}
                       >
                         <RotateCcw className="w-4 h-4" />
                       </Button>
@@ -1119,7 +1119,7 @@ export default function Editing() {
                                 e.stopPropagation();
                                 handleEditFunction(func.id, func.text);
                               }}
-                              disabled={isCompleted}
+                              disabled={isCompleted || isSubmittedForReview}
                             >
                               <Pencil className="w-3 h-3" />
                             </Button>
@@ -1133,7 +1133,7 @@ export default function Editing() {
                       size="sm" 
                       className="mt-3"
                       onClick={() => setShowAddFunctionModal(true)}
-                      disabled={isCompleted}
+                      disabled={isCompleted || isSubmittedForReview}
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add New Function
@@ -1158,7 +1158,7 @@ export default function Editing() {
                           checked={isCritical}
                           onChange={(e) => setIsCritical(e.target.checked)}
                           className="h-4 w-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
-                          disabled={isCompleted}
+                          disabled={isCompleted || isSubmittedForReview}
                         />
                         <label 
                           htmlFor="critical-checkbox" 
@@ -1172,7 +1172,7 @@ export default function Editing() {
                         variant="ghost"
                         onClick={handleEditAdditionalText}
                         title="Edit additional requirements"
-                        disabled={isCompleted}
+                        disabled={isCompleted || isSubmittedForReview}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -1230,10 +1230,11 @@ export default function Editing() {
             </Button>
             {!isAdminMode && (
               <Button 
-                className="bg-blue-900 text-white hover:bg-blue-800"
+                className={isSubmittedForReview ? "bg-gray-400 text-white cursor-not-allowed" : "bg-blue-900 text-white hover:bg-blue-800"}
                 onClick={handleSubmitForReview}
+                disabled={isSubmittedForReview}
               >
-                Submit For HR Review
+                {isSubmittedForReview ? "Submitted for Review" : "Submit For HR Review"}
               </Button>
             )}
             {!isAdminMode && (
