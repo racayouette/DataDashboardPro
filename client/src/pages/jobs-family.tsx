@@ -773,18 +773,16 @@ export default function JobsFamily() {
                 {/* Dynamic cycling page buttons */}
                 {(() => {
                   const getVisiblePages = () => {
-                    if (totalPages <= 2) {
+                    if (totalPages <= 5) {
                       return Array.from({ length: totalPages }, (_, i) => i + 1);
                     }
                     
-                    // Always show 2 buttons, positioned based on current page
-                    if (currentPage === 1) {
-                      return [1, 2];
-                    } else if (currentPage === totalPages) {
-                      return [totalPages - 1, totalPages];
-                    } else {
-                      return [currentPage, currentPage + 1];
-                    }
+                    // Show up to 5 buttons, positioned based on current page
+                    const start = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+                    const end = Math.min(totalPages, start + 4);
+                    const adjustedStart = Math.max(1, end - 4);
+                    
+                    return Array.from({ length: end - adjustedStart + 1 }, (_, i) => adjustedStart + i);
                   };
                   
                   return getVisiblePages().map((pageNum) => (
