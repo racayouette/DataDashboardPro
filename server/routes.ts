@@ -150,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Dashboard summary endpoint
-  app.get("/api/dashboard/summary", requireAuth, async (req, res) => {
+  app.get("/api/dashboard/summary", async (req, res) => {
     try {
       const summary = await storage.getDashboardSummary();
       if (!summary) {
@@ -163,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Recent transactions endpoint
-  app.get("/api/transactions", requireAuth, async (req, res) => {
+  app.get("/api/transactions", async (req, res) => {
     try {
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
@@ -175,7 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Job families endpoint
-  app.get("/api/job-families", requireAuth, async (req, res) => {
+  app.get("/api/job-families", async (req, res) => {
     try {
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 4;
