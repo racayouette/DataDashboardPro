@@ -304,126 +304,13 @@ export function Sidebar() {
         })}
       </nav>
       
-      {/* Test User Login Toggle */}
-      <div className="mt-auto mb-4">
-        <div className="bg-blue-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <LogIn className="w-4 h-4 text-blue-200" />
-              <span className="text-blue-200 text-sm font-medium">Test User Login</span>
-            </div>
-            <div className="relative">
-              <button
-                onClick={handleTestLoginToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
-                  testLoginMode ? 'bg-green-600' : 'bg-blue-700'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    testLoginMode ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-          <div className="text-center">
-            <span className={`text-sm font-medium ${isAuthenticated ? 'text-green-200' : 'text-white'}`}>
-              {isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      {/* Role Toggle */}
-      <div className="mb-4">
-        <div className="bg-blue-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-blue-200 text-sm font-medium">Role</span>
-            <div className="relative">
-              <button
-                onClick={() => setIsAdminMode(!isAdminMode)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
-                  isAdminMode ? 'bg-blue-600' : 'bg-blue-700'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isAdminMode ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-          <div className="text-center">
-            <span className="text-white text-sm font-medium">
-              {isAdminMode ? 'Admin' : 'Reviewer'}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      {/* SSO Toggle */}
-      <div className="mb-4">
-        <div className="bg-blue-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-blue-200" />
-              <span className="text-blue-200 text-sm font-medium">SSO</span>
-            </div>
-            <div className="relative">
-              <button
-                onClick={handleSSOToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
-                  ssoMode ? 'bg-green-600' : 'bg-blue-700'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    ssoMode ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-          <div className="text-center">
-            <span className={`text-sm font-medium ${ssoMode ? 'text-green-200' : 'text-white'}`}>
-              {ssoMode ? 'Enabled' : 'Disabled'}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      {/* Active Directory Toggle */}
-      <div className="mb-6">
-        <div className="bg-blue-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <Bug className="w-4 h-4 text-blue-200" />
-              <span className="text-blue-200 text-sm font-medium">Active Directory</span>
-            </div>
-            <div className="relative">
-              <button
-                onClick={handleActiveDirectoryToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-900 ${
-                  activeDirectoryMode ? 'bg-orange-600' : 'bg-blue-700'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    activeDirectoryMode ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-          <div className="text-center">
-            <span className={`text-sm font-medium ${activeDirectoryMode ? 'text-orange-200' : 'text-white'}`}>
-              {activeDirectoryMode ? 'Connected' : 'Disconnected'}
-            </span>
-          </div>
-        </div>
-      </div>
+
+
+
+
       
       {/* User Profile - positioned at bottom */}
       <div className="mb-4">
@@ -431,7 +318,12 @@ export function Sidebar() {
           <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
             <span className="text-white text-sm font-medium">JM</span>
           </div>
-          <span className="text-sm font-medium">John Marks</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">John Marks</span>
+            <span className="text-xs text-blue-300">
+              {isAdminMode ? 'Admin' : 'Reviewer'}
+            </span>
+          </div>
         </div>
       </div>
 
