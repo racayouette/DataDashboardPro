@@ -2,12 +2,12 @@ import { Client } from 'ldapts';
 import { storage } from './storage';
 
 // Default testing Active Directory service configuration
-// Using a public LDAP test server that doesn't require SSL
+// Using test AdventHealth server configuration
 const AD_CONFIG = {
-  url: 'ldap://ldap.forumsys.com:389',
-  baseDN: 'dc=example,dc=com',
-  bindDN: 'cn=read-only-admin,dc=example,dc=com',
-  bindPassword: 'password',
+  url: 'ldap://test.adventhealth.com:389',
+  baseDN: 'dc=test,dc=adventhealth,dc=com',
+  bindDN: 'cn=admin,dc=test,dc=adventhealth,dc=com',
+  bindPassword: 'testpass',
   searchFilter: '(uid={username})',
   userAttributes: {
     username: 'uid',
