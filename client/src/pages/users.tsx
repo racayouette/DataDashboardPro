@@ -400,9 +400,7 @@ export default function Users() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Department
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                      Status
-                    </th>
+
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                       Last Login
                     </th>
@@ -432,11 +430,7 @@ export default function Users() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {user.department}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Badge className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadge(user.status)}`}>
-                          {user.status}
-                        </Badge>
-                      </td>
+
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.lastLogin}
                       </td>
@@ -613,23 +607,7 @@ export default function Users() {
                     className="col-span-3"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="edit-status" className="text-right">
-                    Status
-                  </Label>
-                  <Select 
-                    value={editingUser.status} 
-                    onValueChange={(value) => setEditingUser({...editingUser, status: value as User["status"]})}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Active">Active</SelectItem>
-                      <SelectItem value="Inactive">Inactive</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+
               </div>
             )}
             <div className="flex justify-end space-x-2">
