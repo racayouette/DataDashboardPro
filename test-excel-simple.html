@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel Export Test - Simple</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>Excel Export Test</h1>
+    <button onclick="testJobFamiliesExport()">Test Job Families Export</button>
+    <button onclick="testNotificationsExport()">Test Notifications Export</button>
+    <div id="results" style="margin-top: 20px;"></div>
+
+    <script>
+        function logResult(message) {
+            document.getElementById('results').innerHTML += '<div>' + message + '</div>';
+        }
+
+        function testJobFamiliesExport() {
+            logResult('Testing Job Families Export...');
+            
+            if (!window.XLSX) {
+                logResult('❌ XLSX library not loaded');
+                return;
+            }
+
+            try {
+                const jobData = [
+                    {'Job Code': '10001', 'Job Title': 'Software Engineer', 'Job Family': 'IT Services', 'Status': 'In Progress'},
+                    {'Job Code': '10002', 'Job Title': 'Nurse', 'Job Family': 'Clinical Support', 'Status': 'Completed'}
+                ];
+
+                const wb = window.XLSX.utils.book_new();
+                const ws = window.XLSX.utils.json_to_sheet(jobData);
+                
+                ws['!cols'] = [
+                    { wch: 12 }, { wch: 40 }, { wch: 20 }, { wch: 15 }
+                ];
+
+                window.XLSX.utils.book_append_sheet(wb, ws, 'Job Descriptions');
+                
+                const filename = 'Job_Descriptions_Export_Test.xlsx';
+                window.XLSX.writeFile(wb, filename);
+                
+                logResult('✅ Job Families export successful');
+            } catch (error) {
+                logResult('❌ Job Families export failed: ' + error.message);
+            }
+        }
+
+        function testNotificationsExport() {
+            logResult('Testing Notifications Export...');
+            
+            if (!window.XLSX) {
+                logResult('❌ XLSX library not loaded');
+                return;
+            }
+
+            try {
+                const notificationData = [
+                    {'ID': 1, 'Title': 'Job Updated', 'Message': 'Test message', 'Type': 'info', 'Status': 'Unread'},
+                    {'ID': 2, 'Title': 'Review Required', 'Message': 'Another test', 'Type': 'warning', 'Status': 'Read'}
+                ];
+
+                const wb = window.XLSX.utils.book_new();
+                const ws = window.XLSX.utils.json_to_sheet(notificationData);
+                
+                ws['!cols'] = [
+                    { wch: 8 }, { wch: 30 }, { wch: 50 }, { wch: 12 }, { wch: 12 }
+                ];
+
+                window.XLSX.utils.book_append_sheet(wb, ws, 'Notifications');
+                
+                const filename = 'Notifications_Export_Test.xlsx';
+                window.XLSX.writeFile(wb, filename);
+                
+                logResult('✅ Notifications export successful');
+            } catch (error) {
+                logResult('❌ Notifications export failed: ' + error.message);
+            }
+        }
+
+        // Auto-test on load
+        window.onload = function() {
+            if (window.XLSX) {
+                logResult('✅ XLSX library loaded from CDN v0.20.1');
+                logResult('✅ Ready for testing');
+            } else {
+                logResult('❌ XLSX library failed to load');
+            }
+        };
+    </script>
+</body>
+</html>

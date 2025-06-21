@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel Export Test</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <button onclick="testExport()">Test Excel Export</button>
+    <div id="result"></div>
+
+    <script>
+        function testExport() {
+            try {
+                // Test data similar to what's used in the app
+                const testData = [
+                    { 'Job Code': '10001', 'Job Title': 'Test Position', 'Job Family': 'IT Services', 'Status': 'In Progress' },
+                    { 'Job Code': '10002', 'Job Title': 'Another Test', 'Job Family': 'Clinical Support', 'Status': 'Completed' }
+                ];
+
+                // Create workbook using secure CDN version
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(testData);
+                
+                // Set column widths
+                ws['!cols'] = [
+                    { wch: 12 }, { wch: 40 }, { wch: 20 }, { wch: 15 }
+                ];
+
+                XLSX.utils.book_append_sheet(wb, ws, 'Test Export');
+
+                // Generate filename
+                const filename = `Test_Excel_Export_${new Date().toISOString().split('T')[0]}.xlsx`;
+
+                // Save file
+                XLSX.writeFile(wb, filename);
+
+                document.getElementById('result').innerHTML = 
+                    '<div style="color: green; margin-top: 10px;">✓ Excel export test successful! File downloaded: ' + filename + '</div>';
+                
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<div style="color: red; margin-top: 10px;">✗ Excel export test failed: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>
