@@ -1,4 +1,6 @@
 // TypeScript interfaces for data structures - No database dependencies
+import { pgTable, serial, varchar, text, integer, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import { z } from "zod";
 
 export interface User {
   id: number;
@@ -218,7 +220,6 @@ export type InsertConfiguration = Omit<Configuration, 'id' | 'createdAt' | 'upda
 };
 
 // Schema validation (using zod for form validation)
-import { z } from "zod";
 
 export const insertUserSchema = z.object({
   name: z.string(),
@@ -260,4 +261,73 @@ export const insertReviewerSchema = z.object({
 export const insertConfigurationSchema = z.object({
   configType: z.string(),
   configData: z.any(),
+});
+
+// Database Table Definitions for Drizzle ORM
+export const configurations = pgTable("configurations", {
+  id: serial("id").primaryKey(),
+  configType: varchar("config_type", { length: 100 }).unique().notNull(),
+  configData: jsonb("config_data").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const dashboardSummary = pgTable("dashboard_summary", {
+  id: serial("id").primaryKey(),
+  totalUsers: integer("total_users").notNull(),
+  revenue: integer("revenue").notNull(),
+  orders: integer("orders").notNull(),
+  growthRate: integer("growth_rate").notNull(),
+  jobsReviewed: integer("jobs_reviewed").notNull(),
+  inProgress: integer("in_progress").notNull(),
+  notStarted: integer("not_started").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const transactions = pgTable("transactions", {
+  id: serial("id").primaryKey(),
+  customerName: varchar("customer_name", { length: 255 }).notNull(),
+  customerEmail: varchar("customer_email", { length: 255 }).notNull(),
+  amount: integer("amount").notNull(),
+  status: varchar("status", { length: 50 }).notNull(),
+  date: timestamp("date").notNull()
+});
+
+export const jobFamilies = pgTable("job_families", {
+  id: serial("id").primaryKey(),
+  jobFamily: varchar("job_family", { length: 255 }).notNull(),
+  totalJobs: integer("total_jobs").notNull(),
+  jobsReviewed: integer("jobs_reviewed").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const activeDirectoryConfigs = pgTable("active_directory_configs", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  environment: varchar("environment", { length: 50 }).notNull(),
+  server: varchar("server", { length: 255 }).notNull(),
+  port: integer("port").notNull(),
+  bindDN: varchar("bind_dn", { length: 255 }).notNull(),
+  bindPassword: varchar("bind_password", { length: 255 }).notNull(),
+  baseDN: varchar("base_dn", { length: 255 }).notNull(),
+  searchFilter: varchar("search_filter", { length: 255 }),
+  isActive: boolean("is_active").default(false),
+  isEnabled: boolean("is_enabled").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const jobs = pgTable("jobs", {
+  id: serial("id").primaryKey(),
+  jobCode: varchar("job_code", { length: 50 }).notNull(),
+  jobTitle: varchar("job_title", { length: 255 }).notNull(),
+  jobFamilyId: integer("job_family_id"),
+  reviewerId: integer("reviewer_id"),
+  responsibleId: integer("responsible_id"),
+  status: varchar("status", { length: 50 }).notNull(),
+  lastUpdated: timestamp("last_updated").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 });

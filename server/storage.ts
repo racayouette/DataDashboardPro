@@ -116,6 +116,7 @@ export class MemStorage implements IStorage {
   private jobDescriptionChangesList: Map<number, JobDescriptionChange>;
   private auditLogsList: Map<number, AuditLog>;
   private activeDirectoryConfigsList: Map<number, ActiveDirectoryConfig>;
+  private configurationsList: Map<string, Configuration>;
   
   private currentSummaryId: number;
   private currentTransactionId: number;
@@ -129,6 +130,7 @@ export class MemStorage implements IStorage {
   private currentJobDescriptionChangeId: number;
   private currentAuditLogId: number;
   private currentActiveDirectoryConfigId: number;
+  private currentConfigurationId: number;
 
   constructor() {
     this.dashboardSummaries = new Map();
@@ -143,6 +145,7 @@ export class MemStorage implements IStorage {
     this.jobDescriptionChangesList = new Map();
     this.auditLogsList = new Map();
     this.activeDirectoryConfigsList = new Map();
+    this.configurationsList = new Map();
     
     this.currentSummaryId = 1;
     this.currentTransactionId = 1;
@@ -156,6 +159,7 @@ export class MemStorage implements IStorage {
     this.currentJobDescriptionChangeId = 1;
     this.currentAuditLogId = 1;
     this.currentActiveDirectoryConfigId = 1;
+    this.currentConfigurationId = 1;
 
     this.initializeData();
   }
@@ -1069,6 +1073,41 @@ export class MemStorage implements IStorage {
     const config = this.activeDirectoryConfigsList.get(id);
     if (config && config.environment === environment) {
       this.activeDirectoryConfigsList.set(id, { ...config, isActive: true });
+    }
+  }
+
+  // Configuration management
+  async getConfiguration(configType: string): Promise<Configuration | undefined> {
+    return this.configurationsList.get(configType);
+  }
+
+  async createConfiguration(config: InsertConfiguration): Promise<Configuration> {
+    const newConfig: Configuration = {
+      id: this.currentConfigurationId++,
+      configType: config.configType,
+      configData: config.configData,
+      createdAt: config.createdAt || new Date(),
+      updatedAt: config.updatedAt || new Date()
+    };
+
+    this.configurationsList.set(config.configType, newConfig);
+    return newConfig;
+  }
+
+  async updateConfiguration(configType: string, configData: any): Promise<Configuration> {
+    const existingConfig = this.configurationsList.get(configType);
+    
+    if (existingConfig) {
+      const updatedConfig: Configuration = {
+        ...existingConfig,
+        configData,
+        updatedAt: new Date()
+      };
+      this.configurationsList.set(configType, updatedConfig);
+      return updatedConfig;
+    } else {
+      // Create new configuration if it doesn't exist
+      return this.createConfiguration({ configType, configData });
     }
   }
 }
