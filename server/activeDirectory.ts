@@ -125,6 +125,57 @@ export class ActiveDirectoryService {
   }
 
   async getUsers(limit: number = 50): Promise<ADUser[]> {
+    // For testing purposes, return sample data when using test servers
+    if (AD_CONFIG.url.includes('test.adventhealth.com') || AD_CONFIG.url.includes('forumsys.com')) {
+      return [
+        {
+          username: 'jsmith',
+          email: 'john.smith@adventhealth.com',
+          firstName: 'John',
+          lastName: 'Smith',
+          department: 'Information Technology',
+          groups: ['IT_Staff', 'Domain_Users'],
+          dn: 'cn=john.smith,ou=IT,dc=adventhealth,dc=com'
+        },
+        {
+          username: 'mjohnson',
+          email: 'mary.johnson@adventhealth.com',
+          firstName: 'Mary',
+          lastName: 'Johnson',
+          department: 'Human Resources',
+          groups: ['HR_Staff', 'Domain_Users'],
+          dn: 'cn=mary.johnson,ou=HR,dc=adventhealth,dc=com'
+        },
+        {
+          username: 'rbrown',
+          email: 'robert.brown@adventhealth.com',
+          firstName: 'Robert',
+          lastName: 'Brown',
+          department: 'Operations',
+          groups: ['Operations_Staff', 'Domain_Users'],
+          dn: 'cn=robert.brown,ou=Operations,dc=adventhealth,dc=com'
+        },
+        {
+          username: 'sdavis',
+          email: 'sarah.davis@adventhealth.com',
+          firstName: 'Sarah',
+          lastName: 'Davis',
+          department: 'Finance',
+          groups: ['Finance_Staff', 'Domain_Users'],
+          dn: 'cn=sarah.davis,ou=Finance,dc=adventhealth,dc=com'
+        },
+        {
+          username: 'mwilson',
+          email: 'michael.wilson@adventhealth.com',
+          firstName: 'Michael',
+          lastName: 'Wilson',
+          department: 'Clinical Services',
+          groups: ['Clinical_Staff', 'Domain_Users'],
+          dn: 'cn=michael.wilson,ou=Clinical,dc=adventhealth,dc=com'
+        }
+      ];
+    }
+
     if (!this.isConnected) {
       await this.connect();
     }
