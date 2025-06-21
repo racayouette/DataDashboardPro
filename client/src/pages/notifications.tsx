@@ -686,48 +686,10 @@ export default function Notifications() {
 
             {/* Notifications List */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Notifications ({sortedNotifications.length})
                 </h2>
-                <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleSort('timestamp')}
-                    className="flex items-center space-x-1"
-                  >
-                    <span>Time</span>
-                    {getSortIcon('timestamp')}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleSort('title')}
-                    className="flex items-center space-x-1"
-                  >
-                    <span>Title</span>
-                    {getSortIcon('title')}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleSort('priority')}
-                    className="flex items-center space-x-1"
-                  >
-                    <span>Priority</span>
-                    {getSortIcon('priority')}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleSort('type')}
-                    className="flex items-center space-x-1"
-                  >
-                    <span>Type</span>
-                    {getSortIcon('type')}
-                  </Button>
-                </div>
               </div>
               
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
