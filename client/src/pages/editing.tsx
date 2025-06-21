@@ -90,6 +90,7 @@ export default function Editing() {
   const [isCritical, setIsCritical] = useState(false);
   const [status, setStatus] = useState("In Progress");
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isSubmittedForReview, setIsSubmittedForReview] = useState(false);
 
   // State for Job Summary popup editor
   const [showJobSummaryPopup, setShowJobSummaryPopup] = useState(false);
@@ -464,6 +465,10 @@ export default function Editing() {
     const currentJobCode = jobCode || "10001"; // Use actual job code or fallback
     const newNotification = `${currentJobCode} was reviewed and needs your approval`;
     setNotifications(prev => [newNotification, ...prev]);
+    
+    // Disable editing buttons when submitted for review
+    setIsSubmittedForReview(true);
+    setStatus("Submitted for Review");
     
     setShowSubmitConfirmation(false);
   };
@@ -868,7 +873,7 @@ export default function Editing() {
                         className="h-5 w-5 p-0 hover:bg-red-100"
                         onClick={() => removeReviewer(user)}
                         title={`Remove ${user}`}
-                        disabled={isCompleted}
+                        disabled={isCompleted || isSubmittedForReview}
                       >
                         <X className="w-3 h-3 text-red-500 hover:text-red-700" />
                       </Button>
@@ -924,7 +929,7 @@ export default function Editing() {
                         className="h-5 w-5 p-0 hover:bg-red-100"
                         onClick={() => removeResponsibleUser(user)}
                         title={`Remove ${user}`}
-                        disabled={isCompleted}
+                        disabled={isCompleted || isSubmittedForReview}
                       >
                         <X className="w-3 h-3 text-red-500 hover:text-red-700" />
                       </Button>
@@ -1015,7 +1020,7 @@ export default function Editing() {
                         size="sm" 
                         variant="ghost"
                         onClick={handleEditJobSummary}
-                        disabled={isCompleted}
+                        disabled={isCompleted || isSubmittedForReview}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
@@ -1024,7 +1029,7 @@ export default function Editing() {
                         variant="ghost"
                         onClick={handleResetJobSummary}
                         title="Reset to original job summary"
-                        disabled={isCompleted}
+                        disabled={isCompleted || isSubmittedForReview}
                       >
                         <RotateCcw className="w-4 h-4" />
                       </Button>
