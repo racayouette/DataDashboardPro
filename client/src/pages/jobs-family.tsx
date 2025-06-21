@@ -80,14 +80,13 @@ export default function JobsFamily() {
     }
   }, []);
 
-  // Auto-select Submitted to HR status when in Admin mode (but not when coming from functional leader link)
+  // Reset status filter on page load (removed auto-select of "Submitted to HR")
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const hasSearchOrReviewerParam = urlParams.get('reviewer') || urlParams.get('search');
     
-    if (isAdminMode && !hasSearchOrReviewerParam) {
-      setSelectedStatus("Submitted to HR");
-    } else if (!isAdminMode && !hasSearchOrReviewerParam) {
+    // Always start with no status filter unless coming from a specific search/reviewer link
+    if (!hasSearchOrReviewerParam) {
       setSelectedStatus("");
     }
   }, [isAdminMode]);
