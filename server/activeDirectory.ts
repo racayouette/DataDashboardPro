@@ -265,14 +265,20 @@ export class ActiveDirectoryService {
       // Create a test client with the provided configuration
       const testClient = new Client({
         url: `ldap://${testConfig.server}:${testConfig.port}`,
-        timeout: 10000,
-        connectTimeout: 10000,
+        timeout: 5000,
+        connectTimeout: 5000,
         tlsOptions: {
           rejectUnauthorized: false // Allow self-signed certificates for testing
         }
       });
       
       // Test bind with the configuration
+      console.log('Testing AD connection with config:', {
+        server: testConfig.server,
+        port: testConfig.port,
+        bindDN: testConfig.bindDN,
+        baseDN: testConfig.baseDN
+      });
       await testClient.bind(testConfig.bindDN, testConfig.bindPassword);
       
       // Test search to verify configuration
@@ -292,9 +298,11 @@ export class ActiveDirectoryService {
         userCount: searchEntries.length
       };
     } catch (error) {
+      console.error('Active Directory test connection error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        message: `Connection test failed: ${error}`
+        message: `Connection test failed: ${errorMessage}`
       };
     }
   }
