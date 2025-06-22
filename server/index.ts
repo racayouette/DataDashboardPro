@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import path from "path";
 
 // Extend the session interface to include user data
 declare module "express-session" {
@@ -85,7 +86,10 @@ app.use((req, res, next) => {
       if (req.path.startsWith("/api")) {
         return next();
       }
-      res.sendFile("index.html", { root: "dist/public" });
+      
+      // Use absolute path for production deployment
+      const indexPath = path.resolve(process.cwd(), "dist/public/index.html");
+      res.sendFile(indexPath);
     });
   } else {
     // Development mode with Vite
