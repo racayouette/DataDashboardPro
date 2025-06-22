@@ -510,13 +510,20 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
         
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="flex items-center justify-end mt-4 pt-4 border-t">
+          <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="text-sm text-gray-600">
+              Showing 1 to {Math.min(4, pagination.total)} of {pagination.total} entries
+            </div>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
-                disabled={pagination.currentPage === 1}
+                onClick={() => {
+                  const currentGroup = Math.floor((pagination.currentPage - 1) / 5);
+                  const previousGroupStart = Math.max(0, currentGroup - 1) * 5 + 1;
+                  pagination.onPageChange(previousGroupStart);
+                }}
+                disabled={pagination.currentPage <= 5}
               >
                 &lt;
               </Button>
@@ -524,18 +531,16 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
               {/* Dynamic cycling page buttons */}
               {(() => {
                 const getVisiblePages = () => {
-                  if (pagination.totalPages <= 2) {
+                  if (pagination.totalPages <= 5) {
                     return Array.from({ length: pagination.totalPages }, (_, i) => i + 1);
                   }
                   
-                  // Always show 2 buttons, positioned based on current page
-                  if (pagination.currentPage === 1) {
-                    return [1, 2];
-                  } else if (pagination.currentPage === pagination.totalPages) {
-                    return [pagination.totalPages - 1, pagination.totalPages];
-                  } else {
-                    return [pagination.currentPage, pagination.currentPage + 1];
-                  }
+                  // Calculate which group of 5 the current page belongs to
+                  const currentGroup = Math.floor((pagination.currentPage - 1) / 5);
+                  const groupStart = currentGroup * 5 + 1;
+                  const groupEnd = Math.min(groupStart + 4, pagination.totalPages);
+                  
+                  return Array.from({ length: groupEnd - groupStart + 1 }, (_, i) => groupStart + i);
                 };
                 
                 return getVisiblePages().map((pageNum) => (
@@ -544,7 +549,6 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
                     variant={pagination.currentPage === pageNum ? "default" : "outline"}
                     size="sm"
                     onClick={() => pagination.onPageChange(pageNum)}
-                    className="w-8 h-8"
                   >
                     {pageNum}
                   </Button>
@@ -554,8 +558,12 @@ export function DataGrid({ title, subtitle, data, isLoading, type, pagination, o
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
-                disabled={pagination.currentPage === pagination.totalPages}
+                onClick={() => {
+                  const currentGroup = Math.floor((pagination.currentPage - 1) / 5);
+                  const nextGroupStart = (currentGroup + 1) * 5 + 1;
+                  pagination.onPageChange(Math.min(pagination.totalPages, nextGroupStart));
+                }}
+                disabled={Math.floor((pagination.currentPage - 1) / 5) >= Math.floor((pagination.totalPages - 1) / 5)}
               >
                 &gt;
               </Button>
