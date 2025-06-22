@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import path from "path";
+import fs from "fs";
 
 // Extend the session interface to include user data
 declare module "express-session" {
@@ -79,7 +80,7 @@ app.use((req, res, next) => {
   // Setup static file serving for production
   if (process.env.NODE_ENV === "production") {
     // Serve static files from dist/public in production (matches Vite build output)
-    app.use(express.static("dist/public"));
+    app.use(express.static(path.resolve("dist/public")));
     
     // Handle SPA routing - serve index.html for non-API routes
     app.get("*", (req, res, next) => {
@@ -87,9 +88,15 @@ app.use((req, res, next) => {
         return next();
       }
       
-      // Use absolute path for production deployment
-      const indexPath = path.resolve(process.cwd(), "dist/public/index.html");
-      res.sendFile(indexPath);
+      // Use absolute path for production deployment with error handling
+      const indexPath = path.resolve("dist/public/index.html");
+      
+      // Check if file exists before serving
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send("Application not built properly. Run 'npm run build' first.");
+      }
     });
   } else {
     // Development mode with Vite
